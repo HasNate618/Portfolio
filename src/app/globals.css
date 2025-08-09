@@ -1,19 +1,36 @@
+/* Ensure all links are underlined on hover, even with Tailwind classes */
+a:hover, a:focus {
+  text-decoration: underline !important;
+  text-underline-offset: 2px;
+}
 /* Glowing cursor effect */
 .cursor-glow {
   pointer-events: none;
   position: fixed;
   top: 0;
   left: 0;
-  width: 120px;
-  height: 120px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(0,122,204,0.18) 0%, rgba(0,122,204,0.08) 60%, transparent 100%);
+  background: radial-gradient(circle, rgba(0,122,204,0.10) 0%, rgba(0,122,204,0.06) 60%, transparent 100%);
+  box-shadow: 0 0 32px 16px rgba(0,122,204,0.10);
+  filter: blur(12px);
   mix-blend-mode: lighten;
-  z-index: 9999;
+  z-index: 0;
   transform: translate(-50%, -50%);
   transition: opacity 0.2s;
-  opacity: 0.7;
-  pointer-events: none;
+  opacity: 0.6;
+}
+
+.typewriter {
+  display: inline-block;
+  border-right: 2px solid var(--accent-blue);
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 2rem;
+  min-height: 2.5rem;
+  font-family: inherit;
+  color: var(--accent-blue);
 }
 
 /* Panel hover highlight */

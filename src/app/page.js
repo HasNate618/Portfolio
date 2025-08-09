@@ -174,7 +174,7 @@ export default function Home() {
 
   {/* Projects Section */}
   <section id="projects" className="w-full max-w-4xl mx-auto mb-16">
-  <h2 className="text-2xl font-bold mb-6 vs-blue">Projects</h2>
+  <h2 className="text-2xl font-bold mb-6 vs-blue">Projects I'm Proud Of</h2>
   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Lumen */}
     <div className="bg-white/95 dark:bg-[#18181b]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-yellow-400 border-2 relative panel-hover">
@@ -262,45 +262,45 @@ export default function Home() {
   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Street Cleaner */}
           <div className="bg-white/80 dark:bg-[#18181b]/80 rounded-lg shadow p-4 flex flex-row items-center relative panel-hover border border-gray-200 dark:border-gray-700">
-            <img src="/saferoute_icon.jpg" alt="App 1 Icon" className="w-20 h-20 rounded-2xl mr-4 shadow flex-shrink-0" />
+            <img src="/street_cleaner_icon.png" alt="App 1 Icon" className="w-20 h-20 rounded-2xl mr-4 shadow flex-shrink-0" />
             <div className="flex-1 flex flex-col items-start">
               <span className="mb-2 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10">👑 Hackathon Winner</span>
-              <h3 className="font-semibold text-base mb-1">MyApp One</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">A productivity app published on Google Play.</p>
-              <a href="https://play.google.com/store/apps/details?id=com.example.myappone" target="_blank" rel="noopener noreferrer">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" className="h-12 mt-2" />
-              </a>
-            </div>
-          </div>
-          {/* SafeRoute */}
-          <div className="bg-white/80 dark:bg-[#18181b]/80 rounded-lg shadow p-4 flex flex-row items-center panel-hover border border-gray-200 dark:border-gray-700">
-            <img src="/app2-icon.png" alt="App 2 Icon" className="w-20 h-20 rounded-2xl mr-4 shadow flex-shrink-0" />
-            <div className="flex-1 flex flex-col items-start">
-              <h3 className="font-semibold text-base mb-1">MyApp Two</h3>
+              <h3 className="font-semibold text-base mb-1">Street Cleaner</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">A fun game for Android users. Fast and engaging.</p>
-              <a href="https://play.google.com/store/apps/details?id=com.example.myapptwo" target="_blank" rel="noopener noreferrer">
+              <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.StreetCleaner" target="_blank" rel="noopener noreferrer">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" className="h-12 mt-2" />
               </a>
             </div>
           </div>
-          {/*  */}
+          {/* Zenith Tower */}
           <div className="bg-white/80 dark:bg-[#18181b]/80 rounded-lg shadow p-4 flex flex-row items-center panel-hover border border-gray-200 dark:border-gray-700">
-            <img src="/app3-icon.png" alt="App 3 Icon" className="w-20 h-20 rounded-2xl mr-4 shadow flex-shrink-0" />
+            <img src="/zenith_tower_icon.png" alt="App 2 Icon" className="w-20 h-20 rounded-2xl mr-4 shadow flex-shrink-0" />
             <div className="flex-1 flex flex-col items-start">
-              <h3 className="font-semibold text-base mb-1">MyApp Three</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Another cool app for Android users.</p>
-              <a href="#" target="_blank" rel="noopener noreferrer">
+              <h3 className="font-semibold text-base mb-1">Zenith Tower</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">A fun game for Android users. Fast and engaging.</p>
+              <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.ZenithTower" target="_blank" rel="noopener noreferrer">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" className="h-12 mt-2" />
               </a>
             </div>
           </div>
-          {/* App 4 */}
+          {/* Mōtaru */}
           <div className="bg-white/80 dark:bg-[#18181b]/80 rounded-lg shadow p-4 flex flex-row items-center panel-hover border border-gray-200 dark:border-gray-700">
-            <img src="/app4-icon.png" alt="App 4 Icon" className="w-20 h-20 rounded-2xl mr-4 shadow flex-shrink-0" />
+            <img src="/motaru_icon.png" alt="App 3 Icon" className="w-20 h-20 rounded-2xl mr-4 shadow flex-shrink-0" />
             <div className="flex-1 flex flex-col items-start">
-              <h3 className="font-semibold text-base mb-1">MyApp Four</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">A health tracker for Android users.</p>
-              <a href="#" target="_blank" rel="noopener noreferrer">
+              <h3 className="font-semibold text-base mb-1">Mōtaru</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">A fun game for Android users. Fast and engaging.</p>
+              <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.Mtaru" target="_blank" rel="noopener noreferrer">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" className="h-12 mt-2" />
+              </a>
+            </div>
+          </div>
+          {/* Tic Tac Toe Ultimate */}
+          <div className="bg-white/80 dark:bg-[#18181b]/80 rounded-lg shadow p-4 flex flex-row items-center panel-hover border border-gray-200 dark:border-gray-700">
+            <img src="/tttu_icon.png" alt="App 4 Icon" className="w-20 h-20 rounded-2xl mr-4 shadow flex-shrink-0" />
+            <div className="flex-1 flex flex-col items-start">
+              <h3 className="font-semibold text-base mb-1">Tic Tac Toe Ultimate</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">A fun game for Android users. Fast and engaging.</p>
+              <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.TicTacToeUltimate" target="_blank" rel="noopener noreferrer">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" className="h-12 mt-2" />
               </a>
             </div>
@@ -310,7 +310,7 @@ export default function Home() {
 
   {/* Links Section removed, links are now in About section */}
   {/* Spacer at bottom for centering */}
-  <div className="w-full max-w-7xl h-12 md:h-24 lg:h-64 flex-shrink-0" />
+  <div className="w-full max-w-7xl h-12 md:h-24 lg:h-32 flex-shrink-0" />
 
       <footer className="text-gray-500 text-sm mt-8">&copy; {new Date().getFullYear()} Nathan Espejo. All rights reserved.</footer>
     </main>
