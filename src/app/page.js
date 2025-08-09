@@ -14,7 +14,7 @@ export default function Home() {
       </header>
       {/* Modern Introduction Section */}
       <section className="w-full max-w-2xl flex flex-col items-center text-center mb-10">
-        <h1 className="text-5xl sm:text-6xl font-extrabold mb-4 text-foreground font-mono">Hi, I&apos;m Nathan</h1>
+  <h1 className="text-5xl sm:text-6xl font-extrabold mb-4 text-foreground">Hi, I&apos;m Nathan</h1>
         <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-6 max-w-xl">I’m a Software Engineering student at Western University passionate about blending hardware and software to build creative, human-focused tech. From VR glove games and wearable cyberpunk-inspired devices to AI-driven wellness apps, I turn ideas into functional, impactful solutions.</p>
         <div className="flex flex-wrap justify-center gap-6 mb-4">
           <a href="mailto:your.email@example.com" className="flex items-center gap-2 text-blue-600 hover:underline text-lg"><span>📧</span>Email</a>
