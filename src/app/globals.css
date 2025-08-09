@@ -1,26 +1,130 @@
+/* Glowing cursor effect */
+.cursor-glow {
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,122,204,0.18) 0%, rgba(0,122,204,0.08) 60%, transparent 100%);
+  mix-blend-mode: lighten;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.2s;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Panel hover highlight */
+.panel-hover {
+  transition: box-shadow 0.2s, border-color 0.2s, background 0.2s;
+  box-shadow: 0 2px 16px 0 rgba(0,122,204,0.08);
+}
+.panel-hover:hover, .panel-hover:focus-within {
+  box-shadow: 0 4px 32px 0 rgba(0,122,204,0.18), 0 0 0 2px var(--accent-blue);
+  border-color: var(--accent-blue) !important;
+  background: rgba(0,122,204,0.04);
+}
+/* VS Code-style tabs for navigation */
+.vsc-tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  background: transparent;
+}
+.vsc-tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1.25rem 0.4rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--accent-gray);
+  background: transparent;
+  border: none;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  margin-right: 2px;
+  transition: background 0.15s, color 0.15s;
+  cursor: pointer;
+}
+.vsc-tab.active, .vsc-tab[aria-current="page"] {
+  background: var(--background);
+  color: var(--accent-blue);
+  border-bottom: 2px solid var(--background);
+  z-index: 2;
+}
+.vsc-tab:not(.active):hover {
+  background: rgba(0,0,0,0.04);
+  color: var(--accent-blue);
+}
+.vsc-tab:not(:last-child)::after {
+  content: '';
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 25%;
+  height: 50%;
+  width: 1px;
+  background: var(--accent-gray);
+  opacity: 0.2;
+}
 @import "tailwindcss";
 
+
+
+/* Visual Studio (not VS Code) inspired palette: blues, purples, and subtle grays */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #2d2d30;
+  --foreground: #dcdcdc;
+  --accent-blue: #007acc;
+  --accent-purple: #a259d9;
+  --accent-gray: #cccccc;
+  --accent-yellow: #ffd700;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-jetbrains-mono);
+  --font-mono: 'JetBrains Mono', var(--font-jetbrains-mono), monospace;
 }
 
-@media (prefers-color-scheme: dark) {
+
+@media (prefers-color-scheme: light) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #f3f3f3;
+    --foreground: #222222;
+    --accent-blue: #0066b8;
+    --accent-purple: #b57edc;
+    --accent-gray: #888888;
+    --accent-yellow: #ffd700;
   }
+}
+/* VS Code accent color utility classes */
+/* Visual Studio accent utility classes (reduced variety) */
+.vs-blue {
+  color: var(--accent-blue);
+}
+.vs-purple {
+  color: var(--accent-purple);
+}
+.vs-gray {
+  color: var(--accent-gray);
+}
+.vs-yellow {
+  color: var(--accent-yellow);
+}
+.vscode-gray {
+  color: var(--accent-gray);
+}
+.vs-green {
+  color: #4caf50;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-mono), Arial, Helvetica, sans-serif;
+  font-family: 'JetBrains Mono', var(--font-jetbrains-mono), monospace;
 }
