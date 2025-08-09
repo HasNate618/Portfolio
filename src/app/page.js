@@ -4,7 +4,6 @@ export default function Home() {
     <main className="min-h-screen bg-gradient-to-br from-[#f8fafc] to-[#e0e7ef] dark:from-[#0a0a0a] dark:to-[#23272f] flex flex-col items-center px-4 py-12">
       {/* Page Header with Navigation */}
       <header className="w-full max-w-5xl flex flex-col sm:flex-row justify-between items-center mb-12 gap-4">
-        <h1 className="text-3xl font-bold text-foreground">Nathan Espejo</h1>
         <nav className="flex gap-4 text-base font-medium">
           <a href="#about" className="hover:text-blue-600 transition">About</a>
           <a href="#skills" className="hover:text-blue-600 transition">Skills</a>
@@ -13,6 +12,16 @@ export default function Home() {
           <a href="#contact" className="hover:text-blue-600 transition">Contact</a>
         </nav>
       </header>
+      {/* Modern Introduction Section */}
+      <section className="w-full max-w-2xl flex flex-col items-center text-center mb-10">
+        <h1 className="text-5xl sm:text-6xl font-extrabold mb-4 text-foreground font-mono">Hi, I&apos;m Nathan</h1>
+        <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-6 max-w-xl">I’m a Software Engineering student at Western University passionate about blending hardware and software to build creative, human-focused tech. From VR glove games and wearable cyberpunk-inspired devices to AI-driven wellness apps, I turn ideas into functional, impactful solutions.</p>
+        <div className="flex flex-wrap justify-center gap-6 mb-4">
+          <a href="mailto:your.email@example.com" className="flex items-center gap-2 text-blue-600 hover:underline text-lg"><span>📧</span>Email</a>
+          <a href="https://github.com/HasNate618" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-600 hover:underline text-lg"><span>🐙</span>GitHub</a>
+          <a href="https://linkedin.com/in/your-linkedin" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-600 hover:underline text-lg"><span>💼</span>LinkedIn</a>
+        </div>
+      </section>
 
       {/* About Section */}
       <section id="about" className="w-full max-w-2xl bg-white/80 dark:bg-[#18181b]/80 rounded-xl shadow p-8 mb-12">
