@@ -10,17 +10,33 @@ const TITLES = [
   "an Embedded Systems Developer",
 ];
 
+const MOBILE_TITLES = [
+  "an Android Developer",
+  "a Game Developer", 
+  "an Embedded Systems Dev",
+];
+
 function TypewriterTitles() {
   const [index, setIndex] = useState(0);
   const [subIndex, setSubIndex] = useState(0);
   const [deleting, setDeleting] = useState(false);
   const [blink, setBlink] = useState(true);
   const [pause, setPause] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const currentTitles = isMobile ? MOBILE_TITLES : TITLES;
 
   useEffect(() => {
     if (pause) {
       // If just finished typing, pause for 3s. If just finished deleting, pause for 0.8s.
-      const isFull = !deleting && subIndex === TITLES[index].length;
+      const isFull = !deleting && subIndex === currentTitles[index].length;
       const isBlank = deleting && subIndex === 0;
       const duration = isFull ? 3000 : isBlank ? 800 : 0;
       if (duration > 0) {
@@ -31,14 +47,14 @@ function TypewriterTitles() {
     if (deleting) {
       if (subIndex === 0) {
         setDeleting(false);
-        setIndex((prev) => (prev + 1) % TITLES.length);
+        setIndex((prev) => (prev + 1) % currentTitles.length);
         setPause(true);
       } else {
         const timeout = setTimeout(() => setSubIndex((prev) => prev - 1), 30);
         return () => clearTimeout(timeout);
       }
     } else {
-      if (subIndex === TITLES[index].length) {
+      if (subIndex === currentTitles[index].length) {
         setPause(true);
         setDeleting(true);
       } else {
@@ -46,16 +62,16 @@ function TypewriterTitles() {
         return () => clearTimeout(timeout);
       }
     }
-  }, [subIndex, index, deleting, pause]);
+  }, [subIndex, index, deleting, pause, currentTitles]);
 
   useEffect(() => {
     const blinkInt = setInterval(() => setBlink((v) => !v), 500);
     return () => clearInterval(blinkInt);
   }, []);
 
-  const text = TITLES[index].substring(0, subIndex);
+  const text = currentTitles[index].substring(0, subIndex);
   return (
-    <div className="typewriter mx-auto mt-2" style={{ display: 'inline-block', whiteSpace: 'pre' }}>
+    <div className="typewriter mx-auto mt-2 max-w-full overflow-hidden" style={{ display: 'inline-block', whiteSpace: 'nowrap' }}>
       {text}
       <span style={{ opacity: blink ? 1 : 0 }}>|</span>
     </div>
@@ -63,10 +79,10 @@ function TypewriterTitles() {
 }
 
 const sections = [
-  { id: "about", label: "About" },
-  { id: "skills", label: "Skills" },
-  { id: "projects", label: "Projects" },
-  { id: "apps", label: "Mobile Apps" },
+  { id: "about", label: "About", mobileLabel: "About" },
+  { id: "skills", label: "Skills", mobileLabel: "Skills" },
+  { id: "projects", label: "Projects", mobileLabel: "Projects" },
+  { id: "apps", label: "Mobile Games", mobileLabel: "Games" },
 ];
 
 
@@ -120,43 +136,60 @@ export default function Home() {
         {/* Enhanced Header with Navigation */}
         <header className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 mb-8 w-full max-w-5xl px-4">
           <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-white/20 dark:border-slate-700/50 shadow-xl shadow-blue-500/10 p-2">
-            <nav className="vsc-tabs w-full">
-              {sections.map(({ id, label }) => (
+            <div className="flex items-center justify-between w-full">
+              <nav className="vsc-tabs flex-1">
+                {sections.map(({ id, label, mobileLabel }) => (
+                  <a
+                    key={id}
+                    href={`#${id}`}
+                    className={`vsc-tab${activeTab === id ? " active" : ""}`}
+                    aria-current={activeTab === id ? "page" : undefined}
+                    onClick={e => {
+                      e.preventDefault();
+                      const el = document.getElementById(id);
+                      if (el) {
+                        const y =
+                          el.getBoundingClientRect().top + window.scrollY - window.innerHeight / 2 + el.offsetHeight / 2;
+                        window.scrollTo({ top: y, behavior: "smooth" });
+                      }
+                    }}
+                  >
+                    <span className="hidden sm:inline">{label}</span>
+                    <span className="sm:hidden">{mobileLabel}</span>
+                  </a>
+                ))}
+              </nav>
+              {/* Desktop Resume Download Button */}
+              <div className="hidden sm:block ml-4">
                 <a
-                  key={id}
-                  href={`#${id}`}
-                  className={`vsc-tab${activeTab === id ? " active" : ""}`}
-                  aria-current={activeTab === id ? "page" : undefined}
-                  onClick={e => {
-                    e.preventDefault();
-                    const el = document.getElementById(id);
-                    if (el) {
-                      const y =
-                        el.getBoundingClientRect().top + window.scrollY - window.innerHeight / 2 + el.offsetHeight / 2;
-                      window.scrollTo({ top: y, behavior: "smooth" });
-                    }
-                  }}
+                  href="/resume.pdf"
+                  download="Nathan_Espejo_Resume.pdf"
+                  className="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors shadow-sm"
                 >
-                  {label}
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Resume
                 </a>
-              ))}
-            </nav>
+              </div>
+            </div>
           </div>
         </header>
 
         {/* Hero Section */}
-        <section className="w-full max-w-4xl mx-auto flex flex-col items-center text-center mb-32 pt-50 pb-8">
+        <section className="w-full max-w-4xl mx-auto flex flex-col items-center text-center mb-16 sm:mb-32 pt-24 sm:pt-50 pb-4 sm:pb-8">
           <div className="relative">
             {/* Background glow effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 rounded-full blur-3xl opacity-20 scale-150"></div>
-            
+
             {/* Main content */}
-            <div className="relative">              
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold mb-6 text-white leading-tight">
+            <div className="relative">
+              <p className="text-2xl sm:text-3xl font-light text-blue-300 mb-2 tracking-wide">Hi, I&apos;m</p>
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold mb-4 sm:mb-6 text-white leading-tight">
                 Nathan Espejo
               </h1>
               
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-light text-slate-600 dark:text-slate-300 mb-8 h-16 flex items-center justify-center">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-light text-slate-600 dark:text-slate-300 mb-4 sm:mb-8 h-12 sm:h-16 flex items-center justify-center max-w-full overflow-hidden px-4">
                 <TypewriterTitles />
               </div>
               
@@ -189,10 +222,10 @@ export default function Home() {
               </div>
               
               {/* CTA Button */}
-              <div className="flex justify-center">
+              <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
                 <a
                   href="#projects"
-                  className="inline-flex items-center px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+                  className="inline-flex items-center px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl w-[220px] justify-center"
                   onClick={e => {
                     e.preventDefault();
                     const el = document.getElementById('projects');
@@ -207,14 +240,28 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
                 </a>
+                
+                {/* Mobile Resume Download Button */}
+                <div className="sm:hidden">
+                  <a
+                    href="/resume.pdf"
+                    download="Nathan_Espejo_Resume.pdf"
+                    className="inline-flex items-center px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl w-[220px] justify-center"
+                  >
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span>View Resume</span>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* About Section */}
-        <section id="about" className="w-full max-w-4xl mx-auto mb-38">
-          <div className="bg-[#11111a]/80 backdrop-blur rounded-xl border border-gray-600 p-8 shadow-lg">
+        <section id="about" className="w-full max-w-4xl mx-auto mb-16 sm:mb-38">
+          <div className="bg-[#11111a]/80 backdrop-blur rounded-xl border border-gray-600 p-6 sm:p-8 shadow-lg">
             <h2 className="text-3xl font-bold mb-6 text-blue-400">About Me</h2>
             
             <div className="space-y-4">
@@ -229,8 +276,8 @@ export default function Home() {
         </section>
 
   {/* Skills Section */}
-  <section id="skills" className="w-full max-w-4xl mx-auto mb-48">
-    <div className="bg-[#11111a]/80 backdrop-blur rounded-xl border border-gray-600 p-8 shadow-lg">
+  <section id="skills" className="w-full max-w-4xl mx-auto mb-16 sm:mb-48">
+    <div className="bg-[#11111a]/80 backdrop-blur rounded-xl border border-gray-600 p-6 sm:p-8 shadow-lg">
       <h2 className="text-3xl font-bold mb-6 text-blue-400">Skills</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
@@ -389,9 +436,9 @@ export default function Home() {
   </section>
 
   {/* Projects Section */}
-  <section id="projects" className="w-full max-w-4xl mx-auto mb-32">
-    <h2 className="text-3xl font-bold mb-8 text-blue-400 text-center">Projects I'm Proud Of</h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <section id="projects" className="w-full max-w-4xl mx-auto mb-16 sm:mb-32">
+    <h2 className="text-3xl font-bold mb-6 sm:mb-8 text-blue-400 text-center">Projects I'm Proud Of</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           {/* Lumen */}
     <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-yellow-400 border-2 relative">
             <span className="absolute top-3 left-3 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10">🥇 Hackathon Winner</span>
@@ -473,9 +520,9 @@ export default function Home() {
   </section>
 
   {/* Mobile Apps Section */}
-  <section id="apps" className="w-full max-w-4xl mx-auto mb-32">
-    <h2 className="text-3xl font-bold mb-8 text-blue-400 text-center">Mobile Games</h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <section id="apps" className="w-full max-w-4xl mx-auto mb-16 sm:mb-32">
+    <h2 className="text-3xl font-bold mb-6 sm:mb-8 text-blue-400 text-center">Mobile Games</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           {/* Street Cleaner */}
           <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center relative border border-yellow-400 border-2">
             <img src="/street_cleaner_icon.png" alt="App 1 Icon" className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
@@ -528,9 +575,9 @@ export default function Home() {
 
   {/* Links Section removed, links are now in About section */}
   {/* Spacer at bottom for centering */}
-  <div className="w-full max-w-7xl h-12 md:h-24 lg:h-24 flex-shrink-0" />
+  <div className="w-full max-w-7xl h-8 sm:h-12 md:h-24 lg:h-24 flex-shrink-0" />
 
-  <footer className="text-gray-500 text-sm mt-8">&copy; {new Date().getFullYear()} Nathan Espejo. All rights reserved.</footer>
+  <footer className="text-gray-500 text-sm mt-4 sm:mt-8">&copy; {new Date().getFullYear()} Nathan Espejo. All rights reserved.</footer>
   </div>
 </main>
 );
