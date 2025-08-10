@@ -21,7 +21,7 @@ function TypewriterTitles() {
   const [subIndex, setSubIndex] = useState(0);
   const [deleting, setDeleting] = useState(false);
   const [blink, setBlink] = useState(true);
-  const [pause, setPause] = useState(false);
+  const [pause, setPause] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -501,7 +501,7 @@ export default function Home() {
             <div className="p-6 flex flex-col flex-1">
               <h3 className="font-semibold text-lg mb-2">FLEXFIRE-X</h3>
               <p className="text-gray-600 dark:text-gray-400 flex-1">A muscle activated wearable projectile launcher inspired by cyberpunk tech.</p>
-              <a href="#" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline">&gt; GitHub</a>
+              <a href="https://github.com/HasNate618/FLEXFIRE-X" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline">&gt; GitHub</a>
             </div>
           </div>
           {/* Rubber Band Turret */}
