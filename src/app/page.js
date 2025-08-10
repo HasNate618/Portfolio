@@ -158,19 +158,118 @@ export default function Home() {
       </section>
 
   {/* Skills Section */}
-  <section id="skills" className="w-full max-w-2xl bg-white/80 dark:bg-[#18181b]/80 rounded-xl shadow p-8 mb-12 panel-hover">
-  <h2 className="text-2xl font-bold mb-4 vs-blue">Skills</h2>
-        <ul className="flex flex-wrap gap-3 text-sm">
-          <li className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 px-3 py-1 rounded">HTML</li>
-          <li className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 px-3 py-1 rounded">CSS</li>
-          <li className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 px-3 py-1 rounded">JavaScript</li>
-          <li className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 px-3 py-1 rounded">React</li>
-          <li className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 px-3 py-1 rounded">Next.js</li>
-          <li className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 px-3 py-1 rounded">Tailwind CSS</li>
-          <li className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 px-3 py-1 rounded">Firebase</li>
-          <li className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 px-3 py-1 rounded">TypeScript</li>
-        </ul>
-      </section>
+  <section id="skills" className="w-full max-w-4xl bg-white/90 dark:bg-[#18181b]/90 rounded-xl shadow p-8 mb-12 panel-hover">
+    <h2 className="text-2xl font-bold mb-6 vs-blue flex items-center gap-2">
+      <span>Skills</span>
+      <span className="text-2xl">🛠️</span>
+    </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+          <div className="flex items-center gap-2 mb-2"><span className="text-blue-500">💻</span><span className="font-semibold">Programming Languages</span></div>
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className="badge">Java</span>
+            <span className="badge">C#</span>
+            <span className="badge">Python</span>
+            <span className="badge">JavaScript</span>
+            <span className="badge">C++</span>
+            <span className="badge">Kotlin</span>
+            <span className="badge">SQL</span>
+            <span className="badge">HTML</span>
+            <span className="badge">CSS</span>
+            <span className="badge">XML</span>
+          </div>
+          <div className="flex items-center gap-2 mb-2"><span className="text-green-600">🧰</span><span className="font-semibold">Tools & Platforms</span></div>
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className="badge">GitHub</span>
+            <span className="badge">Unity3D</span>
+            <span className="badge">Android Studio</span>
+            <span className="badge">Arduino IDE</span>
+            <span className="badge">React</span>
+            <span className="badge">Blender (3D Modeling)</span>
+            <span className="badge">OnShape (CAD)</span>
+            <span className="badge">MySQL</span>
+            <span className="badge">TensorFlow</span>
+          </div>
+        </div>
+        <div>
+          <div className="flex items-center gap-2 mb-2"><span className="text-yellow-500">🔗</span><span className="font-semibold">APIs & SDKs</span></div>
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className="badge">OpenAI API</span>
+            <span className="badge">Google Maps API</span>
+            <span className="badge">HERE Maps SDK</span>
+            <span className="badge">JsonBin API</span>
+            <span className="badge">REST APIs</span>
+          </div>
+          <div className="flex items-center gap-2 mb-2"><span className="text-orange-500">🔌</span><span className="font-semibold">Hardware & Embedded</span></div>
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className="badge">Arduino</span>
+            <span className="badge">ESP32</span>
+            <span className="badge">3D Printing (Design & Prototyping)</span>
+            <span className="badge">Bluetooth Low Energy (BLE)</span>
+          </div>
+          <div className="flex items-center gap-2 mb-2"><span className="text-pink-500">🚀</span><span className="font-semibold">Development Areas</span></div>
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className="badge">Full-Stack Development</span>
+            <span className="badge">Game Development (VR, XR)</span>
+            <span className="badge">AI (CNN, LLMs)</span>
+            <span className="badge">Computer Vision</span>
+            <span className="badge">Mobile App Development (Android)</span>
+            <span className="badge">API Integration</span>
+            <span className="badge">UI/UX Design Principles</span>
+            <span className="badge">Chrome Extensions</span>
+          </div>
+          <div className="flex items-center gap-2 mb-2"><span className="text-gray-500">🤝</span><span className="font-semibold">Professional Skills</span></div>
+          <div className="flex flex-wrap gap-2">
+            <span className="badge">Team Collaboration & Agile Workflow</span>
+            <span className="badge">Problem Solving & Rapid Prototyping</span>
+            <span className="badge">Technical Instruction & Mentorship</span>
+            <span className="badge">Project Management</span>
+            <span className="badge">Time Management</span>
+          </div>
+        </div>
+      </div>
+      <style jsx>{`
+        .badge {
+          display: inline-block;
+          background: rgba(255,255,255,0.08);
+          border: 1px solid #4444;
+          border-radius: 9999px;
+          padding: 0.25rem 0.75rem;
+          font-size: 0.97em;
+          font-family: inherit;
+          margin-bottom: 0.15rem;
+          margin-right: 0.1rem;
+          transition: background 0.2s, border 0.2s;
+        }
+        .badge:hover {
+          background: #2563eb22;
+          border-color: #2563eb;
+        }
+      `}</style>
+    <style jsx>{`
+      .badge-blue {
+        @apply bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-200 px-3 py-1 rounded font-medium;
+      }
+      .badge-purple {
+        @apply bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-200 px-3 py-1 rounded font-medium;
+      }
+      .badge-green {
+        @apply bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-200 px-3 py-1 rounded font-medium;
+      }
+      .badge-yellow {
+        @apply bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-800 px-3 py-1 rounded font-medium;
+      }
+      .badge-orange {
+        @apply bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-200 px-3 py-1 rounded font-medium;
+      }
+      .badge-pink {
+        @apply bg-pink-100 dark:bg-pink-900/40 text-pink-700 dark:text-pink-200 px-3 py-1 rounded font-medium;
+      }
+      .badge-gray {
+        @apply bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1 rounded font-medium;
+      }
+    `}</style>
+  </section>
 
   {/* Projects Section */}
   <section id="projects" className="w-full max-w-4xl mx-auto mb-16">
