@@ -531,7 +531,7 @@ export default function Home() {
                 <h3 className="font-semibold text-lg md:text-xl">Street Cleaner</h3>
                 <span className="ml-auto bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10 border-2 border-yellow-500">🥇</span>
               </div>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">A fun game for Android users. Fast and engaging.</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Drag litter into the correct bin to win!</p>
               <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.StreetCleaner" target="_blank" rel="noopener noreferrer">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" className="h-12 mt-2" />
               </a>
@@ -542,7 +542,7 @@ export default function Home() {
             <img src="/zenith_tower_icon.png" alt="App 2 Icon" className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
             <div className="flex-1 flex flex-col items-start">
               <h3 className="font-semibold text-lg md:text-xl mb-1">Zenith Tower</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">A fun game for Android users. Fast and engaging.</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Ascend the tower in a futuristic dungeon crawler.</p>
               <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.ZenithTower" target="_blank" rel="noopener noreferrer">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" className="h-12 mt-2" />
               </a>
@@ -553,7 +553,7 @@ export default function Home() {
             <img src="/motaru_icon.png" alt="App 3 Icon" className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
             <div className="flex-1 flex flex-col items-start">
               <h3 className="font-semibold text-lg md:text-xl mb-1">Mōtaru</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">A fun game for Android users. Fast and engaging.</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Take down ninjas using quick reflexes!</p>
               <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.Mtaru" target="_blank" rel="noopener noreferrer">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" className="h-12 mt-2" />
               </a>
@@ -564,7 +564,7 @@ export default function Home() {
             <img src="/tttu_icon.png" alt="App 4 Icon" className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
             <div className="flex-1 flex flex-col items-start">
               <h3 className="font-semibold text-lg md:text-xl mb-1">Tic Tac Toe Ultimate</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">A fun game for Android users. Fast and engaging.</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">The Ultimate Tic Tac Toe experience.</p>
               <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.TicTacToeUltimate" target="_blank" rel="noopener noreferrer">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" className="h-12 mt-2" />
               </a>
