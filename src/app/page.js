@@ -266,10 +266,10 @@ export default function Home() {
             
             <div className="space-y-4">
               <p className="text-gray-300 leading-relaxed text-lg">
-                I'm a <span className="text-green-400 font-semibold">Software Engineering</span> student at <span className="text-purple-400 font-semibold">Western University</span> with strong skills in game development, Android app creation, and hardware prototyping. I enjoy building immersive VR games, crafting intuitive Android apps, and designing wearable devices that merge software with physical interaction.
+                I&apos;m a <span className="text-green-400 font-semibold">Software Engineering</span> student at <span className="text-purple-400 font-semibold">Western University</span> with strong skills in game development, Android app creation, and hardware prototyping. I enjoy building immersive VR games, crafting intuitive Android apps, and designing wearable devices that merge software with physical interaction.
               </p>
               <p className="text-gray-300 leading-relaxed">
-                My multidisciplinary approach blends full-stack development, embedded systems, and artificial intelligence to create technology that feels like a natural extension of the body and mind. Passionate about mental health, accessibility, and ethical design, I'm excited to explore how AI and emerging technologies can shape the future of human-computer interaction.
+                My multidisciplinary approach blends full-stack development, embedded systems, and artificial intelligence to create technology that feels like a natural extension of the body and mind. Passionate about mental health, accessibility, and ethical design, I&apos;m excited to explore how AI and emerging technologies can shape the future of human-computer interaction.
               </p>
             </div>
           </div>
@@ -437,14 +437,14 @@ export default function Home() {
 
   {/* Projects Section */}
   <section id="projects" className="w-full max-w-4xl mx-auto mb-16 sm:mb-32">
-    <h2 className="text-3xl font-bold mb-6 sm:mb-8 text-blue-400 text-center">Projects I'm Proud Of</h2>
+    <h2 className="text-3xl font-bold mb-6 sm:mb-8 text-blue-400 text-center">Projects I&apos;m Proud Of</h2>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           {/* Lumen */}
     <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-yellow-400 border-2 relative">
             <span className="absolute top-3 left-3 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10">🥇 Hackathon Winner</span>
             <span className="absolute top-3 right-3 bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Game Dev</span>
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
-              <img src="/lumen_card.png" alt="Project 1" className="object-cover rounded-t-lg w-full h-full" style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}} />
+              <Image src="/lumen_card.png" alt="Lumen Project" fill className="object-cover rounded-t-lg" />
             </div>
             <div className="p-6 flex flex-col flex-1">
               <h3 className="font-semibold text-lg mb-2">Lumen</h3>
@@ -460,7 +460,7 @@ export default function Home() {
             <span className="absolute top-3 left-3 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10">🥇 Hackathon Winner</span>
             <span className="absolute top-3 right-3 bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Game Dev</span>
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
-              <img src="/careerly_card.jpg" alt="Project 2" className="object-cover rounded-t-lg w-full h-full" style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}} />
+              <Image src="/careerly_card.jpg" alt="Project 2" fill className="object-cover rounded-t-lg" />
             </div>
             <div className="p-6 flex flex-col flex-1">
               <h3 className="font-semibold text-lg mb-2">Careerly</h3>
@@ -472,7 +472,7 @@ export default function Home() {
     <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative">
             <span className="absolute top-3 right-3 bg-green-100 dark:bg-green-900/60 text-green-700 dark:text-green-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Android</span>
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
-              <img src="/saferoute_card.png" alt="Project 3" className="object-cover rounded-t-lg w-full h-full" style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}} />
+              <Image src="/saferoute_card.png" alt="Project 3" fill className="object-cover rounded-t-lg" />
             </div>
             <div className="p-6 flex flex-col flex-1">
               <h3 className="font-semibold text-lg mb-2">SafeRoute</h3>
@@ -484,7 +484,7 @@ export default function Home() {
     <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative">
             <span className="absolute top-3 right-3 bg-green-100 dark:bg-green-900/60 text-green-700 dark:text-green-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Android</span>
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
-              <img src="/animarker_card.png" alt="Project 4" className="object-cover rounded-t-lg w-full h-full" style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}} />
+              <Image src="/animarker_card.png" alt="Project 4" fill className="object-cover rounded-t-lg" />
             </div>
             <div className="p-6 flex flex-col flex-1">
               <h3 className="font-semibold text-lg mb-2">Animarker</h3>
@@ -496,7 +496,7 @@ export default function Home() {
     <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative">
             <span className="absolute top-3 right-3 bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Hardware</span>
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
-              <img src="/flexfire-x_card.png" alt="Project 5" className="object-cover rounded-t-lg w-full h-full" style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}} />
+              <Image src="/flexfire-x_card.png" alt="Project 5" fill className="object-cover rounded-t-lg" />
             </div>
             <div className="p-6 flex flex-col flex-1">
               <h3 className="font-semibold text-lg mb-2">FLEXFIRE-X</h3>
@@ -508,7 +508,7 @@ export default function Home() {
     <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative">
             <span className="absolute top-3 right-3 bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Hardware</span>
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
-              <img src="/turret_card.png" alt="Project 6" className="object-cover rounded-t-lg w-full h-full" style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}} />
+              <Image src="/turret_card.png" alt="Project 6" fill className="object-cover rounded-t-lg" />
             </div>
             <div className="p-6 flex flex-col flex-1">
               <h3 className="font-semibold text-lg mb-2">Rubber Band Turret</h3>
@@ -525,7 +525,7 @@ export default function Home() {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           {/* Street Cleaner */}
           <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center relative border border-yellow-400 border-2">
-            <img src="/street_cleaner_icon.png" alt="App 1 Icon" className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
+            <Image src="/street_cleaner_icon.png" alt="App 1 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
             <div className="flex-1 flex flex-col items-start">
               <div className="w-full flex items-center gap-2 mb-1">
                 <h3 className="font-semibold text-lg md:text-xl">Street Cleaner</h3>
@@ -533,40 +533,40 @@ export default function Home() {
               </div>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Drag litter into the correct bin to win!</p>
               <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.StreetCleaner" target="_blank" rel="noopener noreferrer">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" className="h-12 mt-2" />
+                <Image src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" width={140} height={48} className="h-12 mt-2" />
               </a>
             </div>
           </div>
           {/* Zenith Tower */}
           <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center border border-gray-200 dark:border-gray-700">
-            <img src="/zenith_tower_icon.png" alt="App 2 Icon" className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
+            <Image src="/zenith_tower_icon.png" alt="App 2 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
             <div className="flex-1 flex flex-col items-start">
               <h3 className="font-semibold text-lg md:text-xl mb-1">Zenith Tower</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Ascend the tower in a futuristic dungeon crawler.</p>
               <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.ZenithTower" target="_blank" rel="noopener noreferrer">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" className="h-12 mt-2" />
+                <Image src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" width={140} height={48} className="h-12 mt-2" />
               </a>
             </div>
           </div>
           {/* Mōtaru */}
           <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center border border-gray-200 dark:border-gray-700">
-            <img src="/motaru_icon.png" alt="App 3 Icon" className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
+            <Image src="/motaru_icon.png" alt="App 3 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
             <div className="flex-1 flex flex-col items-start">
               <h3 className="font-semibold text-lg md:text-xl mb-1">Mōtaru</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Take down ninjas using quick reflexes!</p>
               <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.Mtaru" target="_blank" rel="noopener noreferrer">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" className="h-12 mt-2" />
+                <Image src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" width={140} height={48} className="h-12 mt-2" />
               </a>
             </div>
           </div>
           {/* Tic Tac Toe Ultimate */}
           <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center border border-gray-200 dark:border-gray-700">
-            <img src="/tttu_icon.png" alt="App 4 Icon" className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
+            <Image src="/tttu_icon.png" alt="App 4 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
             <div className="flex-1 flex flex-col items-start">
               <h3 className="font-semibold text-lg md:text-xl mb-1">Tic Tac Toe Ultimate</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">The Ultimate Tic Tac Toe experience.</p>
               <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.TicTacToeUltimate" target="_blank" rel="noopener noreferrer">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" className="h-12 mt-2" />
+                <Image src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" width={140} height={48} className="h-12 mt-2" />
               </a>
             </div>
           </div>
