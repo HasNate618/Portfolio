@@ -19,8 +19,14 @@ function TypewriterTitles() {
 
   useEffect(() => {
     if (pause) {
-      const timeout = setTimeout(() => setPause(false), 2000);
-      return () => clearTimeout(timeout);
+      // If just finished typing, pause for 3s. If just finished deleting, pause for 0.8s.
+      const isFull = !deleting && subIndex === TITLES[index].length;
+      const isBlank = deleting && subIndex === 0;
+      const duration = isFull ? 3000 : isBlank ? 800 : 0;
+      if (duration > 0) {
+        const timeout = setTimeout(() => setPause(false), duration);
+        return () => clearTimeout(timeout);
+      }
     }
     if (deleting) {
       if (subIndex === 0) {
@@ -61,7 +67,6 @@ const sections = [
   { id: "skills", label: "Skills" },
   { id: "projects", label: "Projects" },
   { id: "apps", label: "Mobile Apps" },
-  { id: "contact", label: "Contact" },
 ];
 
 
@@ -102,148 +107,259 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-[#f8fafc] to-[#e0e7ef] dark:from-[#0a0a0a] dark:to-[#23272f] flex flex-col items-center px-4">
-      {/* Glowing cursor follower - moved to bottom layer */}
+    <main className="min-h-screen bg-[#11111a] text-white relative overflow-hidden">
+      
+      {/* Glowing cursor follower */}
       <div
         className="cursor-glow"
         style={{ left: cursor.x, top: cursor.y, zIndex: 0, position: 'fixed', pointerEvents: 'none' }}
         aria-hidden="true"
       />
-      {/* Page Header with Navigation */}
-      <header className="w-full max-w-7xl flex flex-col sm:flex-row justify-between items-center gap-4 sticky top-0 z-50 bg-white/90 dark:bg-[#18181b]/90 backdrop-blur border-b border-gray-200 dark:border-gray-700" style={{marginTop:0}}>
-        <nav className="vsc-tabs w-full">
-          {sections.map(({ id, label }) => (
-            <a
-              key={id}
-              href={`#${id}`}
-              className={`vsc-tab${activeTab === id ? " active" : ""}`}
-              aria-current={activeTab === id ? "page" : undefined}
-              onClick={e => {
-                e.preventDefault();
-                const el = document.getElementById(id);
-                if (el) {
-                  const y =
-                    el.getBoundingClientRect().top + window.scrollY - window.innerHeight / 2 + el.offsetHeight / 2;
-                  window.scrollTo({ top: y, behavior: "smooth" });
-                }
-              }}
-            >
-              {label}
-            </a>
-          ))}
-        </nav>
-      </header>
-      {/* Spacer at top for centering */}
-      <div className="w-full max-w-7xl h-12 md:h-24 lg:h-32 flex-shrink-0" />
-      {/* Modern Introduction Section */}
-      <section className="w-full max-w-4xl flex flex-col items-center text-center mb-10">
-        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold mb-2 vs-blue whitespace-nowrap">Hi, I&apos;m Nathan Espejo</h1>
-        <TypewriterTitles />
-      </section>
 
+      <div className="relative z-10 flex flex-col items-center px-4">
+        {/* Enhanced Header with Navigation */}
+        <header className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 mb-8 w-full max-w-5xl px-4">
+          <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-white/20 dark:border-slate-700/50 shadow-xl shadow-blue-500/10 p-2">
+            <nav className="vsc-tabs w-full">
+              {sections.map(({ id, label }) => (
+                <a
+                  key={id}
+                  href={`#${id}`}
+                  className={`vsc-tab${activeTab === id ? " active" : ""}`}
+                  aria-current={activeTab === id ? "page" : undefined}
+                  onClick={e => {
+                    e.preventDefault();
+                    const el = document.getElementById(id);
+                    if (el) {
+                      const y =
+                        el.getBoundingClientRect().top + window.scrollY - window.innerHeight / 2 + el.offsetHeight / 2;
+                      window.scrollTo({ top: y, behavior: "smooth" });
+                    }
+                  }}
+                >
+                  {label}
+                </a>
+              ))}
+            </nav>
+          </div>
+        </header>
 
+        {/* Hero Section */}
+        <section className="w-full max-w-4xl mx-auto flex flex-col items-center text-center mb-32 pt-50 pb-8">
+          <div className="relative">
+            {/* Background glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 rounded-full blur-3xl opacity-20 scale-150"></div>
+            
+            {/* Main content */}
+            <div className="relative">              
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold mb-6 text-white leading-tight">
+                Nathan Espejo
+              </h1>
+              
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-light text-slate-600 dark:text-slate-300 mb-8 h-16 flex items-center justify-center">
+                <TypewriterTitles />
+              </div>
+              
+              <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed mb-10">
+                Passionate <span className="font-semibold text-blue-600 dark:text-blue-400">Software Engineering</span> student crafting innovative solutions that bridge hardware and software, from VR experiences to AI-driven applications.
+              </p>
+              
+              {/* Social Links */}
+              <div className="flex justify-center gap-6 mb-10">
+                <a href="mailto:nate.e.espejo@gmail.com" className="flex items-center justify-center w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full transition-colors">
+                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                  </svg>
+                </a>
+                <a href="https://github.com/HasNate618" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full transition-colors">
+                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                </a>
+                <a href="https://linkedin.com/in/nathan-espejo" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full transition-colors">
+                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                </a>
+                <a href="https://devpost.com/nate-e-espejo" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full transition-colors">
+                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M6.002 1.61L0 12.004L6.002 22.39h11.996L24 12.004L17.998 1.61H6.002zm1.593 4.084h3.947c3.605 0 6.276 1.695 6.276 6.31c0 4.436-3.21 6.302-6.456 6.302H7.595V5.694zm2.517 2.449v7.714h1.241c2.646 0 3.862-1.55 3.862-3.861.009-2.569-1.096-3.853-3.767-3.853H10.112z"/>
+                  </svg>
+                </a>
+              </div>
+              
+              {/* CTA Button */}
+              <div className="flex justify-center">
+                <a
+                  href="#projects"
+                  className="inline-flex items-center px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+                  onClick={e => {
+                    e.preventDefault();
+                    const el = document.getElementById('projects');
+                    if (el) {
+                      const y = el.getBoundingClientRect().top + window.scrollY - 100;
+                      window.scrollTo({ top: y, behavior: "smooth" });
+                    }
+                  }}
+                >
+                  <span>View My Work</span>
+                  <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
 
-  {/* About Section */}
-  <section id="about" className="w-full max-w-2xl bg-white/80 dark:bg-[#18181b]/80 rounded-xl shadow p-8 mb-12 panel-hover">
-        <h2 className="text-2xl font-bold mb-4 vs-blue">About Me</h2>
-        <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
-          I’m a <span className="vs-green">Software Engineering</span> student at <span className="vs-purple">Western University</span> passionate about blending hardware and software to build creative, human-focused tech. From VR glove games and wearable cyberpunk-inspired devices to AI-driven wellness apps, I turn ideas into functional, impactful solutions.
-        </p>
-        <div className="flex flex-wrap justify-center gap-6">
-          <a href="mailto:nate.e.espejo@gmail.com" className="flex items-center gap-2 vs-blue hover:underline text-lg"><span>📧</span>Email</a>
-          <a href="https://github.com/HasNate618" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 vs-blue hover:underline text-lg"><span>🐙</span>GitHub</a>
-          <a href="https://linkedin.com/in/nathan-espejo" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 vs-blue hover:underline text-lg"><span>💼</span>LinkedIn</a>
-          <a href="https://devpost.com/nate-e-espejo" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 vs-blue hover:underline text-lg"><span>🧑‍💻</span>Devpost</a>
-        </div>
-      </section>
+        {/* About Section */}
+        <section id="about" className="w-full max-w-4xl mx-auto mb-38">
+          <div className="bg-[#11111a]/80 backdrop-blur rounded-xl border border-gray-600 p-8 shadow-lg">
+            <h2 className="text-3xl font-bold mb-6 text-blue-400">About Me</h2>
+            
+            <div className="space-y-4">
+              <p className="text-gray-300 leading-relaxed text-lg">
+                I'm a <span className="text-green-400 font-semibold">Software Engineering</span> student at <span className="text-purple-400 font-semibold">Western University</span> with strong skills in game development, Android app creation, and hardware prototyping. I enjoy building immersive VR games, crafting intuitive Android apps, and designing wearable devices that merge software with physical interaction.
+              </p>
+              <p className="text-gray-300 leading-relaxed">
+                My multidisciplinary approach blends full-stack development, embedded systems, and artificial intelligence to create technology that feels like a natural extension of the body and mind. Passionate about mental health, accessibility, and ethical design, I'm excited to explore how AI and emerging technologies can shape the future of human-computer interaction.
+              </p>
+            </div>
+          </div>
+        </section>
 
   {/* Skills Section */}
-  <section id="skills" className="w-full max-w-4xl bg-white/90 dark:bg-[#18181b]/90 rounded-xl shadow p-8 mb-12 panel-hover">
-    <h2 className="text-2xl font-bold mb-6 vs-blue flex items-center gap-2">
-      <span>Skills</span>
-      <span className="text-2xl">🛠️</span>
-    </h2>
+  <section id="skills" className="w-full max-w-4xl mx-auto mb-48">
+    <div className="bg-[#11111a]/80 backdrop-blur rounded-xl border border-gray-600 p-8 shadow-lg">
+      <h2 className="text-3xl font-bold mb-6 text-blue-400">Skills</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
-          <div className="flex items-center gap-2 mb-2"><span className="text-blue-500">💻</span><span className="font-semibold">Programming Languages</span></div>
+          <div className="flex items-center gap-2 mb-2"><span className="text-blue-500">💻</span><span className="font-semibold group-blue">Programming Languages</span></div>
           <div className="flex flex-wrap gap-2 mb-4">
-            <span className="badge">Java</span>
-            <span className="badge">C#</span>
-            <span className="badge">Python</span>
-            <span className="badge">JavaScript</span>
-            <span className="badge">C++</span>
-            <span className="badge">Kotlin</span>
-            <span className="badge">SQL</span>
-            <span className="badge">HTML</span>
-            <span className="badge">CSS</span>
-            <span className="badge">XML</span>
+            <span className="badge badge-blue">Java</span>
+            <span className="badge badge-blue">C#</span>
+            <span className="badge badge-blue">Python</span>
+            <span className="badge badge-blue">JavaScript</span>
+            <span className="badge badge-blue">C++</span>
+            <span className="badge badge-blue">Kotlin</span>
+            <span className="badge badge-blue">SQL</span>
+            <span className="badge badge-blue">HTML</span>
+            <span className="badge badge-blue">CSS</span>
+            <span className="badge badge-blue">XML</span>
           </div>
-          <div className="flex items-center gap-2 mb-2"><span className="text-green-600">🧰</span><span className="font-semibold">Tools & Platforms</span></div>
+          <div className="flex items-center gap-2 mb-2"><span className="text-yellow-500">🔗</span><span className="font-semibold group-yellow">APIs & SDKs</span></div>
           <div className="flex flex-wrap gap-2 mb-4">
-            <span className="badge">GitHub</span>
-            <span className="badge">Unity3D</span>
-            <span className="badge">Android Studio</span>
-            <span className="badge">Arduino IDE</span>
-            <span className="badge">React</span>
-            <span className="badge">Blender (3D Modeling)</span>
-            <span className="badge">OnShape (CAD)</span>
-            <span className="badge">MySQL</span>
-            <span className="badge">TensorFlow</span>
+            <span className="badge badge-yellow">OpenAI API</span>
+            <span className="badge badge-yellow">Google Maps API</span>
+            <span className="badge badge-yellow">HERE Maps SDK</span>
+            <span className="badge badge-yellow">JsonBin API</span>
+            <span className="badge badge-yellow">REST APIs</span>
+          </div>
+          <div className="flex items-center gap-2 mb-2"><span className="text-pink-500">🚀</span><span className="font-semibold group-pink">Development Areas</span></div>
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className="badge badge-pink">Full-Stack Development</span>
+            <span className="badge badge-pink">Game Development</span>
+            <span className="badge badge-pink">Virtual Reality</span>
+            <span className="badge badge-pink">AI (CNN, LLMs)</span>
+            <span className="badge badge-pink">Computer Vision</span>
+            <span className="badge badge-pink">Android Development</span>
+            <span className="badge badge-pink">API Integration</span>
+            <span className="badge badge-pink">UI/UX Design Principles</span>
+            <span className="badge badge-pink">Chrome Extensions</span>
           </div>
         </div>
         <div>
-          <div className="flex items-center gap-2 mb-2"><span className="text-yellow-500">🔗</span><span className="font-semibold">APIs & SDKs</span></div>
+          <div className="flex items-center gap-2 mb-2"><span className="text-green-600">🧰</span><span className="font-semibold group-green">Tools & Platforms</span></div>
           <div className="flex flex-wrap gap-2 mb-4">
-            <span className="badge">OpenAI API</span>
-            <span className="badge">Google Maps API</span>
-            <span className="badge">HERE Maps SDK</span>
-            <span className="badge">JsonBin API</span>
-            <span className="badge">REST APIs</span>
+            <span className="badge badge-green">GitHub</span>
+            <span className="badge badge-green">Unity3D</span>
+            <span className="badge badge-green">Android Studio</span>
+            <span className="badge badge-green">Arduino IDE</span>
+            <span className="badge badge-green">React</span>
+            <span className="badge badge-green">Blender (3D Modeling)</span>
+            <span className="badge badge-green">OnShape (CAD)</span>
+            <span className="badge badge-green">MySQL</span>
+            <span className="badge badge-green">TensorFlow</span>
           </div>
-          <div className="flex items-center gap-2 mb-2"><span className="text-orange-500">🔌</span><span className="font-semibold">Hardware & Embedded</span></div>
+          <div className="flex items-center gap-2 mb-2"><span className="text-orange-500">🔌</span><span className="font-semibold group-orange">Hardware & Embedded</span></div>
           <div className="flex flex-wrap gap-2 mb-4">
-            <span className="badge">Arduino</span>
-            <span className="badge">ESP32</span>
-            <span className="badge">3D Printing (Design & Prototyping)</span>
-            <span className="badge">Bluetooth Low Energy (BLE)</span>
+            <span className="badge badge-orange">Arduino</span>
+            <span className="badge badge-orange">ESP32</span>
+            <span className="badge badge-orange">M5Stack</span>
+            <span className="badge badge-orange">3D Printing (Design & Prototyping)</span>
+            <span className="badge badge-orange">Bluetooth Low Energy (BLE)</span>
           </div>
-          <div className="flex items-center gap-2 mb-2"><span className="text-pink-500">🚀</span><span className="font-semibold">Development Areas</span></div>
-          <div className="flex flex-wrap gap-2 mb-4">
-            <span className="badge">Full-Stack Development</span>
-            <span className="badge">Game Development (VR, XR)</span>
-            <span className="badge">AI (CNN, LLMs)</span>
-            <span className="badge">Computer Vision</span>
-            <span className="badge">Mobile App Development (Android)</span>
-            <span className="badge">API Integration</span>
-            <span className="badge">UI/UX Design Principles</span>
-            <span className="badge">Chrome Extensions</span>
-          </div>
-          <div className="flex items-center gap-2 mb-2"><span className="text-gray-500">🤝</span><span className="font-semibold">Professional Skills</span></div>
+          <div className="flex items-center gap-2 mb-2"><span className="text-gray-500">🤝</span><span className="font-semibold group-gray">Professional Skills</span></div>
           <div className="flex flex-wrap gap-2">
-            <span className="badge">Team Collaboration & Agile Workflow</span>
-            <span className="badge">Problem Solving & Rapid Prototyping</span>
-            <span className="badge">Technical Instruction & Mentorship</span>
-            <span className="badge">Project Management</span>
-            <span className="badge">Time Management</span>
+            <span className="badge badge-gray">Team Collaboration & Agile Workflow</span>
+            <span className="badge badge-gray">Problem Solving & Rapid Prototyping</span>
+            <span className="badge badge-gray">Technical Instruction & Mentorship</span>
+            <span className="badge badge-gray">Project Management</span>
+            <span className="badge badge-gray">Time Management</span>
           </div>
         </div>
       </div>
       <style jsx>{`
         .badge {
           display: inline-block;
-          background: rgba(255,255,255,0.08);
-          border: 1px solid #4444;
           border-radius: 9999px;
           padding: 0.25rem 0.75rem;
           font-size: 0.97em;
           font-family: inherit;
           margin-bottom: 0.15rem;
           margin-right: 0.1rem;
+          font-weight: 500;
           transition: background 0.2s, border 0.2s;
         }
+        .badge-blue {
+          background: #60a5fa33; /* lighter blue background */
+          color: #3b82f6;       /* brighter blue text */
+        }
+        .group-blue {
+          color: #3b82f6;
+        }
+        .group-yellow {
+          color: #fbbf24;
+        }
+        .group-pink {
+          color: #f472b6;
+        }
+        .group-green {
+          color: #22c55e;
+        }
+        .group-orange {
+          color: #fb923c;
+        }
+        .group-gray {
+          color: #cbd5e1;
+        }
+        .badge-purple {
+          background: #6d28d922;
+          color: #a78bfa;
+        }
+        .badge-green {
+          background: #16653422;
+          color: #22c55e;
+        }
+        .badge-yellow {
+          background: #f59e0b22;
+          color: #fbbf24;
+        }
+        .badge-orange {
+          background: #ea580c22;
+          color: #fb923c;
+        }
+        .badge-pink {
+          background: #be185d22;
+          color: #f472b6;
+        }
+        .badge-gray {
+          background: #64748b22;
+          color: #cbd5e1;
+        }
         .badge:hover {
-          background: #2563eb22;
-          border-color: #2563eb;
+          filter: brightness(1.15);
+          box-shadow: 0 0 0 2px #2563eb33;
         }
       `}</style>
     <style jsx>{`
@@ -269,15 +385,16 @@ export default function Home() {
         @apply bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1 rounded font-medium;
       }
     `}</style>
+    </div>
   </section>
 
   {/* Projects Section */}
-  <section id="projects" className="w-full max-w-4xl mx-auto mb-16">
-  <h2 className="text-2xl font-bold mb-6 vs-blue">Projects I'm Proud Of</h2>
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <section id="projects" className="w-full max-w-4xl mx-auto mb-32">
+    <h2 className="text-3xl font-bold mb-8 text-blue-400 text-center">Projects I'm Proud Of</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Lumen */}
-    <div className="bg-white/95 dark:bg-[#18181b]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-yellow-400 border-2 relative panel-hover">
-            <span className="absolute top-3 left-3 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10">👑 Hackathon Winner</span>
+    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-yellow-400 border-2 relative">
+            <span className="absolute top-3 left-3 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10">🥇 Hackathon Winner</span>
             <span className="absolute top-3 right-3 bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Game Dev</span>
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <img src="/lumen_card.png" alt="Project 1" className="object-cover rounded-t-lg w-full h-full" style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}} />
@@ -292,8 +409,8 @@ export default function Home() {
             </div>
           </div>
           {/* Careerly */}
-    <div className="bg-white/95 dark:bg-[#18181b]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-yellow-400 border-2 relative panel-hover">
-            <span className="absolute top-3 left-3 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10">👑 Hackathon Winner</span>
+    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-yellow-400 border-2 relative">
+            <span className="absolute top-3 left-3 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10">🥇 Hackathon Winner</span>
             <span className="absolute top-3 right-3 bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Game Dev</span>
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <img src="/careerly_card.jpg" alt="Project 2" className="object-cover rounded-t-lg w-full h-full" style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}} />
@@ -305,7 +422,7 @@ export default function Home() {
             </div>
           </div>
           {/* SafeRoute */}
-    <div className="bg-white/95 dark:bg-[#18181b]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative panel-hover">
+    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative">
             <span className="absolute top-3 right-3 bg-green-100 dark:bg-green-900/60 text-green-700 dark:text-green-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Android</span>
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <img src="/saferoute_card.png" alt="Project 3" className="object-cover rounded-t-lg w-full h-full" style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}} />
@@ -317,7 +434,7 @@ export default function Home() {
             </div>
           </div>
           {/* Animarker */}
-    <div className="bg-white/95 dark:bg-[#18181b]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative panel-hover">
+    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative">
             <span className="absolute top-3 right-3 bg-green-100 dark:bg-green-900/60 text-green-700 dark:text-green-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Android</span>
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <img src="/animarker_card.png" alt="Project 4" className="object-cover rounded-t-lg w-full h-full" style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}} />
@@ -329,7 +446,7 @@ export default function Home() {
             </div>
           </div>
           {/* FLEXFIRE-X */}
-    <div className="bg-white/95 dark:bg-[#18181b]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative panel-hover">
+    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative">
             <span className="absolute top-3 right-3 bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Hardware</span>
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <img src="/flexfire-x_card.png" alt="Project 5" className="object-cover rounded-t-lg w-full h-full" style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}} />
@@ -341,7 +458,7 @@ export default function Home() {
             </div>
           </div>
           {/* Rubber Band Turret */}
-    <div className="bg-white/95 dark:bg-[#18181b]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative panel-hover">
+    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative">
             <span className="absolute top-3 right-3 bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Hardware</span>
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <img src="/turret_card.png" alt="Project 6" className="object-cover rounded-t-lg w-full h-full" style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}} />
@@ -353,18 +470,20 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+  </section>
 
   {/* Mobile Apps Section */}
-  <section id="apps" className="w-full max-w-4xl mx-auto mb-16">
-  <h2 className="text-2xl font-bold mb-6 vs-blue">Mobile Games</h2>
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <section id="apps" className="w-full max-w-4xl mx-auto mb-32">
+    <h2 className="text-3xl font-bold mb-8 text-blue-400 text-center">Mobile Games</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Street Cleaner */}
-          <div className="bg-white/80 dark:bg-[#18181b]/80 rounded-lg shadow p-4 flex flex-row items-center relative panel-hover border border-gray-200 dark:border-gray-700">
-            <img src="/street_cleaner_icon.png" alt="App 1 Icon" className="w-20 h-20 rounded-2xl mr-4 shadow flex-shrink-0" />
+          <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center relative border border-yellow-400 border-2">
+            <img src="/street_cleaner_icon.png" alt="App 1 Icon" className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
             <div className="flex-1 flex flex-col items-start">
-              <span className="mb-2 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10">👑 Hackathon Winner</span>
-              <h3 className="font-semibold text-base mb-1">Street Cleaner</h3>
+              <div className="w-full flex items-center gap-2 mb-1">
+                <h3 className="font-semibold text-lg md:text-xl">Street Cleaner</h3>
+                <span className="ml-auto bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10 border-2 border-yellow-500">🥇</span>
+              </div>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">A fun game for Android users. Fast and engaging.</p>
               <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.StreetCleaner" target="_blank" rel="noopener noreferrer">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" className="h-12 mt-2" />
@@ -372,10 +491,10 @@ export default function Home() {
             </div>
           </div>
           {/* Zenith Tower */}
-          <div className="bg-white/80 dark:bg-[#18181b]/80 rounded-lg shadow p-4 flex flex-row items-center panel-hover border border-gray-200 dark:border-gray-700">
-            <img src="/zenith_tower_icon.png" alt="App 2 Icon" className="w-20 h-20 rounded-2xl mr-4 shadow flex-shrink-0" />
+          <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center border border-gray-200 dark:border-gray-700">
+            <img src="/zenith_tower_icon.png" alt="App 2 Icon" className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
             <div className="flex-1 flex flex-col items-start">
-              <h3 className="font-semibold text-base mb-1">Zenith Tower</h3>
+              <h3 className="font-semibold text-lg md:text-xl mb-1">Zenith Tower</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">A fun game for Android users. Fast and engaging.</p>
               <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.ZenithTower" target="_blank" rel="noopener noreferrer">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" className="h-12 mt-2" />
@@ -383,10 +502,10 @@ export default function Home() {
             </div>
           </div>
           {/* Mōtaru */}
-          <div className="bg-white/80 dark:bg-[#18181b]/80 rounded-lg shadow p-4 flex flex-row items-center panel-hover border border-gray-200 dark:border-gray-700">
-            <img src="/motaru_icon.png" alt="App 3 Icon" className="w-20 h-20 rounded-2xl mr-4 shadow flex-shrink-0" />
+          <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center border border-gray-200 dark:border-gray-700">
+            <img src="/motaru_icon.png" alt="App 3 Icon" className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
             <div className="flex-1 flex flex-col items-start">
-              <h3 className="font-semibold text-base mb-1">Mōtaru</h3>
+              <h3 className="font-semibold text-lg md:text-xl mb-1">Mōtaru</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">A fun game for Android users. Fast and engaging.</p>
               <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.Mtaru" target="_blank" rel="noopener noreferrer">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" className="h-12 mt-2" />
@@ -394,10 +513,10 @@ export default function Home() {
             </div>
           </div>
           {/* Tic Tac Toe Ultimate */}
-          <div className="bg-white/80 dark:bg-[#18181b]/80 rounded-lg shadow p-4 flex flex-row items-center panel-hover border border-gray-200 dark:border-gray-700">
-            <img src="/tttu_icon.png" alt="App 4 Icon" className="w-20 h-20 rounded-2xl mr-4 shadow flex-shrink-0" />
+          <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center border border-gray-200 dark:border-gray-700">
+            <img src="/tttu_icon.png" alt="App 4 Icon" className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
             <div className="flex-1 flex flex-col items-start">
-              <h3 className="font-semibold text-base mb-1">Tic Tac Toe Ultimate</h3>
+              <h3 className="font-semibold text-lg md:text-xl mb-1">Tic Tac Toe Ultimate</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">A fun game for Android users. Fast and engaging.</p>
               <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.TicTacToeUltimate" target="_blank" rel="noopener noreferrer">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" className="h-12 mt-2" />
@@ -405,13 +524,14 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+  </section>
 
   {/* Links Section removed, links are now in About section */}
   {/* Spacer at bottom for centering */}
-  <div className="w-full max-w-7xl h-12 md:h-24 lg:h-32 flex-shrink-0" />
+  <div className="w-full max-w-7xl h-12 md:h-24 lg:h-24 flex-shrink-0" />
 
-      <footer className="text-gray-500 text-sm mt-8">&copy; {new Date().getFullYear()} Nathan Espejo. All rights reserved.</footer>
-    </main>
-  );
+  <footer className="text-gray-500 text-sm mt-8">&copy; {new Date().getFullYear()} Nathan Espejo. All rights reserved.</footer>
+  </div>
+</main>
+);
 }
