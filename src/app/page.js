@@ -94,15 +94,26 @@ export default function Home() {
     const handleScroll = () => {
       let current = "about";
       let minDist = Infinity;
-      const center = window.innerHeight / 2;
+      const headerHeight = 80; // Account for fixed header
+      const triggerPoint = headerHeight + 100; // Point where section becomes active
+      
       for (const { id } of sections) {
         const el = document.getElementById(id);
         if (el) {
           const rect = el.getBoundingClientRect();
-          const sectionCenter = rect.top + rect.height / 2;
-          const dist = Math.abs(center - sectionCenter);
-          if (dist < minDist) {
-            minDist = dist;
+          const sectionTop = rect.top;
+          const sectionBottom = rect.bottom;
+          
+          // Section is active if it's in the viewport accounting for header
+          if (sectionTop <= triggerPoint && sectionBottom > triggerPoint) {
+            current = id;
+            break;
+          }
+          
+          // Fallback: find closest section to trigger point
+          const distToTop = Math.abs(sectionTop - triggerPoint);
+          if (distToTop < minDist) {
+            minDist = distToTop;
             current = id;
           }
         }
@@ -148,9 +159,10 @@ export default function Home() {
                       e.preventDefault();
                       const el = document.getElementById(id);
                       if (el) {
-                        const y =
-                          el.getBoundingClientRect().top + window.scrollY - window.innerHeight / 2 + el.offsetHeight / 2;
-                        window.scrollTo({ top: y, behavior: "smooth" });
+                        const headerHeight = 80; // Account for fixed header
+                        const offset = 20; // Additional offset for better positioning
+                        const y = el.getBoundingClientRect().top + window.scrollY - headerHeight - offset;
+                        window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
                       }
                     }}
                   >
@@ -230,8 +242,10 @@ export default function Home() {
                     e.preventDefault();
                     const el = document.getElementById('projects');
                     if (el) {
-                      const y = el.getBoundingClientRect().top + window.scrollY - 100;
-                      window.scrollTo({ top: y, behavior: "smooth" });
+                      const headerHeight = 80; // Account for fixed header
+                      const offset = 20; // Additional offset for better positioning
+                      const y = el.getBoundingClientRect().top + window.scrollY - headerHeight - offset;
+                      window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
                     }
                   }}
                 >
@@ -453,7 +467,7 @@ export default function Home() {
               <h3 className="font-semibold text-lg mb-2">Lumen</h3>
               <p className="text-gray-600 dark:text-gray-400 flex-1">A calming companion that listens, understands, and responds with personalized mini-games.</p>
                 <div className="mt-4 flex flex-row gap-6">
-                  <a href="https://llumen.netlify.app/" target="_blank" rel="noopener noreferrer" className="text-green-600 dark:text-green-400 hover:underline underline-offset-2 transition">&gt; Live Demo</a>
+                  <a href="https://llumen.netlify.app/" target="_blank" rel="noopener noreferrer" className="hidden sm:inline text-green-600 dark:text-green-400 hover:underline underline-offset-2 transition">&gt; Live Demo</a>
                   <a href="https://devpost.com/software/lumen-qsgcn4" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; Devpost</a>
                   <a href="https://github.com/Dawgsrlife/lumen" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>
                 </div>
@@ -539,7 +553,10 @@ export default function Home() {
             <Image src="/street_cleaner_icon.png" alt="App 1 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-3xl mr-4 shadow flex-shrink-0" style={{borderRadius: '30%'}} />
             <div className="flex-1 flex flex-col items-start">
               <div className="w-full flex items-center gap-2 mb-1">
-                <h3 className="font-semibold text-lg md:text-xl">Street Cleaner</h3>
+                <h3 className="font-semibold text-lg md:text-xl">
+                  <span className="md:hidden">Street Cleaner</span>
+                  <span className="hidden md:inline">Street Cleaner&nbsp;</span>
+                </h3>
                 <span className="bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-full flex items-center">🥇</span>
               </div>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Drag litter into the correct bin to win!</p>
