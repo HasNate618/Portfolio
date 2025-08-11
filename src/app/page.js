@@ -162,14 +162,14 @@ export default function Home() {
               {/* Desktop Resume Download Button */}
               <div className="hidden sm:block ml-4">
                 <a
-                  href="/resume.pdf"
-                  download="Nathan_Espejo_Resume.pdf"
+                  href="/Nathan_Espejo_Resume.pdf"
+                  target="_blank" rel="noopener noreferrer"
                   className="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors shadow-sm"
                 >
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-                  Resume
+                  View Resume
                 </a>
               </div>
             </div>
@@ -244,8 +244,8 @@ export default function Home() {
                 {/* Mobile Resume Download Button */}
                 <div className="sm:hidden">
                   <a
-                    href="/resume.pdf"
-                    download="Nathan_Espejo_Resume.pdf"
+                    href="/Nathan_Espejo_Resume.pdf"
+                    target="_blank" rel="noopener noreferrer"
                     className="inline-flex items-center px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl w-[220px] justify-center"
                   >
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -276,7 +276,7 @@ export default function Home() {
         </section>
 
   {/* Skills Section */}
-  <section id="skills" className="w-full max-w-4xl mx-auto mb-16 sm:mb-48">
+  <section id="skills" className="w-full max-w-4xl mx-auto mb-16 sm:mb-40">
     <div className="bg-[#11111a]/80 backdrop-blur rounded-xl border border-gray-600 p-6 sm:p-8 shadow-lg">
       <h2 className="text-3xl font-bold mb-6 text-blue-400">Skills</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -437,7 +437,10 @@ export default function Home() {
 
   {/* Projects Section */}
   <section id="projects" className="w-full max-w-4xl mx-auto mb-16 sm:mb-32">
-    <h2 className="text-3xl font-bold mb-6 sm:mb-8 text-blue-400 text-center">Projects I&apos;m Proud Of</h2>
+     <h2 className="text-3xl font-bold mb-6 sm:mb-8 text-blue-400 text-center">
+      <span className="sm:hidden">Projects</span>
+      <span className="hidden sm:inline">Projects I&apos;m Proud Of</span>
+    </h2>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           {/* Lumen */}
     <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-yellow-400 border-2 relative">
@@ -477,7 +480,7 @@ export default function Home() {
             <div className="p-6 flex flex-col flex-1">
               <h3 className="font-semibold text-lg mb-2">SafeRoute</h3>
               <p className="text-gray-600 dark:text-gray-400 flex-1">A real-time hazard reporting app with crowdsourced data, drone integration, and safe routing.</p>
-              <a href="https://github.com/HasNate618/SafeRoute" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>
+              <a href="https://github.com/HasNate618/SafeRoute" target="_blank" rel="noopener noreferrer" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>
             </div>
           </div>
           {/* Animarker */}
@@ -489,7 +492,7 @@ export default function Home() {
             <div className="p-6 flex flex-col flex-1">
               <h3 className="font-semibold text-lg mb-2">Animarker</h3>
               <p className="text-gray-600 dark:text-gray-400 flex-1">A crowdsourced wildlife tracker using computer vision to identify and map animal sightings worldwide.</p>
-              <a href="https://devpost.com/software/endangered-animal-app" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline">&gt; Devpost</a>
+              <a href="https://devpost.com/software/endangered-animal-app" target="_blank" rel="noopener noreferrer" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline">&gt; Devpost</a>
             </div>
           </div>
           {/* FLEXFIRE-X */}
@@ -501,7 +504,7 @@ export default function Home() {
             <div className="p-6 flex flex-col flex-1">
               <h3 className="font-semibold text-lg mb-2">FLEXFIRE-X</h3>
               <p className="text-gray-600 dark:text-gray-400 flex-1">A muscle activated wearable projectile launcher inspired by cyberpunk tech.</p>
-              <a href="https://github.com/HasNate618/FLEXFIRE-X" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline">&gt; GitHub</a>
+              <a href="https://github.com/HasNate618/FLEXFIRE-X" target="_blank" rel="noopener noreferrer" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline">&gt; GitHub</a>
             </div>
           </div>
           {/* Rubber Band Turret */}
@@ -513,7 +516,7 @@ export default function Home() {
             <div className="p-6 flex flex-col flex-1">
               <h3 className="font-semibold text-lg mb-2">Rubber Band Turret</h3>
               <p className="text-gray-600 dark:text-gray-400 flex-1">Bluetooth-controlled rubber band turret with smooth servo movement and wireless app control.</p>
-              <a href="https://github.com/HasNate618/Rubber-Band-Turret" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline">&gt; GitHub</a>
+              <a href="https://github.com/HasNate618/Rubber-Band-Turret" target="_blank" rel="noopener noreferrer" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline">&gt; GitHub</a>
             </div>
           </div>
         </div>
