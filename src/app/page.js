@@ -443,8 +443,8 @@ export default function Home() {
     </h2>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           {/* Lumen */}
-    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-yellow-400 border-2 relative">
-            <span className="absolute top-3 left-3 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10">🥇 Hackathon Winner</span>
+    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-400/20 transition-all duration-300 cursor-pointer hover:border-blue-300 hover:border-2">
+            <span className="absolute top-3 left-3 bg-yellow-400/80 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10">🥇 Hackathon Winner</span>
             <span className="absolute top-3 right-3 bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Game Dev</span>
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <Image src="/lumen_card.png" alt="Lumen Project" fill className="object-cover rounded-t-lg" />
@@ -455,12 +455,13 @@ export default function Home() {
                 <div className="mt-4 flex flex-row gap-6">
                   <a href="https://llumen.netlify.app/" target="_blank" rel="noopener noreferrer" className="text-green-600 dark:text-green-400 hover:underline underline-offset-2 transition">&gt; Live Demo</a>
                   <a href="https://devpost.com/software/lumen-qsgcn4" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; Devpost</a>
+                  <a href="https://github.com/Dawgsrlife/lumen" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>
                 </div>
             </div>
           </div>
           {/* Careerly */}
-    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-yellow-400 border-2 relative">
-            <span className="absolute top-3 left-3 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10">🥇 Hackathon Winner</span>
+    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-400/20 transition-all duration-300 cursor-pointer hover:border-blue-300 hover:border-2">
+            <span className="absolute top-3 left-3 bg-yellow-400/80 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10">🥇 Hackathon Winner</span>
             <span className="absolute top-3 right-3 bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Game Dev</span>
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <Image src="/careerly_card.jpg" alt="Project 2" fill className="object-cover rounded-t-lg" />
@@ -468,11 +469,14 @@ export default function Home() {
             <div className="p-6 flex flex-col flex-1">
               <h3 className="font-semibold text-lg mb-2">Careerly</h3>
               <p className="text-gray-600 dark:text-gray-400 flex-1">Making career exploration fun and inclusive through an AI-powered virtual job fair.</p>
-              <a href="https://devpost.com/software/career-fair-xz0f67" target="_blank" rel="noopener noreferrer" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; Devpost</a>
+              <div className="mt-4 flex flex-row gap-6">
+                <a href="https://devpost.com/software/career-fair-xz0f67" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; Devpost</a>
+                <a href="https://github.com/she11fish/careerly" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>
+              </div>
             </div>
           </div>
           {/* SafeRoute */}
-    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative">
+    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-green-400/20 transition-all duration-300 cursor-pointer hover:border-green-300 hover:border-2">
             <span className="absolute top-3 right-3 bg-green-100 dark:bg-green-900/60 text-green-700 dark:text-green-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Android</span>
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <Image src="/saferoute_card.png" alt="Project 3" fill className="object-cover rounded-t-lg" />
@@ -484,7 +488,7 @@ export default function Home() {
             </div>
           </div>
           {/* Animarker */}
-    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative">
+    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-green-400/20 transition-all duration-300 cursor-pointer hover:border-green-300 hover:border-2">
             <span className="absolute top-3 right-3 bg-green-100 dark:bg-green-900/60 text-green-700 dark:text-green-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Android</span>
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <Image src="/animarker_card.png" alt="Project 4" fill className="object-cover rounded-t-lg" />
@@ -492,23 +496,27 @@ export default function Home() {
             <div className="p-6 flex flex-col flex-1">
               <h3 className="font-semibold text-lg mb-2">Animarker</h3>
               <p className="text-gray-600 dark:text-gray-400 flex-1">A crowdsourced wildlife tracker using computer vision to identify and map animal sightings worldwide.</p>
-              <a href="https://devpost.com/software/endangered-animal-app" target="_blank" rel="noopener noreferrer" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline">&gt; Devpost</a>
+              <div className="mt-4 flex flex-row gap-6">
+                <a href="https://devpost.com/software/endangered-animal-app" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">&gt; Devpost</a>
+                <a href="https://github.com/HasNate618/Animarker" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>
+              </div>
             </div>
           </div>
           {/* FLEXFIRE-X */}
-    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative">
+              {/* FLEXFIRE-X */}
+    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-400/20 transition-all duration-300 cursor-pointer hover:border-purple-300 hover:border-2">
             <span className="absolute top-3 right-3 bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Hardware</span>
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <Image src="/flexfire-x_card.png" alt="Project 5" fill className="object-cover rounded-t-lg" />
             </div>
             <div className="p-6 flex flex-col flex-1">
               <h3 className="font-semibold text-lg mb-2">FLEXFIRE-X</h3>
-              <p className="text-gray-600 dark:text-gray-400 flex-1">A muscle activated wearable projectile launcher inspired by cyberpunk tech.</p>
+              <p className="text-gray-600 dark:text-gray-400 flex-1">A collaborative robot platform with adaptive mechanics for versatile autonomous mission execution.</p>
               <a href="https://github.com/HasNate618/FLEXFIRE-X" target="_blank" rel="noopener noreferrer" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline">&gt; GitHub</a>
             </div>
           </div>
           {/* Rubber Band Turret */}
-    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative">
+    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-400/20 transition-all duration-300 cursor-pointer hover:border-purple-300 hover:border-2">
             <span className="absolute top-3 right-3 bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Hardware</span>
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <Image src="/turret_card.png" alt="Project 6" fill className="object-cover rounded-t-lg" />
@@ -527,22 +535,29 @@ export default function Home() {
     <h2 className="text-3xl font-bold mb-6 sm:mb-8 text-blue-400 text-center">Mobile Games</h2>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           {/* Street Cleaner */}
-          <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center relative border border-yellow-400 border-2">
-            <Image src="/street_cleaner_icon.png" alt="App 1 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
+          <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center relative border border-gray-200 dark:border-gray-700 hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-yellow-400/20 transition-all duration-300 cursor-pointer hover:border-yellow-300 hover:border-2">
+            <Image src="/street_cleaner_icon.png" alt="App 1 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-3xl mr-4 shadow flex-shrink-0" style={{borderRadius: '30%'}} />
             <div className="flex-1 flex flex-col items-start">
               <div className="w-full flex items-center gap-2 mb-1">
                 <h3 className="font-semibold text-lg md:text-xl">Street Cleaner</h3>
-                <span className="ml-auto bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10 border-2 border-yellow-500">🥇</span>
+                <span className="bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-full flex items-center">🥇</span>
               </div>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Drag litter into the correct bin to win!</p>
-              <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.StreetCleaner" target="_blank" rel="noopener noreferrer">
-                <Image src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" width={140} height={48} className="h-12 mt-2" />
-              </a>
+              <div className="flex flex-row gap-4 items-center mt-2">
+                <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.StreetCleaner" target="_blank" rel="noopener noreferrer">
+                  <Image src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" width={140} height={48} className="h-12" />
+                </a>
+                <a href="https://devpost.com/software/street-cleaner" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
+                  <svg className="w-5 h-5 text-gray-200" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M6.002 1.61L0 12.004L6.002 22.39h11.996L24 12.004L17.998 1.61H6.002zm1.593 4.084h3.947c3.605 0 6.276 1.695 6.276 6.31c0 4.436-3.21 6.302-6.456 6.302H7.595V5.694zm2.517 2.449v7.714h1.241c2.646 0 3.862-1.55 3.862-3.861.009-2.569-1.096-3.853-3.767-3.853H10.112z"/>
+                  </svg>
+                </a>
+              </div>
             </div>
           </div>
           {/* Zenith Tower */}
-          <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center border border-gray-200 dark:border-gray-700">
-            <Image src="/zenith_tower_icon.png" alt="App 2 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
+          <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center border border-gray-200 dark:border-gray-700 hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-400/20 transition-all duration-300 cursor-pointer hover:border-blue-400 hover:border-2">
+            <Image src="/zenith_tower_icon.png" alt="App 2 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-3xl mr-4 shadow flex-shrink-0" style={{borderRadius: '30%'}} />
             <div className="flex-1 flex flex-col items-start">
               <h3 className="font-semibold text-lg md:text-xl mb-1">Zenith Tower</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Ascend the tower in a futuristic dungeon crawler.</p>
@@ -552,8 +567,8 @@ export default function Home() {
             </div>
           </div>
           {/* Mōtaru */}
-          <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center border border-gray-200 dark:border-gray-700">
-            <Image src="/motaru_icon.png" alt="App 3 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
+          <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center border border-gray-200 dark:border-gray-700 hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-400/20 transition-all duration-300 cursor-pointer hover:border-blue-400 hover:border-2">
+            <Image src="/motaru_icon.png" alt="App 3 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-3xl mr-4 shadow flex-shrink-0" style={{borderRadius: '30%'}} />
             <div className="flex-1 flex flex-col items-start">
               <h3 className="font-semibold text-lg md:text-xl mb-1">Mōtaru</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Take down ninjas using quick reflexes!</p>
@@ -563,8 +578,8 @@ export default function Home() {
             </div>
           </div>
           {/* Tic Tac Toe Ultimate */}
-          <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center border border-gray-200 dark:border-gray-700">
-            <Image src="/tttu_icon.png" alt="App 4 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-2xl mr-4 shadow flex-shrink-0" />
+          <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center border border-gray-200 dark:border-gray-700 hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-400/20 transition-all duration-300 cursor-pointer hover:border-blue-400 hover:border-2">
+            <Image src="/tttu_icon.png" alt="App 4 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-3xl mr-4 shadow flex-shrink-0" style={{borderRadius: '30%'}} />
             <div className="flex-1 flex flex-col items-start">
               <h3 className="font-semibold text-lg md:text-xl mb-1">Tic Tac Toe Ultimate</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">The Ultimate Tic Tac Toe experience.</p>
