@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { Analytics } from '@vercel/analytics/next';
 
 // Typewriter animation for developer titles
 const TITLES = [
@@ -135,7 +136,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#11111a] text-white relative overflow-hidden">
-      
+      <Analytics />
       {/* Glowing cursor follower */}
       <div
         className="cursor-glow"
