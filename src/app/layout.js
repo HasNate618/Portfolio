@@ -1,6 +1,7 @@
 // Remove "use client" if you do not need client-side logic in the layout
 import { Geist } from "next/font/google";
 import { JetBrains_Mono } from "next/font/google";
+import { Analytics } from '@vercel/analytics/next';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -33,6 +34,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${geistSans.variable} ${jetbrainsMono.variable} antialiased`}>
         {children}
+        <Analytics />
       </body>
     </html>
   );
