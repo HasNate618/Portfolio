@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Analytics } from '@vercel/analytics/next';
+import ThreeModel from "../components/ThreeModel";
 
 // Typewriter animation for developer titles
 const TITLES = [
@@ -143,6 +144,16 @@ export default function Home() {
         style={{ left: cursor.x, top: cursor.y, zIndex: 0, position: 'fixed', pointerEvents: 'none' }}
         aria-hidden="true"
       />
+      
+      {/* 3D model that spins when clicked (desktop only) */}
+      <ThreeModel 
+        className="w-[400px] h-[400px]"
+        modelUrl="/models/model.glb" 
+        modelScale={3}
+        modelPosition={[0, -5, 0]}
+        modelRotation={[0, Math.PI/4, 0]}
+        transparent={true}
+      />
 
       <div className="relative z-10 flex flex-col items-center px-4">
         {/* Enhanced Header with Navigation */}
@@ -275,8 +286,8 @@ export default function Home() {
         </section>
 
         {/* About Section */}
-        <section id="about" className="w-full max-w-4xl mx-auto mb-16 sm:mb-38">
-          <div className="bg-[#11111a]/80 backdrop-blur rounded-xl border border-gray-600 p-6 sm:p-8 shadow-lg">
+        <section id="about" className="w-full max-w-4xl mx-auto mb-16 sm:mb-38 relative">
+          <div className="bg-[#11111a]/80 backdrop-blur rounded-xl border border-gray-600 p-6 sm:p-8 shadow-lg relative">
             <h2 className="text-3xl font-bold mb-6 text-blue-400">About Me</h2>
             
             <div className="space-y-4">
@@ -291,7 +302,7 @@ export default function Home() {
         </section>
 
   {/* Skills Section */}
-  <section id="skills" className="w-full max-w-4xl mx-auto mb-16 sm:mb-40">
+  <section id="skills" className="w-full max-w-4xl mx-auto mb-16 sm:mb-40 relative">
     <div className="bg-[#11111a]/80 backdrop-blur rounded-xl border border-gray-600 p-6 sm:p-8 shadow-lg">
       <h2 className="text-3xl font-bold mb-6 text-blue-400">Skills</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

@@ -17,6 +17,23 @@
   opacity: 0.6;
 }
 
+/* 3D Model container styling */
+.three-model-container canvas {
+  cursor: pointer;
+}
+
+/* Add a subtle glow when hovering over the model */
+.three-model-container:hover canvas {
+  box-shadow: 0 0 15px 5px rgba(59, 130, 246, 0.3); /* blue glow */
+}
+
+/* Only show on desktop (LG breakpoint and above) */
+@media (max-width: 1023px) {
+  .three-model-container {
+    display: none !important;
+  }
+}
+
 .typewriter {
   display: inline-block;
   white-space: nowrap;
