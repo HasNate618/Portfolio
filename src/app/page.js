@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Analytics } from '@vercel/analytics/next';
 import ThreeModel from "../components/ThreeModel";
+import dynamic from 'next/dynamic';
+const DynamicUnity = dynamic(() => import('../components/UnityEmbed').then(m => m.default), { ssr: false });
 
 // Typewriter animation for developer titles
 const TITLES = [
@@ -91,6 +93,8 @@ const sections = [
 export default function Home() {
   const [activeTab, setActiveTab] = useState("about");
   const sectionRefs = useRef({});
+  const [showThreeModel, setShowThreeModel] = useState(true);
+  const [modelDroppedOnUnity, setModelDroppedOnUnity] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -145,7 +149,7 @@ export default function Home() {
         aria-hidden="true"
       />
       
-      {/* 3D model that spins when clicked (desktop only) */}
+      {/* 3D model that can be dragged into Unity */}
       <ThreeModel 
         className="w-[400px] h-[400px]"
         modelUrl="/models/model.glb" 
@@ -153,6 +157,11 @@ export default function Home() {
         modelPosition={[0, -5, 0]}
         modelRotation={[0, Math.PI/4, 0]}
         transparent={true}
+        visible={showThreeModel}
+        onDropOnUnity={() => {
+          setShowThreeModel(false);
+          setModelDroppedOnUnity(true);
+        }}
       />
 
       <div className="relative z-10 flex flex-col items-center px-4">
@@ -623,6 +632,30 @@ export default function Home() {
   {/* Links Section removed, links are now in About section */}
   {/* Spacer at bottom for centering */}
   <div className="w-full max-w-7xl h-8 sm:h-12 md:h-24 lg:h-24 flex-shrink-0" />
+
+  {/* Unity Interactive Section */}
+  <section id="unity" className="w-full max-w-4xl mx-auto mb-20">
+    <h2 className="text-3xl font-bold mb-6 text-blue-400 text-center">Interactive Demo</h2>
+    <p className="text-center text-gray-400 mb-4 text-sm hidden sm:block">Drag the 3D robot into the game below to start! (Desktop only)</p>
+    <div className="rounded-xl border border-gray-700 bg-[#11111a]/80 p-4 shadow-lg">
+      {/* Lazy dynamic import note: for now we statically import */}
+      {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+      <DynamicUnity 
+        buildName="build"            /* Folder under /public/unity (you rebuilt with /unity/build) */
+        buildSubPath=""              /* No nested Build/ folder now */
+        fileBase="build"             /* Base filename: build.loader.js, build.data, etc. */
+        compression="none"           /* Rebuilt uncompressed */
+        height={540}
+        style={{ background: '#000', borderRadius: '0.75rem' }}
+        startButtonText="Drag the 3D model here to begin!"
+        modelDropped={modelDroppedOnUnity}
+        onDropEffectComplete={() => {
+          // You could add additional effects or actions here
+        }}
+      />
+      <p className="mt-3 text-xs text-gray-500 text-center">Build files expected at /public/unity/build/ (loader, data, framework.js, wasm)</p>
+    </div>
+  </section>
 
   <footer className="text-gray-500 text-sm mt-4 sm:mt-8">&copy; {new Date().getFullYear()} Nathan Espejo. All rights reserved.</footer>
   </div>

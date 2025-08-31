@@ -207,7 +207,9 @@ function ThreeModel({
   modelPosition = [0, 0, 0],
   modelRotation = [0, 0, 0],
   cameraPosition = [0, 0, 5],
-  style = {}
+  style = {},
+  onDropOnUnity = () => {},
+  visible = true
 }) {
   // State for animation and movement
   const [isPlayingAnimation, setIsPlayingAnimation] = useState(false);
@@ -223,6 +225,7 @@ function ThreeModel({
   // Drag state
   const [isDragging, setIsDragging] = useState(false);
   const dragOffsetRef = useRef({ x: 0, y: 0 });
+  const [isOverUnity, setIsOverUnity] = useState(false);
   
   // Desktop only check
   const [isDesktop, setIsDesktop] = useState(true);
@@ -326,6 +329,9 @@ function ThreeModel({
     y: targetPosition.y - currentPosition.y
   };
 
+  // Don't render if not visible
+  if (!isDesktop || !visible) return null;
+
   return (
     <div 
       ref={modelRef}
@@ -338,7 +344,8 @@ function ThreeModel({
         transform: 'translate(-50%, -50%)',
         zIndex: 30,
         transition: 'none', // We handle movement manually for smoother control
-        cursor: isDragging ? 'grabbing' : 'grab'
+        cursor: isDragging ? 'grabbing' : 'grab',
+        // No opacity change when over Unity
       }}
       onPointerDown={(e) => {
         e.preventDefault();
@@ -361,13 +368,57 @@ function ThreeModel({
             // clientX/clientY are viewport coords; our currentPosition uses document coords
             // Add current scroll offset to Y so dragging while scrolled keeps correct position
             const scrollY = window.scrollY || 0;
+            
+            // Check if cursor is over the Unity section
+            const unitySection = document.getElementById('unity');
+            if (unitySection) {
+              const unityRect = unitySection.getBoundingClientRect();
+              const isOver = 
+                clientX >= unityRect.left && 
+                clientX <= unityRect.right &&
+                clientY >= unityRect.top && 
+                clientY <= unityRect.bottom;
+              
+              setIsOverUnity(isOver);
+            }
+            
             setCurrentPosition(prev => ({
               x: clientX - dragOffsetRef.current.x,
               y: clientY - dragOffsetRef.current.y + scrollY
             }));
           }}
-          onUp={() => {
+          onUp={(clientX, clientY) => {
+            // Check if we should start the Unity game
+            const unitySection = document.getElementById('unity');
+            if (unitySection && isOverUnity) {
+              const unityRect = unitySection.getBoundingClientRect();
+              // Double-check we're over Unity
+              if (
+                clientX >= unityRect.left && 
+                clientX <= unityRect.right &&
+                clientY >= unityRect.top && 
+                clientY <= unityRect.bottom
+              ) {
+                // Play the attack animation and shrink for dramatic effect
+                setIsPlayingAnimation(true);
+                
+                // Add shrinking animation to the model element
+                const modelElement = modelRef.current;
+                if (modelElement) {
+                  modelElement.style.transition = "transform 0.5s ease-in";
+                  modelElement.style.transform = "translate(-50%, -50%) scale(0.2)";
+                }
+                
+                setTimeout(() => {
+                  // Notify parent that model was dropped on Unity
+                  onDropOnUnity();
+                }, 500); // Short delay to let animation start
+                return;
+              }
+            }
+            
             setIsDragging(false);
+            setIsOverUnity(false);
             // After releasing, allow auto movement back to target
             setHasArrived(false);
           }}
@@ -441,7 +492,7 @@ export default ThreeModel;
 function DragListeners({ onMove, onUp }) {
   useEffect(() => {
     const handleMove = (e) => onMove(e.clientX, e.clientY);
-    const handleUp = () => onUp();
+    const handleUp = (e) => onUp(e.clientX, e.clientY);
     window.addEventListener('pointermove', handleMove);
     window.addEventListener('pointerup', handleUp, { once: true });
     window.addEventListener('pointerleave', handleUp, { once: true });
