@@ -8,14 +8,16 @@ import * as THREE from 'three';
 // Configuration constants for easy modification
 const MOVEMENT_CONFIG = {
   MOVEMENT_SPEED: 0.03, // Slower movement speed (lower = slower)
-  LERP_SPEED: 0.03, // How smoothly the model rotates/moves
+  LERP_SPEED: 0.05, // How smoothly the model rotates/moves
   ROTATION_SPEED: 0.2, // Base rotation speed
   SPIN_SPEED: 3, // Speed when clicked
   TARGET_SCREEN_X_PERCENT: 0.9, // 90% from left edge
   TARGET_SCREEN_Y_PERCENT: 0.5, // 50% from top (middle)
   INITIAL_Y: 300, // Initial Y position in document
   INITIAL_X: 100, // Initial X position
-  MOVEMENT_THRESHOLD: 50 // Distance threshold to consider "arrived"
+  MOVEMENT_THRESHOLD: 20, // Distance threshold to consider "arrived"
+  HORIZONTAL_ROTATE_INTENSITY: 0.004, // left/right turn intensity
+  VERTICAL_ROTATE_INTENSITY: 0.03 // up tilt intensity
 };
 
 function Model({ 
@@ -125,49 +127,69 @@ function Model({
       // Determine behavior based on movement state
       if (isMoving && !hasArrived) {
         // Look towards target while moving
-        const targetRotationY = Math.atan2(targetDirection.x, targetDirection.y);
-        const targetRotationX = targetDirection.y * 0.001; // Slight tilt based on Y direction
-        
+        // Calculate speed in each direction
+        const speedX = Math.abs(targetDirection.x * MOVEMENT_CONFIG.MOVEMENT_SPEED);
+        const speedY = Math.abs(targetDirection.y * MOVEMENT_CONFIG.MOVEMENT_SPEED);
+
+        // Face left/right when moving horizontally, tilt up/down when moving vertically
+        let targetRotationY = 0;
+        let targetRotationX = 0;
+
+        // Horizontal movement: face left/right, amount depends on speed
+        if (Math.abs(targetDirection.x) > Math.abs(targetDirection.y)) {
+          // The more speed, the more it rotates left/right (max 45deg)
+          const maxY = Math.PI / 4; // 45deg
+          targetRotationY = Math.max(-maxY, Math.min(maxY, targetDirection.x * MOVEMENT_CONFIG.HORIZONTAL_ROTATE_INTENSITY * speedX));
+        }
+
+        // Vertical movement: tilt up/down, amount depends on speed
+        if (targetDirection.y < -10) { // Moving up
+          // Tilt upwards more strongly with speed (max 30deg)
+          const maxUp = Math.PI / 6;
+          targetRotationX = -Math.min(Math.abs(targetDirection.y * MOVEMENT_CONFIG.VERTICAL_ROTATE_INTENSITY * speedY), maxUp);
+        } else if (targetDirection.y > 10) { // Moving down
+          // Tilt downwards with speed (max 20deg)
+          const maxDown = Math.PI / 6;
+          targetRotationX = Math.min(targetDirection.y * MOVEMENT_CONFIG.VERTICAL_ROTATE_INTENSITY * speedY, maxDown);
+        } else {
+          // Slight tilt based on Y direction otherwise
+          targetRotationX = targetDirection.y * 0.001;
+        }
+
         group.current.rotation.y = THREE.MathUtils.lerp(
           group.current.rotation.y,
           targetRotationY,
           MOVEMENT_CONFIG.LERP_SPEED
         );
-        
+
         group.current.rotation.x = THREE.MathUtils.lerp(
           group.current.rotation.x,
           targetRotationX,
           MOVEMENT_CONFIG.LERP_SPEED
         );
-        
+
         group.current.rotation.z = THREE.MathUtils.lerp(
           group.current.rotation.z,
-          Math.sin(targetRotationY) * 0.1,
+          0,
           MOVEMENT_CONFIG.LERP_SPEED
         );
       } else if (hasArrived) {
         // Return to normal rotation after arriving
-        group.current.rotation.x = THREE.MathUtils.lerp(
-          group.current.rotation.x,
-          0,
-          MOVEMENT_CONFIG.LERP_SPEED
-        );
-        
-        group.current.rotation.z = THREE.MathUtils.lerp(
-          group.current.rotation.z,
-          0,
-          MOVEMENT_CONFIG.LERP_SPEED
-        );
-        
-        // Gentle continuous rotation when arrived - REMOVED for better UX
-        // if (!isPlayingAnimation) {
-        //   group.current.rotation.y += delta * MOVEMENT_CONFIG.ROTATION_SPEED;
-        // }
-      } else {
-        // Default gentle rotation when not moving - REMOVED for better UX
-        // if (!isPlayingAnimation) {
-        //   group.current.rotation.y += delta * MOVEMENT_CONFIG.ROTATION_SPEED;
-        // }
+          group.current.rotation.x = THREE.MathUtils.lerp(
+            group.current.rotation.x,
+            0,
+            MOVEMENT_CONFIG.LERP_SPEED
+          );
+          group.current.rotation.y = THREE.MathUtils.lerp(
+            group.current.rotation.y,
+            0,
+            MOVEMENT_CONFIG.LERP_SPEED
+          );
+          group.current.rotation.z = THREE.MathUtils.lerp(
+            group.current.rotation.z,
+            0,
+            MOVEMENT_CONFIG.LERP_SPEED
+          );
       }
       
       // Hover effect - slight floating
