@@ -7,10 +7,11 @@ import * as THREE from 'three';
 
 // Configuration constants for easy modification
 const MOVEMENT_CONFIG = {
-  MOVEMENT_SPEED: 0.03, // Slower movement speed (lower = slower)
+  MOVEMENT_SPEED: 0.05, // Slower movement speed (lower = slower)
   LERP_SPEED: 0.05, // How smoothly the model rotates/moves
   ROTATION_SPEED: 0.2, // Base rotation speed
   SPIN_SPEED: 3, // Speed when clicked
+  MIN_MOVEMENT_STEP: 4, // Minimum pixels to move per tick when lerping
   TARGET_SCREEN_X_PERCENT: 0.9, // 90% from left edge
   TARGET_SCREEN_Y_PERCENT: 0.5, // 50% from top (middle)
   INITIAL_Y: 300, // Initial Y position in document
@@ -82,7 +83,7 @@ function Model({
       Object.values(actions).forEach(action => action.stop());
       
       // Play Robot6Attack1 when clicked
-      let animationToPlay = 'Robot6Attack1';
+      let animationToPlay = 'Robot4Attack';
       
       // Fallback to first animation if Robot6Attack1 doesn't exist
       if (!actions[animationToPlay]) {
@@ -264,27 +265,91 @@ function ThreeModel({
   
   // Handle scroll to update model position and movement logic
   useEffect(() => {
-    const handleScroll = () => {
-      if (typeof window !== 'undefined') {
-        const scrollTop = window.scrollY;
-        setScrollY(scrollTop);
-        
-        // Calculate target position based on screen
-        const targetScreenX = window.innerWidth * MOVEMENT_CONFIG.TARGET_SCREEN_X_PERCENT;
-        const targetScreenY = window.innerHeight * MOVEMENT_CONFIG.TARGET_SCREEN_Y_PERCENT;
-        
-        // Convert screen position to document position
-        const targetDocumentY = scrollTop + targetScreenY;
-        
-        setTargetPosition({ x: targetScreenX, y: targetDocumentY });
-      }
+    // We stagger page panels (sections) visually and compute panel spans so the
+    // model can move to the opposite side of the active panel when the vertical
+    // middle of the viewport is inside that panel.
+    let panelElems = [];
+
+    const applyStaggerToPanels = () => {
+      if (typeof window === 'undefined') return;
+      panelElems = Array.from(document.querySelectorAll('section[id]'));
+      const staggerOffset = Math.max(40, window.innerWidth * 0.1);
+
+      panelElems.forEach((el, i) => {
+        const side = i % 2 === 0 ? 'left' : 'right';
+        // store which side we gave it so we can reference later
+        el.dataset.staggerSide = side;
+        // apply a small horizontal translation for a staggered look
+        el.style.transition = 'transform 1s ease';
+        el.style.transform = `translateX(${side === 'left' ? -staggerOffset : staggerOffset}px)`;
+      });
     };
-    
+
+    const resizeHandler = () => {
+      // Re-apply stagger on resize (clears previous dataset and styles)
+      panelElems.forEach(el => {
+        el.style.transform = '';
+        el.style.transition = '';
+        delete el.dataset.staggerSide;
+      });
+      applyStaggerToPanels();
+      handleScroll();
+    };
+
+    const handleScroll = () => {
+      if (typeof window === 'undefined') return;
+      const scrollTop = window.scrollY;
+      setScrollY(scrollTop);
+
+      // Default target X (percent of screen)
+      const defaultTargetX = window.innerWidth * MOVEMENT_CONFIG.TARGET_SCREEN_X_PERCENT;
+      const targetScreenY = window.innerHeight * MOVEMENT_CONFIG.TARGET_SCREEN_Y_PERCENT;
+      const targetDocumentY = scrollTop + targetScreenY;
+
+      // Build panel list if empty
+      if (!panelElems.length) applyStaggerToPanels();
+
+      // Middle of the viewport in document coordinates
+      const middleY = scrollTop + window.innerHeight / 2;
+
+      // Evaluate panels to see if middleY falls within one of them
+      let chosenX = defaultTargetX;
+      const leftX = Math.max(120, window.innerWidth * 0.15);
+      const rightX = Math.max(200, window.innerWidth * 0.85);
+
+      for (const el of panelElems) {
+        const rect = el.getBoundingClientRect();
+        const panelTop = rect.top + scrollTop;
+        const panelBottom = panelTop + rect.height;
+        const side = el.dataset.staggerSide || (panelElems.indexOf(el) % 2 === 0 ? 'left' : 'right');
+        if (middleY >= panelTop && middleY <= panelBottom) {
+          // If middle is inside this panel, pick the opposite side
+          chosenX = side === 'left' ? rightX : leftX;
+          break;
+        }
+      }
+
+      setTargetPosition({ x: chosenX, y: targetDocumentY });
+    };
+
     if (typeof window !== 'undefined') {
+      applyStaggerToPanels();
       window.addEventListener('scroll', handleScroll, { passive: true });
+      window.addEventListener('resize', resizeHandler);
       handleScroll(); // Initial call
-      
-      return () => window.removeEventListener('scroll', handleScroll);
+
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+        window.removeEventListener('resize', resizeHandler);
+        // clean up any inline styles we applied
+        panelElems.forEach(el => {
+          if (el) {
+            el.style.transform = '';
+            el.style.transition = '';
+            delete el.dataset.staggerSide;
+          }
+        });
+      };
     }
   }, []);
   
@@ -309,10 +374,29 @@ function ThreeModel({
         setIsMoving(true);
         setHasArrived(false);
         
-        // Move towards target with slower speed
-        const newX = prevPos.x + deltaX * MOVEMENT_CONFIG.MOVEMENT_SPEED;
-        const newY = prevPos.y + deltaY * MOVEMENT_CONFIG.MOVEMENT_SPEED;
-        
+        // Move towards target with slower speed, enforcing a minimum step so
+        // the model doesn't stall when very close to the target.
+        const stepXRaw = deltaX * MOVEMENT_CONFIG.MOVEMENT_SPEED;
+        const stepYRaw = deltaY * MOVEMENT_CONFIG.MOVEMENT_SPEED;
+
+        let stepX;
+        if (Math.abs(stepXRaw) < MOVEMENT_CONFIG.MIN_MOVEMENT_STEP) {
+          // If remaining distance is smaller than the min step, just move the remainder
+          stepX = Math.sign(deltaX) * Math.min(Math.abs(deltaX), MOVEMENT_CONFIG.MIN_MOVEMENT_STEP);
+        } else {
+          stepX = stepXRaw;
+        }
+
+        let stepY;
+        if (Math.abs(stepYRaw) < MOVEMENT_CONFIG.MIN_MOVEMENT_STEP) {
+          stepY = Math.sign(deltaY) * Math.min(Math.abs(deltaY), MOVEMENT_CONFIG.MIN_MOVEMENT_STEP);
+        } else {
+          stepY = stepYRaw;
+        }
+
+        const newX = prevPos.x + stepX;
+        const newY = prevPos.y + stepY;
+
         return { x: newX, y: newY };
       });
     };
@@ -457,7 +541,7 @@ function ThreeModel({
         {/* Main key light */}
         <directionalLight 
           position={[5, 5, 5]} 
-          intensity={1.2} 
+          intensity={3.5} 
           color="#ffffff"
           castShadow
           shadow-mapSize-width={2048}
@@ -467,14 +551,14 @@ function ThreeModel({
         {/* Fill light from the opposite side */}
         <directionalLight 
           position={[-3, 3, -2]} 
-          intensity={0.4} 
+          intensity={0.8} 
           color="#add8e6"
         />
         
         {/* Rim light for depth */}
         <directionalLight 
           position={[0, -2, -5]} 
-          intensity={0.3} 
+          intensity={1} 
           color="#87ceeb"
         />
         
@@ -485,7 +569,7 @@ function ThreeModel({
         {/* Subtle spotlight for dramatic effect */}
         <spotLight 
           position={[-5, 8, 3]} 
-          angle={0.2} 
+          angle={0.6} 
           penumbra={0.8} 
           intensity={0.6} 
           color="#ffffff"

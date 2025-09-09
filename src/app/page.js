@@ -87,6 +87,7 @@ const sections = [
   { id: "skills", label: "Skills", mobileLabel: "Skills" },
   { id: "projects", label: "Projects", mobileLabel: "Projects" },
   { id: "apps", label: "Mobile Games", mobileLabel: "Games" },
+  { id: "unity", label: "Interactive Demo"}
 ];
 
 
@@ -140,7 +141,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#11111a] text-white relative overflow-hidden">
+    <main className="min-h-screen bg-[#11111b] text-white relative overflow-hidden">
       <Analytics />
       {/* Glowing cursor follower */}
       <div
@@ -151,9 +152,9 @@ export default function Home() {
       
       {/* 3D model that can be dragged into Unity */}
       <ThreeModel 
-        className="w-[400px] h-[400px]"
+        className="w-[300px] h-[300px]"
         modelUrl="/models/model.glb" 
-        modelScale={3}
+        modelScale={4}
         modelPosition={[0, 0, 0]}
         modelRotation={[0, Math.PI/4, 0]}
         transparent={true}
