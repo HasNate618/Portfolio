@@ -242,6 +242,7 @@ function ThreeModel({
     y: MOVEMENT_CONFIG.INITIAL_Y 
   });
   const [targetPosition, setTargetPosition] = useState({ x: 0, y: 0 });
+  const targetPosRef = useRef({ x: 0, y: 0 });
   const [isMoving, setIsMoving] = useState(false);
   const [hasArrived, setHasArrived] = useState(false);
   const modelRef = useRef(null);
@@ -312,28 +313,48 @@ function ThreeModel({
       // Middle of the viewport in document coordinates
       const middleY = scrollTop + window.innerHeight / 2;
 
-      // Evaluate panels to see if middleY falls within one of them
+      // Evaluate panels to see if middleY falls within one of them. If not,
+      // pick the nearest panel vertically and use its opposite side so the
+      // model smoothly switches even when scrolling in the gap between panels.
       let chosenX = defaultTargetX;
       const leftX = Math.max(120, window.innerWidth * 0.15);
       const rightX = Math.max(200, window.innerWidth * 0.85);
 
-      for (const el of panelElems) {
+      let found = false;
+      // Track nearest panel when middleY is not inside any panel
+      let nearest = { el: null, dist: Infinity };
+
+      panelElems.forEach((el) => {
         const rect = el.getBoundingClientRect();
         const panelTop = rect.top + scrollTop;
         const panelBottom = panelTop + rect.height;
         const side = el.dataset.staggerSide || (panelElems.indexOf(el) % 2 === 0 ? 'left' : 'right');
+
         if (middleY >= panelTop && middleY <= panelBottom) {
           // If middle is inside this panel, pick the opposite side
           chosenX = side === 'left' ? rightX : leftX;
-          break;
+          found = true;
+        } else {
+          // distance from middle to this panel's vertical span
+          const dist = middleY < panelTop ? panelTop - middleY : middleY - panelBottom;
+          if (dist < nearest.dist) {
+            nearest = { el, dist, side };
+          }
         }
+      });
+
+      if (!found && nearest.el) {
+        // If middle is not inside any panel, use nearest panel's opposite side.
+        chosenX = nearest.side === 'left' ? rightX : leftX;
       }
 
-      setTargetPosition({ x: chosenX, y: targetDocumentY });
+  const newTarget = { x: chosenX, y: targetDocumentY };
+  targetPosRef.current = newTarget;
+  setTargetPosition(newTarget);
     };
 
     if (typeof window !== 'undefined') {
-      applyStaggerToPanels();
+  applyStaggerToPanels();
       window.addEventListener('scroll', handleScroll, { passive: true });
       window.addEventListener('resize', resizeHandler);
       handleScroll(); // Initial call
@@ -359,8 +380,9 @@ function ThreeModel({
   // Skip auto movement while dragging
   if (isDragging) return;
       setCurrentPosition(prevPos => {
-        const deltaX = targetPosition.x - prevPos.x;
-        const deltaY = targetPosition.y - prevPos.y;
+        const target = targetPosRef.current || targetPosition;
+        const deltaX = target.x - prevPos.x;
+        const deltaY = target.y - prevPos.y;
         const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         
         // Check if we've arrived
@@ -402,9 +424,9 @@ function ThreeModel({
     };
     
     const animationInterval = setInterval(moveTowardsTarget, 16); // ~60fps
-    
+
     return () => clearInterval(animationInterval);
-  }, [targetPosition, isDragging]);
+  }, [isDragging]);
   
   // Check if we're on desktop and initialize position
   useEffect(() => {
