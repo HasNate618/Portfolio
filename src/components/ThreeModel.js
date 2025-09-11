@@ -15,7 +15,8 @@ const MOVEMENT_CONFIG = {
   TARGET_SCREEN_X_PERCENT: 0.9, // 90% from left edge
   TARGET_SCREEN_Y_PERCENT: 0.5, // 50% from top (middle)
   INITIAL_Y: 300, // Initial Y position in document
-  INITIAL_X: 100, // Initial X position
+  INITIAL_X: 100, // Initial X position (will be overridden to off-screen)
+  OFF_SCREEN_X: 50, // Off-screen X position (pixels from right edge)
   MOVEMENT_THRESHOLD: 20, // Distance threshold to consider "arrived"
   HORIZONTAL_ROTATE_INTENSITY: 0.004, // left/right turn intensity
   VERTICAL_ROTATE_INTENSITY: 0.03 // up tilt intensity
@@ -234,17 +235,38 @@ function ThreeModel({
   onDropOnUnity = () => {},
   visible = true
 }) {
+  // Helper function to get about section position
+  const getAboutOffScreenPosition = () => {
+    if (typeof window === 'undefined') {
+      return { x: MOVEMENT_CONFIG.INITIAL_X, y: MOVEMENT_CONFIG.INITIAL_Y };
+    }
+    
+    const aboutSection = document.getElementById('about');
+    if (aboutSection) {
+      const aboutRect = aboutSection.getBoundingClientRect();
+      const aboutTop = aboutRect.top + window.scrollY;
+      const aboutMiddle = aboutTop + (aboutRect.height / 2);
+      return {
+        x: window.innerWidth + MOVEMENT_CONFIG.OFF_SCREEN_X,
+        y: aboutMiddle
+      };
+    }
+    
+    return {
+      x: window.innerWidth + MOVEMENT_CONFIG.OFF_SCREEN_X,
+      y: window.innerHeight * MOVEMENT_CONFIG.TARGET_SCREEN_Y_PERCENT
+    };
+  };
+
   // State for animation and movement
   const [isPlayingAnimation, setIsPlayingAnimation] = useState(false);
   const [scrollY, setScrollY] = useState(0);
-  const [currentPosition, setCurrentPosition] = useState({ 
-    x: MOVEMENT_CONFIG.INITIAL_X, 
-    y: MOVEMENT_CONFIG.INITIAL_Y 
-  });
-  const [targetPosition, setTargetPosition] = useState({ x: 0, y: 0 });
-  const targetPosRef = useRef({ x: 0, y: 0 });
+  const [currentPosition, setCurrentPosition] = useState(() => getAboutOffScreenPosition());
+  const [targetPosition, setTargetPosition] = useState(() => getAboutOffScreenPosition());
+  const targetPosRef = useRef(getAboutOffScreenPosition());
   const [isMoving, setIsMoving] = useState(false);
   const [hasArrived, setHasArrived] = useState(false);
+  const [staggerTriggered, setStaggerTriggered] = useState(false);
   const modelRef = useRef(null);
   // Drag state
   const [isDragging, setIsDragging] = useState(false);
@@ -280,9 +302,10 @@ function ThreeModel({
         const side = i % 2 === 0 ? 'left' : 'right';
         // store which side we gave it so we can reference later
         el.dataset.staggerSide = side;
-        // apply a small horizontal translation for a staggered look
+        // Only set transition, don't apply transform yet
         el.style.transition = 'transform 1s ease';
-        el.style.transform = `translateX(${side === 'left' ? -staggerOffset : staggerOffset}px)`;
+        // Mark as not yet staggered
+        el.dataset.isStaggered = 'false';
       });
     };
 
@@ -292,7 +315,16 @@ function ThreeModel({
         el.style.transform = '';
         el.style.transition = '';
         delete el.dataset.staggerSide;
+        delete el.dataset.isStaggered;
       });
+      setStaggerTriggered(false);
+      
+      // Reset to off-screen position relative to about section
+      const offScreenPos = getAboutOffScreenPosition();
+      setCurrentPosition(offScreenPos);
+      setTargetPosition(offScreenPos);
+      targetPosRef.current = offScreenPos;
+      
       applyStaggerToPanels();
       handleScroll();
     };
@@ -302,13 +334,91 @@ function ThreeModel({
       const scrollTop = window.scrollY;
       setScrollY(scrollTop);
 
-      // Default target X (percent of screen)
-      const defaultTargetX = window.innerWidth * MOVEMENT_CONFIG.TARGET_SCREEN_X_PERCENT;
-      const targetScreenY = window.innerHeight * MOVEMENT_CONFIG.TARGET_SCREEN_Y_PERCENT;
-      const targetDocumentY = scrollTop + targetScreenY;
-
       // Build panel list if empty
       if (!panelElems.length) applyStaggerToPanels();
+
+      // Check if we've scrolled to the bottom of the about section to trigger stagger
+      const aboutSection = document.getElementById('about');
+      if (aboutSection && !staggerTriggered) {
+        const aboutRect = aboutSection.getBoundingClientRect();
+        const aboutTop = aboutRect.top + scrollTop;
+        const aboutBottom = aboutTop + aboutRect.height;
+        
+        // If we've scrolled past the bottom of the about section, apply stagger
+        if (scrollTop >= aboutBottom - window.innerHeight) {
+          const staggerOffset = Math.max(40, window.innerWidth * 0.1);
+          
+          panelElems.forEach((el, i) => {
+            if (el.dataset.isStaggered !== 'true') {
+              const side = el.dataset.staggerSide || (i % 2 === 0 ? 'left' : 'right');
+              el.style.transform = `translateX(${side === 'left' ? -staggerOffset : staggerOffset}px)`;
+              el.dataset.isStaggered = 'true';
+            }
+          });
+          
+          setStaggerTriggered(true);
+          
+          // Immediately run the side-switching logic so the model moves to the correct side
+          const defaultTargetX = window.innerWidth * MOVEMENT_CONFIG.TARGET_SCREEN_X_PERCENT;
+          
+          // Constrain Y position to be below halfway of about section
+          const aboutRect = aboutSection.getBoundingClientRect();
+          const aboutTop = aboutRect.top + scrollTop;
+          const aboutMiddle = aboutTop + (aboutRect.height / 2);
+          const targetScreenY = window.innerHeight * MOVEMENT_CONFIG.TARGET_SCREEN_Y_PERCENT;
+          const targetDocumentY = Math.max(aboutMiddle, scrollTop + targetScreenY);
+          
+          const middleY = scrollTop + window.innerHeight / 2;
+          let chosenX = defaultTargetX;
+          const leftX = Math.max(120, window.innerWidth * 0.15);
+          const rightX = Math.max(200, window.innerWidth * 0.85);
+          let found = false;
+          let nearest = { el: null, dist: Infinity };
+          panelElems.forEach((el) => {
+            const rect = el.getBoundingClientRect();
+            const panelTop = rect.top + scrollTop;
+            const panelBottom = panelTop + rect.height;
+            const side = el.dataset.staggerSide || (panelElems.indexOf(el) % 2 === 0 ? 'left' : 'right');
+            if (middleY >= panelTop && middleY <= panelBottom) {
+              chosenX = side === 'left' ? rightX : leftX;
+              found = true;
+            } else {
+              const dist = middleY < panelTop ? panelTop - middleY : middleY - panelBottom;
+              if (dist < nearest.dist) {
+                nearest = { el, dist, side };
+              }
+            }
+          });
+          if (!found && nearest.el) {
+            chosenX = nearest.side === 'left' ? rightX : leftX;
+          }
+          const newTarget = { x: chosenX, y: targetDocumentY };
+          targetPosRef.current = newTarget;
+          setTargetPosition(newTarget);
+        }
+      }
+
+      // Only update model position after stagger is triggered
+      if (!staggerTriggered) {
+        return; // Keep model off-screen until stagger triggers
+      }
+
+      // Default target X (percent of screen)
+      const defaultTargetX = window.innerWidth * MOVEMENT_CONFIG.TARGET_SCREEN_X_PERCENT;
+      
+      // Constrain Y position to be below halfway of about section
+      const aboutSectionForConstraint = document.getElementById('about');
+      let targetDocumentY;
+      if (aboutSectionForConstraint) {
+        const aboutRect = aboutSectionForConstraint.getBoundingClientRect();
+        const aboutTop = aboutRect.top + scrollTop;
+        const aboutMiddle = aboutTop + (aboutRect.height / 2);
+        const targetScreenY = window.innerHeight * MOVEMENT_CONFIG.TARGET_SCREEN_Y_PERCENT;
+        targetDocumentY = Math.max(aboutMiddle, scrollTop + targetScreenY);
+      } else {
+        const targetScreenY = window.innerHeight * MOVEMENT_CONFIG.TARGET_SCREEN_Y_PERCENT;
+        targetDocumentY = scrollTop + targetScreenY;
+      }
 
       // Middle of the viewport in document coordinates
       const middleY = scrollTop + window.innerHeight / 2;
@@ -348,13 +458,13 @@ function ThreeModel({
         chosenX = nearest.side === 'left' ? rightX : leftX;
       }
 
-  const newTarget = { x: chosenX, y: targetDocumentY };
-  targetPosRef.current = newTarget;
-  setTargetPosition(newTarget);
+      const newTarget = { x: chosenX, y: targetDocumentY };
+      targetPosRef.current = newTarget;
+      setTargetPosition(newTarget);
     };
 
     if (typeof window !== 'undefined') {
-  applyStaggerToPanels();
+      applyStaggerToPanels();
       window.addEventListener('scroll', handleScroll, { passive: true });
       window.addEventListener('resize', resizeHandler);
       handleScroll(); // Initial call
@@ -368,6 +478,7 @@ function ThreeModel({
             el.style.transform = '';
             el.style.transition = '';
             delete el.dataset.staggerSide;
+            delete el.dataset.isStaggered;
           }
         });
       };
@@ -431,14 +542,20 @@ function ThreeModel({
   // Check if we're on desktop and initialize position
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      const initializePosition = () => {
+        const offScreenPos = getAboutOffScreenPosition();
+        
+        if (!staggerTriggered) {
+          setCurrentPosition(offScreenPos);
+          setTargetPosition(offScreenPos);
+          targetPosRef.current = offScreenPos;
+        }
+      };
+
       const checkDesktop = () => {
         setIsDesktop(window.innerWidth >= 1024);
-        
-        // Initialize target position
         if (window.innerWidth >= 1024) {
-          const targetScreenX = window.innerWidth * MOVEMENT_CONFIG.TARGET_SCREEN_X_PERCENT;
-          const targetScreenY = window.innerHeight * MOVEMENT_CONFIG.TARGET_SCREEN_Y_PERCENT;
-          setTargetPosition({ x: targetScreenX, y: targetScreenY });
+          initializePosition();
         }
       };
       
@@ -446,7 +563,7 @@ function ThreeModel({
       window.addEventListener('resize', checkDesktop);
       return () => window.removeEventListener('resize', checkDesktop);
     }
-  }, []);
+  }, [staggerTriggered]);
   
   // Don't render on mobile
   if (!isDesktop) return null;

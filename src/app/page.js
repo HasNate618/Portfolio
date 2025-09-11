@@ -156,7 +156,7 @@ export default function Home() {
         modelUrl="/models/model.glb" 
         modelScale={4}
         modelPosition={[0, 0, 0]}
-        modelRotation={[0, Math.PI/4, 0]}
+        modelRotation={[0, 0, 0]}
         transparent={true}
         visible={showThreeModel}
         onDropOnUnity={() => {
