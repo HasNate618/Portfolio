@@ -296,6 +296,10 @@ function ThreeModel({
     const applyStaggerToPanels = () => {
       if (typeof window === 'undefined') return;
       panelElems = Array.from(document.querySelectorAll('section[id]'));
+      
+      // Only apply stagger on desktop (width >= 1024px)
+      if (window.innerWidth < 1024) return;
+      
       const staggerOffset = Math.max(40, window.innerWidth * 0.1);
 
       panelElems.forEach((el, i) => {
@@ -346,15 +350,18 @@ function ThreeModel({
         
         // If we've scrolled past the bottom of the about section, apply stagger
         if (scrollTop >= aboutBottom - window.innerHeight) {
-          const staggerOffset = Math.max(40, window.innerWidth * 0.1);
-          
-          panelElems.forEach((el, i) => {
-            if (el.dataset.isStaggered !== 'true') {
-              const side = el.dataset.staggerSide || (i % 2 === 0 ? 'left' : 'right');
-              el.style.transform = `translateX(${side === 'left' ? -staggerOffset : staggerOffset}px)`;
-              el.dataset.isStaggered = 'true';
-            }
-          });
+          // Only apply stagger on desktop
+          if (window.innerWidth >= 1024) {
+            const staggerOffset = Math.max(40, window.innerWidth * 0.1);
+            
+            panelElems.forEach((el, i) => {
+              if (el.dataset.isStaggered !== 'true') {
+                const side = el.dataset.staggerSide || (i % 2 === 0 ? 'left' : 'right');
+                el.style.transform = `translateX(${side === 'left' ? -staggerOffset : staggerOffset}px)`;
+                el.dataset.isStaggered = 'true';
+              }
+            });
+          }
           
           setStaggerTriggered(true);
           
