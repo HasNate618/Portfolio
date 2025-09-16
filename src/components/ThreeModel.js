@@ -7,19 +7,16 @@ import * as THREE from 'three';
 
 // Configuration constants for easy modification
 const MOVEMENT_CONFIG = {
-  MOVEMENT_SPEED: 0.05, // Slower movement speed (lower = slower)
-  LERP_SPEED: 0.05, // How smoothly the model rotates/moves
-  ROTATION_SPEED: 0.2, // Base rotation speed
-  SPIN_SPEED: 3, // Speed when clicked
-  MIN_MOVEMENT_STEP: 4, // Minimum pixels to move per tick when lerping
-  TARGET_SCREEN_X_PERCENT: 0.9, // 90% from left edge
-  TARGET_SCREEN_Y_PERCENT: 0.5, // 50% from top (middle)
-  INITIAL_Y: 300, // Initial Y position in document
-  INITIAL_X: 100, // Initial X position (will be overridden to off-screen)
-  OFF_SCREEN_X: 50, // Off-screen X position (pixels from right edge)
-  MOVEMENT_THRESHOLD: 20, // Distance threshold to consider "arrived"
-  HORIZONTAL_ROTATE_INTENSITY: 0.004, // left/right turn intensity
-  VERTICAL_ROTATE_INTENSITY: 0.03 // up tilt intensity
+  MOVEMENT_SPEED: 0.05,
+  LERP_SPEED: 0.05,
+  MIN_MOVEMENT_STEP: 4,
+  TARGET_SCREEN_X_PERCENT: 0.9,
+  TARGET_SCREEN_Y_PERCENT: 0.5,
+  OFF_SCREEN_X: 80,
+  MOVEMENT_THRESHOLD: 20,
+  HORIZONTAL_ROTATE_INTENSITY: 0.004,
+  VERTICAL_ROTATE_INTENSITY: 0.03,
+  DESKTOP_BREAKPOINT: 1024
 };
 
 function Model({ 
@@ -238,7 +235,7 @@ function ThreeModel({
   // Helper function to get about section position
   const getAboutOffScreenPosition = () => {
     if (typeof window === 'undefined') {
-      return { x: MOVEMENT_CONFIG.INITIAL_X, y: MOVEMENT_CONFIG.INITIAL_Y };
+      return { x: 0, y: 0 };
     }
     
     const aboutSection = document.getElementById('about');
@@ -258,23 +255,69 @@ function ThreeModel({
     };
   };
 
+  // Helper function to calculate target position with constraints
+  const calculateConstrainedTargetY = (scrollTop) => {
+    const aboutSection = document.getElementById('about');
+    if (aboutSection) {
+      const aboutRect = aboutSection.getBoundingClientRect();
+      const aboutTop = aboutRect.top + scrollTop;
+      const aboutMiddle = aboutTop + (aboutRect.height / 2);
+      const targetScreenY = window.innerHeight * MOVEMENT_CONFIG.TARGET_SCREEN_Y_PERCENT;
+      return Math.max(aboutMiddle, scrollTop + targetScreenY);
+    }
+    return scrollTop + window.innerHeight * MOVEMENT_CONFIG.TARGET_SCREEN_Y_PERCENT;
+  };
+
+  // Helper function for panel side switching logic
+  const calculateTargetX = (scrollTop, panelElems) => {
+    const defaultTargetX = window.innerWidth * MOVEMENT_CONFIG.TARGET_SCREEN_X_PERCENT;
+    const leftX = Math.max(120, window.innerWidth * 0.15);
+    const rightX = Math.max(200, window.innerWidth * 0.85);
+    const middleY = scrollTop + window.innerHeight / 2;
+
+    let chosenX = defaultTargetX;
+    let found = false;
+    let nearest = { el: null, dist: Infinity, side: null };
+
+    panelElems.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      const panelTop = rect.top + scrollTop;
+      const panelBottom = panelTop + rect.height;
+      const side = el.dataset.staggerSide || (panelElems.indexOf(el) % 2 === 0 ? 'left' : 'right');
+
+      if (middleY >= panelTop && middleY <= panelBottom) {
+        chosenX = side === 'left' ? rightX : leftX;
+        found = true;
+      } else {
+        const dist = middleY < panelTop ? panelTop - middleY : middleY - panelBottom;
+        if (dist < nearest.dist) {
+          nearest = { el, dist, side };
+        }
+      }
+    });
+
+    if (!found && nearest.el) {
+      chosenX = nearest.side === 'left' ? rightX : leftX;
+    }
+
+    return chosenX;
+  };
+
   // State for animation and movement
   const [isPlayingAnimation, setIsPlayingAnimation] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
   const [currentPosition, setCurrentPosition] = useState(() => getAboutOffScreenPosition());
   const [targetPosition, setTargetPosition] = useState(() => getAboutOffScreenPosition());
   const targetPosRef = useRef(getAboutOffScreenPosition());
   const [isMoving, setIsMoving] = useState(false);
   const [hasArrived, setHasArrived] = useState(false);
   const [staggerTriggered, setStaggerTriggered] = useState(false);
-  const modelRef = useRef(null);
-  // Drag state
   const [isDragging, setIsDragging] = useState(false);
-  const dragOffsetRef = useRef({ x: 0, y: 0 });
   const [isOverUnity, setIsOverUnity] = useState(false);
-  
-  // Desktop only check
   const [isDesktop, setIsDesktop] = useState(true);
+  
+  // Refs
+  const modelRef = useRef(null);
+  const dragOffsetRef = useRef({ x: 0, y: 0 });
   
   // Handle model click to trigger animation
   const handleModelClick = () => {
@@ -297,18 +340,13 @@ function ThreeModel({
       if (typeof window === 'undefined') return;
       panelElems = Array.from(document.querySelectorAll('section[id]'));
       
-      // Only apply stagger on desktop (width >= 1024px)
-      if (window.innerWidth < 1024) return;
+      // Only apply stagger on desktop
+      if (window.innerWidth < MOVEMENT_CONFIG.DESKTOP_BREAKPOINT) return;
       
-      const staggerOffset = Math.max(40, window.innerWidth * 0.1);
-
       panelElems.forEach((el, i) => {
         const side = i % 2 === 0 ? 'left' : 'right';
-        // store which side we gave it so we can reference later
         el.dataset.staggerSide = side;
-        // Only set transition, don't apply transform yet
         el.style.transition = 'transform 1s ease';
-        // Mark as not yet staggered
         el.dataset.isStaggered = 'false';
       });
     };
@@ -336,7 +374,6 @@ function ThreeModel({
     const handleScroll = () => {
       if (typeof window === 'undefined') return;
       const scrollTop = window.scrollY;
-      setScrollY(scrollTop);
 
       // Build panel list if empty
       if (!panelElems.length) applyStaggerToPanels();
@@ -351,7 +388,7 @@ function ThreeModel({
         // If we've scrolled past the bottom of the about section, apply stagger
         if (scrollTop >= aboutBottom - window.innerHeight) {
           // Only apply stagger on desktop
-          if (window.innerWidth >= 1024) {
+          if (window.innerWidth >= MOVEMENT_CONFIG.DESKTOP_BREAKPOINT) {
             const staggerOffset = Math.max(40, window.innerWidth * 0.1);
             
             panelElems.forEach((el, i) => {
@@ -365,40 +402,9 @@ function ThreeModel({
           
           setStaggerTriggered(true);
           
-          // Immediately run the side-switching logic so the model moves to the correct side
-          const defaultTargetX = window.innerWidth * MOVEMENT_CONFIG.TARGET_SCREEN_X_PERCENT;
-          
-          // Constrain Y position to be below halfway of about section
-          const aboutRect = aboutSection.getBoundingClientRect();
-          const aboutTop = aboutRect.top + scrollTop;
-          const aboutMiddle = aboutTop + (aboutRect.height / 2);
-          const targetScreenY = window.innerHeight * MOVEMENT_CONFIG.TARGET_SCREEN_Y_PERCENT;
-          const targetDocumentY = Math.max(aboutMiddle, scrollTop + targetScreenY);
-          
-          const middleY = scrollTop + window.innerHeight / 2;
-          let chosenX = defaultTargetX;
-          const leftX = Math.max(120, window.innerWidth * 0.15);
-          const rightX = Math.max(200, window.innerWidth * 0.85);
-          let found = false;
-          let nearest = { el: null, dist: Infinity };
-          panelElems.forEach((el) => {
-            const rect = el.getBoundingClientRect();
-            const panelTop = rect.top + scrollTop;
-            const panelBottom = panelTop + rect.height;
-            const side = el.dataset.staggerSide || (panelElems.indexOf(el) % 2 === 0 ? 'left' : 'right');
-            if (middleY >= panelTop && middleY <= panelBottom) {
-              chosenX = side === 'left' ? rightX : leftX;
-              found = true;
-            } else {
-              const dist = middleY < panelTop ? panelTop - middleY : middleY - panelBottom;
-              if (dist < nearest.dist) {
-                nearest = { el, dist, side };
-              }
-            }
-          });
-          if (!found && nearest.el) {
-            chosenX = nearest.side === 'left' ? rightX : leftX;
-          }
+          // Set initial target position when stagger triggers
+          const targetDocumentY = calculateConstrainedTargetY(scrollTop);
+          const chosenX = calculateTargetX(scrollTop, panelElems);
           const newTarget = { x: chosenX, y: targetDocumentY };
           targetPosRef.current = newTarget;
           setTargetPosition(newTarget);
@@ -406,66 +412,13 @@ function ThreeModel({
       }
 
       // Only update model position after stagger is triggered
-      if (!staggerTriggered) {
-        return; // Keep model off-screen until stagger triggers
-      }
+      if (!staggerTriggered) return;
 
-      // Default target X (percent of screen)
-      const defaultTargetX = window.innerWidth * MOVEMENT_CONFIG.TARGET_SCREEN_X_PERCENT;
-      
-      // Constrain Y position to be below halfway of about section
-      const aboutSectionForConstraint = document.getElementById('about');
-      let targetDocumentY;
-      if (aboutSectionForConstraint) {
-        const aboutRect = aboutSectionForConstraint.getBoundingClientRect();
-        const aboutTop = aboutRect.top + scrollTop;
-        const aboutMiddle = aboutTop + (aboutRect.height / 2);
-        const targetScreenY = window.innerHeight * MOVEMENT_CONFIG.TARGET_SCREEN_Y_PERCENT;
-        targetDocumentY = Math.max(aboutMiddle, scrollTop + targetScreenY);
-      } else {
-        const targetScreenY = window.innerHeight * MOVEMENT_CONFIG.TARGET_SCREEN_Y_PERCENT;
-        targetDocumentY = scrollTop + targetScreenY;
-      }
-
-      // Middle of the viewport in document coordinates
-      const middleY = scrollTop + window.innerHeight / 2;
-
-      // Evaluate panels to see if middleY falls within one of them. If not,
-      // pick the nearest panel vertically and use its opposite side so the
-      // model smoothly switches even when scrolling in the gap between panels.
-      let chosenX = defaultTargetX;
-      const leftX = Math.max(120, window.innerWidth * 0.15);
-      const rightX = Math.max(200, window.innerWidth * 0.85);
-
-      let found = false;
-      // Track nearest panel when middleY is not inside any panel
-      let nearest = { el: null, dist: Infinity };
-
-      panelElems.forEach((el) => {
-        const rect = el.getBoundingClientRect();
-        const panelTop = rect.top + scrollTop;
-        const panelBottom = panelTop + rect.height;
-        const side = el.dataset.staggerSide || (panelElems.indexOf(el) % 2 === 0 ? 'left' : 'right');
-
-        if (middleY >= panelTop && middleY <= panelBottom) {
-          // If middle is inside this panel, pick the opposite side
-          chosenX = side === 'left' ? rightX : leftX;
-          found = true;
-        } else {
-          // distance from middle to this panel's vertical span
-          const dist = middleY < panelTop ? panelTop - middleY : middleY - panelBottom;
-          if (dist < nearest.dist) {
-            nearest = { el, dist, side };
-          }
-        }
-      });
-
-      if (!found && nearest.el) {
-        // If middle is not inside any panel, use nearest panel's opposite side.
-        chosenX = nearest.side === 'left' ? rightX : leftX;
-      }
-
+      // Calculate new target position
+      const targetDocumentY = calculateConstrainedTargetY(scrollTop);
+      const chosenX = calculateTargetX(scrollTop, panelElems);
       const newTarget = { x: chosenX, y: targetDocumentY };
+      
       targetPosRef.current = newTarget;
       setTargetPosition(newTarget);
     };
@@ -495,94 +448,76 @@ function ThreeModel({
   // Movement animation loop
   useEffect(() => {
     const moveTowardsTarget = () => {
-  // Skip auto movement while dragging
-  if (isDragging) return;
+      if (isDragging) return;
+      
       setCurrentPosition(prevPos => {
         const target = targetPosRef.current || targetPosition;
         const deltaX = target.x - prevPos.x;
         const deltaY = target.y - prevPos.y;
         const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         
-        // Check if we've arrived
         if (distance < MOVEMENT_CONFIG.MOVEMENT_THRESHOLD) {
           setIsMoving(false);
           setHasArrived(true);
-          return prevPos; // Don't move if we're close enough
+          return prevPos;
         }
         
-        // We're moving towards target
         setIsMoving(true);
         setHasArrived(false);
         
-        // Move towards target with slower speed, enforcing a minimum step so
-        // the model doesn't stall when very close to the target.
+        // Calculate movement steps with minimum step enforcement
         const stepXRaw = deltaX * MOVEMENT_CONFIG.MOVEMENT_SPEED;
         const stepYRaw = deltaY * MOVEMENT_CONFIG.MOVEMENT_SPEED;
 
-        let stepX;
-        if (Math.abs(stepXRaw) < MOVEMENT_CONFIG.MIN_MOVEMENT_STEP) {
-          // If remaining distance is smaller than the min step, just move the remainder
-          stepX = Math.sign(deltaX) * Math.min(Math.abs(deltaX), MOVEMENT_CONFIG.MIN_MOVEMENT_STEP);
-        } else {
-          stepX = stepXRaw;
-        }
+        const stepX = Math.abs(stepXRaw) < MOVEMENT_CONFIG.MIN_MOVEMENT_STEP
+          ? Math.sign(deltaX) * Math.min(Math.abs(deltaX), MOVEMENT_CONFIG.MIN_MOVEMENT_STEP)
+          : stepXRaw;
 
-        let stepY;
-        if (Math.abs(stepYRaw) < MOVEMENT_CONFIG.MIN_MOVEMENT_STEP) {
-          stepY = Math.sign(deltaY) * Math.min(Math.abs(deltaY), MOVEMENT_CONFIG.MIN_MOVEMENT_STEP);
-        } else {
-          stepY = stepYRaw;
-        }
+        const stepY = Math.abs(stepYRaw) < MOVEMENT_CONFIG.MIN_MOVEMENT_STEP
+          ? Math.sign(deltaY) * Math.min(Math.abs(deltaY), MOVEMENT_CONFIG.MIN_MOVEMENT_STEP)
+          : stepYRaw;
 
-        const newX = prevPos.x + stepX;
-        const newY = prevPos.y + stepY;
-
-        return { x: newX, y: newY };
+        return { x: prevPos.x + stepX, y: prevPos.y + stepY };
       });
     };
     
     const animationInterval = setInterval(moveTowardsTarget, 16); // ~60fps
-
     return () => clearInterval(animationInterval);
-  }, [isDragging]);
+  }, [isDragging, targetPosition]);
   
   // Check if we're on desktop and initialize position
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const initializePosition = () => {
-        const offScreenPos = getAboutOffScreenPosition();
-        
-        if (!staggerTriggered) {
-          setCurrentPosition(offScreenPos);
-          setTargetPosition(offScreenPos);
-          targetPosRef.current = offScreenPos;
-        }
-      };
+    if (typeof window === 'undefined') return;
+    
+    const initializePosition = () => {
+      const offScreenPos = getAboutOffScreenPosition();
+      if (!staggerTriggered) {
+        setCurrentPosition(offScreenPos);
+        setTargetPosition(offScreenPos);
+        targetPosRef.current = offScreenPos;
+      }
+    };
 
-      const checkDesktop = () => {
-        setIsDesktop(window.innerWidth >= 1024);
-        if (window.innerWidth >= 1024) {
-          initializePosition();
-        }
-      };
-      
-      checkDesktop();
-      window.addEventListener('resize', checkDesktop);
-      return () => window.removeEventListener('resize', checkDesktop);
-    }
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth >= MOVEMENT_CONFIG.DESKTOP_BREAKPOINT);
+      if (window.innerWidth >= MOVEMENT_CONFIG.DESKTOP_BREAKPOINT) {
+        initializePosition();
+      }
+    };
+    
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
   }, [staggerTriggered]);
   
-  // Don't render on mobile
-  if (!isDesktop) return null;
+  // Early returns for non-desktop or invisible
+  if (!isDesktop || !visible) return null;
 
   // Calculate direction vector for the model to look towards
   const targetDirection = {
     x: targetPosition.x - currentPosition.x,
     y: targetPosition.y - currentPosition.y
   };
-
-  // Don't render if not visible
-  if (!isDesktop || !visible) return null;
 
   return (
     <div 
@@ -595,33 +530,29 @@ function ThreeModel({
         top: `${currentPosition.y}px`,
         transform: 'translate(-50%, -50%)',
         zIndex: 30,
-        transition: 'none', // We handle movement manually for smoother control
+        transition: 'none',
         cursor: isDragging ? 'grabbing' : 'grab',
-        // No opacity change when over Unity
       }}
       onPointerDown={(e) => {
         e.preventDefault();
         if (!isDesktop) return;
         setIsDragging(true);
         const rect = modelRef.current.getBoundingClientRect();
-        // Store offset between pointer and element center
         dragOffsetRef.current = {
           x: e.clientX - (rect.left + rect.width / 2),
           y: e.clientY - (rect.top + rect.height / 2)
         };
       }}
     >
-      {/* Global pointer move / up listeners */}
+      {/* Drag listeners */}
       {isDragging && (
         <DragListeners 
           onMove={(clientX, clientY) => {
             setHasArrived(false);
             setIsMoving(false);
-            // clientX/clientY are viewport coords; our currentPosition uses document coords
-            // Add current scroll offset to Y so dragging while scrolled keeps correct position
             const scrollY = window.scrollY || 0;
             
-            // Check if cursor is over the Unity section
+            // Check if cursor is over Unity section
             const unitySection = document.getElementById('unity');
             if (unitySection) {
               const unityRect = unitySection.getBoundingClientRect();
@@ -630,48 +561,40 @@ function ThreeModel({
                 clientX <= unityRect.right &&
                 clientY >= unityRect.top && 
                 clientY <= unityRect.bottom;
-              
               setIsOverUnity(isOver);
             }
             
-            setCurrentPosition(prev => ({
+            setCurrentPosition({
               x: clientX - dragOffsetRef.current.x,
               y: clientY - dragOffsetRef.current.y + scrollY
-            }));
+            });
           }}
           onUp={(clientX, clientY) => {
-            // Check if we should start the Unity game
+            // Check if dropped on Unity
             const unitySection = document.getElementById('unity');
             if (unitySection && isOverUnity) {
               const unityRect = unitySection.getBoundingClientRect();
-              // Double-check we're over Unity
               if (
                 clientX >= unityRect.left && 
                 clientX <= unityRect.right &&
                 clientY >= unityRect.top && 
                 clientY <= unityRect.bottom
               ) {
-                // Play the attack animation and shrink for dramatic effect
                 setIsPlayingAnimation(true);
                 
-                // Add shrinking animation to the model element
                 const modelElement = modelRef.current;
                 if (modelElement) {
                   modelElement.style.transition = "transform 0.5s ease-in";
                   modelElement.style.transform = "translate(-50%, -50%) scale(0.2)";
                 }
                 
-                setTimeout(() => {
-                  // Notify parent that model was dropped on Unity
-                  onDropOnUnity();
-                }, 500); // Short delay to let animation start
+                setTimeout(() => onDropOnUnity(), 500);
                 return;
               }
             }
             
             setIsDragging(false);
             setIsOverUnity(false);
-            // After releasing, allow auto movement back to target
             setHasArrived(false);
           }}
         />
@@ -683,36 +606,17 @@ function ThreeModel({
         gl={{ alpha: transparent, antialias: true }}
       >
         <ambientLight intensity={0.6} color="#ffffff" />
-        
-        {/* Main key light */}
         <directionalLight 
           position={[5, 5, 5]} 
           intensity={3.5} 
           color="#ffffff"
           castShadow
-          shadow-mapSize-width={2048}
-          shadow-mapSize-height={2048}
+          shadow-mapSize={[2048, 2048]}
         />
-        
-        {/* Fill light from the opposite side */}
-        <directionalLight 
-          position={[-3, 3, -2]} 
-          intensity={0.8} 
-          color="#add8e6"
-        />
-        
-        {/* Rim light for depth */}
-        <directionalLight 
-          position={[0, -2, -5]} 
-          intensity={1} 
-          color="#87ceeb"
-        />
-        
-        {/* Point lights for additional depth */}
+        <directionalLight position={[-3, 3, -2]} intensity={0.8} color="#add8e6" />
+        <directionalLight position={[0, -2, -5]} intensity={1} color="#87ceeb" />
         <pointLight position={[2, 3, 2]} intensity={0.5} color="#ffffff" />
         <pointLight position={[-2, 1, 3]} intensity={0.3} color="#e6f3ff" />
-        
-        {/* Subtle spotlight for dramatic effect */}
         <spotLight 
           position={[-5, 8, 3]} 
           angle={0.6} 
@@ -725,7 +629,7 @@ function ThreeModel({
         <Model 
           url={modelUrl} 
           scale={modelScale} 
-          position={[modelPosition[0], modelPosition[1], modelPosition[2]]} 
+          position={modelPosition} 
           rotation={modelRotation}
           isPlayingAnimation={isPlayingAnimation}
           targetDirection={targetDirection}
