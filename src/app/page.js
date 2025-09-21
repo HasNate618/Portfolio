@@ -155,7 +155,7 @@ export default function Home() {
         className="w-[300px] h-[300px]"
         modelUrl="/models/model.glb" 
         modelScale={4}
-        modelPosition={[0, 0, 0]}
+        modelPosition={[-500, -500, 0]}
         modelRotation={[0, 0, 0]}
         transparent={true}
         visible={showThreeModel}
