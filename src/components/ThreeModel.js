@@ -464,9 +464,9 @@ function ThreeModel({
   
   // Movement animation loop
   useEffect(() => {
+    let animationFrameId;
+    
     const moveTowardsTarget = () => {
-      if (isDragging) return;
-      
       setCurrentPosition(prevPos => {
         const target = targetPosRef.current || targetPosition;
         const deltaX = target.x - prevPos.x;
@@ -496,10 +496,23 @@ function ThreeModel({
 
         return { x: prevPos.x + stepX, y: prevPos.y + stepY };
       });
+      
+      // Continue animation loop
+      if (!isDragging) {
+        animationFrameId = requestAnimationFrame(moveTowardsTarget);
+      }
     };
     
-    const animationInterval = setInterval(moveTowardsTarget, 16); // ~60fps
-    return () => clearInterval(animationInterval);
+    // Start the animation loop
+    if (!isDragging) {
+      animationFrameId = requestAnimationFrame(moveTowardsTarget);
+    }
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
   }, [isDragging, targetPosition]);
   
   // Check if we're on desktop and initialize position
