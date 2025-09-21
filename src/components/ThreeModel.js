@@ -28,6 +28,7 @@ function Model({
   targetDirection = { x: 0, y: 0 },
   isMoving = false,
   hasArrived = false,
+  disableVerticalRotation = false,
   onClick
 }) {
   const group = useRef();
@@ -142,17 +143,22 @@ function Model({
         }
 
         // Vertical movement: tilt up/down, amount depends on speed
-        if (targetDirection.y < -10) { // Moving up
-          // Tilt upwards more strongly with speed (max 30deg)
-          const maxUp = Math.PI / 6;
-          targetRotationX = -Math.min(Math.abs(targetDirection.y * MOVEMENT_CONFIG.VERTICAL_ROTATE_INTENSITY * speedY), maxUp);
-        } else if (targetDirection.y > 10) { // Moving down
-          // Tilt downwards with speed (max 20deg)
-          const maxDown = Math.PI / 6;
-          targetRotationX = Math.min(targetDirection.y * MOVEMENT_CONFIG.VERTICAL_ROTATE_INTENSITY * speedY, maxDown);
+        if (!disableVerticalRotation) {
+          if (targetDirection.y < -10) { // Moving up
+            // Tilt upwards more strongly with speed (max 30deg)
+            const maxUp = Math.PI / 6;
+            targetRotationX = -Math.min(Math.abs(targetDirection.y * MOVEMENT_CONFIG.VERTICAL_ROTATE_INTENSITY * speedY), maxUp);
+          } else if (targetDirection.y > 10) { // Moving down
+            // Tilt downwards with speed (max 20deg)
+            const maxDown = Math.PI / 6;
+            targetRotationX = Math.min(targetDirection.y * MOVEMENT_CONFIG.VERTICAL_ROTATE_INTENSITY * speedY, maxDown);
+          } else {
+            // Slight tilt based on Y direction otherwise
+            targetRotationX = targetDirection.y * 0.001;
+          }
         } else {
-          // Slight tilt based on Y direction otherwise
-          targetRotationX = targetDirection.y * 0.001;
+          // When disabled, keep vertical rotation neutral
+          targetRotationX = 0;
         }
 
         group.current.rotation.y = THREE.MathUtils.lerp(
@@ -257,15 +263,8 @@ function ThreeModel({
 
   // Helper function to calculate target position with constraints
   const calculateConstrainedTargetY = (scrollTop) => {
-    const aboutSection = document.getElementById('about');
-    if (aboutSection) {
-      const aboutRect = aboutSection.getBoundingClientRect();
-      const aboutTop = aboutRect.top + scrollTop;
-      const aboutMiddle = aboutTop + (aboutRect.height / 2);
-      const targetScreenY = window.innerHeight * MOVEMENT_CONFIG.TARGET_SCREEN_Y_PERCENT;
-      return Math.max(aboutMiddle, scrollTop + targetScreenY);
-    }
-    return scrollTop + window.innerHeight * MOVEMENT_CONFIG.TARGET_SCREEN_Y_PERCENT;
+    const targetScreenY = window.innerHeight * MOVEMENT_CONFIG.TARGET_SCREEN_Y_PERCENT;
+    return scrollTop + targetScreenY;
   };
 
   // Helper function for panel side switching logic
@@ -303,6 +302,20 @@ function ThreeModel({
     return chosenX;
   };
 
+  // Helper: get the document Y of the middle of the about section
+  const getAboutMiddleDocumentY = () => {
+    if (typeof window === 'undefined') return null;
+    const aboutSection = document.getElementById('about');
+    const scrollTop = window.scrollY || 0;
+    if (!aboutSection) {
+      // Fallback: viewport middle in document coords
+      return scrollTop + window.innerHeight / 2;
+    }
+    const rect = aboutSection.getBoundingClientRect();
+    const aboutTop = rect.top + scrollTop;
+    return aboutTop + rect.height / 2;
+  };
+
   // State for animation and movement
   const [isPlayingAnimation, setIsPlayingAnimation] = useState(false);
   const [currentPosition, setCurrentPosition] = useState(() => getAboutOffScreenPosition());
@@ -314,6 +327,8 @@ function ThreeModel({
   const [isDragging, setIsDragging] = useState(false);
   const [isOverUnity, setIsOverUnity] = useState(false);
   const [isDesktop, setIsDesktop] = useState(true);
+  // Track last scroll position for render-time viewport-based clamping
+  const lastScrollYRef = useRef(0);
   
   // Refs
   const modelRef = useRef(null);
@@ -373,7 +388,9 @@ function ThreeModel({
 
     const handleScroll = () => {
       if (typeof window === 'undefined') return;
-      const scrollTop = window.scrollY;
+  const scrollTop = window.scrollY;
+  // Track for render-time clamp
+  lastScrollYRef.current = scrollTop;
 
       // Build panel list if empty
       if (!panelElems.length) applyStaggerToPanels();
@@ -414,7 +431,7 @@ function ThreeModel({
       // Only update model position after stagger is triggered
       if (!staggerTriggered) return;
 
-      // Calculate new target position
+      // Calculate new target position (always update when stagger is active)
       const targetDocumentY = calculateConstrainedTargetY(scrollTop);
       const chosenX = calculateTargetX(scrollTop, panelElems);
       const newTarget = { x: chosenX, y: targetDocumentY };
@@ -519,6 +536,19 @@ function ThreeModel({
     y: targetPosition.y - currentPosition.y
   };
 
+  // Compute a constrained Y for display only (do not affect movement state)
+  const aboutMiddleYDoc = getAboutMiddleDocumentY();
+  // If we're still introducing the model (off-screen X to the right), allow it to appear
+  // as soon as stagger triggers by clamping to viewport middle instead of about middle.
+  const viewportMiddleDocY = (typeof window !== 'undefined')
+    ? lastScrollYRef.current + window.innerHeight / 2
+    : currentPosition.y;
+  const isOffscreenRight = typeof window !== 'undefined' && currentPosition.x >= window.innerWidth;
+  const entranceClampY = isOffscreenRight ? viewportMiddleDocY : (aboutMiddleYDoc ?? viewportMiddleDocY);
+  const constrainedDisplayY = Math.max(currentPosition.y, entranceClampY);
+  // Determine if our displayed Y is being clamped at the threshold
+  const isYClamped = constrainedDisplayY - currentPosition.y > 0.5;
+
   return (
     <div 
       ref={modelRef}
@@ -527,7 +557,7 @@ function ThreeModel({
         ...style, 
         position: 'absolute',
         left: `${currentPosition.x}px`,
-        top: `${currentPosition.y}px`,
+        top: `${constrainedDisplayY}px`,
         transform: 'translate(-50%, -50%)',
         zIndex: 30,
         transition: 'none',
@@ -635,6 +665,7 @@ function ThreeModel({
           targetDirection={targetDirection}
           isMoving={isMoving}
           hasArrived={hasArrived}
+          disableVerticalRotation={isYClamped}
           onClick={handleModelClick}
         />
       </Canvas>
