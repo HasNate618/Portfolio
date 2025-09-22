@@ -155,7 +155,7 @@ export default function Home() {
         className="w-[300px] h-[300px]"
         modelUrl="/models/model.glb" 
         modelScale={4}
-        modelPosition={[-500, -500, 0]}
+        modelPosition={[0, 0, 0]}
         modelRotation={[0, 0, 0]}
         transparent={true}
         visible={showThreeModel}
@@ -495,6 +495,22 @@ export default function Home() {
                 </div>
             </div>
           </div>
+          {/* Eyecandy */}
+    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-400/20 transition-all duration-300 cursor-pointer hover:border-blue-300 hover:border-2">
+            <span className="absolute top-3 left-3 bg-yellow-400/80 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10">🥇 Hackathon Winner</span>
+            <span className="absolute top-3 right-3 bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Game Dev</span>
+            <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
+              <Image src="/eyecandy_card.jpg" alt="Lumen Project" fill className="object-cover rounded-t-lg" />
+            </div>
+            <div className="p-6 flex flex-col flex-1">
+              <h3 className="font-semibold text-lg mb-2">Eyecandy</h3>
+              <p className="text-gray-600 dark:text-gray-400 flex-1">An AR shopping experience that turns any product photo into a virtual try-on.</p>
+                <div className="mt-4 flex flex-row gap-6">
+                  <a href="https://devpost.com/software/eye-candy" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; Devpost</a>
+                  <a href="https://github.com/Duck-luv-pie/eyecandy" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>
+                </div>
+            </div>
+          </div>
           {/* Careerly */}
     <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-400/20 transition-all duration-300 cursor-pointer hover:border-blue-300 hover:border-2">
             <span className="absolute top-3 left-3 bg-yellow-400/80 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10">🥇 Hackathon Winner</span>
@@ -523,6 +539,21 @@ export default function Home() {
               <a href="https://github.com/HasNate618/SafeRoute" target="_blank" rel="noopener noreferrer" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>
             </div>
           </div>
+          {/* Nude Donations */}
+    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-green-400/20 transition-all duration-300 cursor-pointer hover:border-green-300 hover:border-2">
+            <span className="absolute top-3 right-3 bg-green-100 dark:bg-green-900/60 text-green-700 dark:text-green-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Android</span>
+            <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
+              <Image src="/nude_donations_card.jpg" alt="Project 3" fill className="object-cover rounded-t-lg" />
+            </div>
+            <div className="p-6 flex flex-col flex-1">
+              <h3 className="font-semibold text-lg mb-2">Nude Donations</h3>
+              <p className="text-gray-600 dark:text-gray-400 flex-1">A real-time hazard reporting app with crowdsourced data, drone integration, and safe routing.</p>
+                <div className="mt-4 flex flex-row gap-6">
+                  <a href="https://taikai.network/hackbox/hackathons/hawkhacks/projects/clwdievy80fcez901sgpemwxf/idea" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; Taikai</a>
+                  <a href="https://github.com/danielyousif1/HawkHacks24" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>
+                </div>            
+              </div>
+          </div>
           {/* Animarker */}
     <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-green-400/20 transition-all duration-300 cursor-pointer hover:border-green-300 hover:border-2">
             <span className="absolute top-3 right-3 bg-green-100 dark:bg-green-900/60 text-green-700 dark:text-green-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Android</span>
@@ -539,7 +570,6 @@ export default function Home() {
             </div>
           </div>
           {/* FLEXFIRE-X */}
-              {/* FLEXFIRE-X */}
     <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-400/20 transition-all duration-300 cursor-pointer hover:border-purple-300 hover:border-2">
             <span className="absolute top-3 right-3 bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Hardware</span>
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
