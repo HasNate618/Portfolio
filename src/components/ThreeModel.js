@@ -241,7 +241,7 @@ function ThreeModel({
   // Helper function to get about section position
   const getAboutOffScreenPosition = () => {
     if (typeof window === 'undefined') {
-      return { x: 0, y: 0 };
+      return { x: -500, y: -500 }; // Far off-screen during SSR
     }
     
     const aboutSection = document.getElementById('about');
@@ -250,13 +250,13 @@ function ThreeModel({
       const aboutTop = aboutRect.top + window.scrollY;
       const aboutMiddle = aboutTop + (aboutRect.height / 2);
       return {
-        x: window.innerWidth + MOVEMENT_CONFIG.OFF_SCREEN_X,
+        x: window.innerWidth + MOVEMENT_CONFIG.OFF_SCREEN_X, // Further right
         y: aboutMiddle
       };
     }
     
     return {
-      x: window.innerWidth + MOVEMENT_CONFIG.OFF_SCREEN_X,
+      x: window.innerWidth + MOVEMENT_CONFIG.OFF_SCREEN_X, // Further right
       y: window.innerHeight * MOVEMENT_CONFIG.TARGET_SCREEN_Y_PERCENT
     };
   };
