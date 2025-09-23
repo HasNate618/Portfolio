@@ -152,6 +152,7 @@ export default function Home() {
 
   // Glowing cursor state
   const [cursor, setCursor] = useState({ x: 0, y: 0 });
+  const [isDraggingModel, setIsDraggingModel] = useState(false);
   useEffect(() => {
     const move = (e) => setCursor({ x: e.clientX, y: e.clientY });
     window.addEventListener("mousemove", move);
@@ -161,7 +162,7 @@ export default function Home() {
   return (
     <main className="min-h-screen text-white relative overflow-hidden">
       <Analytics />
-      {/* Glowing cursor follower */}
+      {/* Glowing cursor follower - continues during model drag */}
       <div
         className="cursor-glow"
         style={{ left: cursor.x, top: cursor.y, zIndex: 0, position: 'fixed', pointerEvents: 'none' }}
@@ -178,6 +179,16 @@ export default function Home() {
         transparent={true}
         visible={showThreeModel}
         flyingIntoGame={modelFlyingIntoGame}
+        onDragStart={() => {
+          setIsDraggingModel(true);
+        }}
+        onDragEnd={() => {
+          setIsDraggingModel(false);
+        }}
+        onCursorUpdate={(x, y) => {
+          // Update global cursor position during drag
+          setCursor({ x, y });
+        }}
         onDropStarted={() => {
           // Start rotation immediately when drop begins
           setModelFlyingIntoGame(true);
@@ -350,7 +361,7 @@ export default function Home() {
       <h2 className="text-3xl font-bold mb-6 cyber-cyan cyber-section-title" data-text="Skills">Skills</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
-          <div className="flex items-center gap-2 mb-2"><span className="text-cyan-400">💻</span><span className="font-semibold cyber-cyan">Programming Languages</span></div>
+          <div className="flex items-center gap-2 mb-2"><span className="text-cyan-400">💻</span><span className="font-semibold cyber-cyan skill-title">Programming Languages</span></div>
           <div className="flex flex-wrap gap-2 mb-4">
             <span className="badge badge-blue">Java</span>
             <span className="badge badge-blue">C#</span>
@@ -363,7 +374,7 @@ export default function Home() {
             <span className="badge badge-blue">CSS</span>
             <span className="badge badge-blue">XML</span>
           </div>
-          <div className="flex items-center gap-2 mb-2"><span className="text-yellow-500">🔗</span><span className="font-semibold group-yellow">APIs & SDKs</span></div>
+          <div className="flex items-center gap-2 mb-2"><span className="text-yellow-500">🔗</span><span className="font-semibold cyber-yellow skill-title">APIs & SDKs</span></div>
           <div className="flex flex-wrap gap-2 mb-4">
             <span className="badge badge-yellow">OpenAI API</span>
             <span className="badge badge-yellow">Google Maps API</span>
@@ -371,7 +382,7 @@ export default function Home() {
             <span className="badge badge-yellow">JsonBin API</span>
             <span className="badge badge-yellow">REST APIs</span>
           </div>
-          <div className="flex items-center gap-2 mb-2"><span className="text-pink-500">🚀</span><span className="font-semibold group-pink">Development Areas</span></div>
+          <div className="flex items-center gap-2 mb-2"><span className="text-pink-500">🚀</span><span className="font-semibold cyber-pink skill-title">Development Areas</span></div>
           <div className="flex flex-wrap gap-2 mb-4">
             <span className="badge badge-pink">Full-Stack Development</span>
             <span className="badge badge-pink">Game Development</span>
@@ -385,7 +396,7 @@ export default function Home() {
           </div>
         </div>
         <div>
-          <div className="flex items-center gap-2 mb-2"><span className="text-green-600">🧰</span><span className="font-semibold group-green">Tools & Platforms</span></div>
+          <div className="flex items-center gap-2 mb-2"><span className="text-green-600">🧰</span><span className="font-semibold cyber-green skill-title">Tools & Platforms</span></div>
           <div className="flex flex-wrap gap-2 mb-4">
             <span className="badge badge-green">GitHub</span>
             <span className="badge badge-green">Unity3D</span>
@@ -397,7 +408,7 @@ export default function Home() {
             <span className="badge badge-green">MySQL</span>
             <span className="badge badge-green">TensorFlow</span>
           </div>
-          <div className="flex items-center gap-2 mb-2"><span className="text-orange-500">🔌</span><span className="font-semibold group-orange">Hardware & Embedded</span></div>
+          <div className="flex items-center gap-2 mb-2"><span className="text-orange-500">🔌</span><span className="font-semibold cyber-orange skill-title">Hardware & Embedded</span></div>
           <div className="flex flex-wrap gap-2 mb-4">
             <span className="badge badge-orange">Arduino</span>
             <span className="badge badge-orange">ESP32</span>
@@ -405,7 +416,7 @@ export default function Home() {
             <span className="badge badge-orange">3D Printing (Design & Prototyping)</span>
             <span className="badge badge-orange">Bluetooth Low Energy (BLE)</span>
           </div>
-          <div className="flex items-center gap-2 mb-2"><span className="text-gray-500">🤝</span><span className="font-semibold group-gray">Professional Skills</span></div>
+          <div className="flex items-center gap-2 mb-2"><span className="text-gray-500">🤝</span><span className="font-semibold cyber-gray skill-title">Professional Skills</span></div>
           <div className="flex flex-wrap gap-2">
             <span className="badge badge-gray">Team Collaboration & Agile Workflow</span>
             <span className="badge badge-gray">Problem Solving & Rapid Prototyping</span>
@@ -416,6 +427,15 @@ export default function Home() {
         </div>
       </div>
       <style jsx>{`
+        /* Ensure neon style applies to all skill titles with respective colors */
+        .cyber-pink {
+          color: #ff1493 !important;
+          text-shadow: 0 0 8px rgba(255, 20, 147, 0.6) !important;
+        }
+        .cyber-orange {
+          color: #ff8c00 !important;
+          text-shadow: 0 0 8px rgba(255, 140, 0, 0.6) !important;
+        }
         .badge {
           display: inline-block;
           border-radius: 9999px;
@@ -590,7 +610,7 @@ export default function Home() {
                 <span className="badge badge-green">Android</span>
               </div>
               <h3 className="font-semibold text-xl mb-2 cyber-cyan">Nude Donations</h3>
-              <p className="text-gray-600 dark:text-gray-400 flex-1">A real-time hazard reporting app with crowdsourced data, drone integration, and safe routing.</p>
+              <p className="text-gray-600 dark:text-gray-400 flex-1">A transparent charity platform using blockchain technology to track donations with full accountability.</p>
                 <div className="mt-4 flex flex-row gap-6">
                   <a href="https://taikai.network/hackbox/hackathons/hawkhacks/projects/clwdievy80fcez901sgpemwxf/idea" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; Taikai</a>
                   <a href="https://github.com/danielyousif1/HawkHacks24" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>

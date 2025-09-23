@@ -263,6 +263,9 @@ function ThreeModel({
   style = {},
   onDropOnUnity = () => {},
   onDropStarted = () => {},
+  onDragStart = () => {},
+  onDragEnd = () => {},
+  onCursorUpdate = () => {},
   visible = true,
   flyingIntoGame = false
 }) {
@@ -672,6 +675,8 @@ function ThreeModel({
         e.preventDefault();
         if (!isDesktop) return;
         setIsDragging(true);
+        onDragStart();
+        onCursorUpdate(e.clientX, e.clientY);
         const rect = modelRef.current.getBoundingClientRect();
         dragOffsetRef.current = {
           x: e.clientX - (rect.left + rect.width / 2),
@@ -685,6 +690,7 @@ function ThreeModel({
           onMove={(clientX, clientY) => {
             setHasArrived(false);
             setIsMoving(false);
+            onCursorUpdate(clientX, clientY);
             const scrollY = window.scrollY || 0;
             
             // Check if cursor is over Unity section
@@ -705,6 +711,8 @@ function ThreeModel({
             });
           }}
           onUp={(clientX, clientY) => {
+            // End drag and let parent handle cursor glow
+            onDragEnd();
             // Check if dropped on Unity
             const unitySection = document.getElementById('unity');
             if (unitySection && isOverUnity) {
@@ -867,7 +875,7 @@ function ThreeModel({
             top: '100%',
             left: '50%',
             transform: 'translateX(-50%)',
-            marginTop: '-2px',
+            marginTop: '0px',
             width: 0,
             height: 0,
             borderLeft: '12px solid transparent',

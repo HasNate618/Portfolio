@@ -200,10 +200,12 @@
 
 .cyber-gray {
   color: var(--accent-gray);
+  text-shadow: 0 0 8px rgba(136, 136, 136, 0.5);
 }
 
 .cyber-green {
   color: var(--accent-green);
+  text-shadow: 0 0 8px rgba(0, 255, 128, 0.6);
 }
 
 .cyber-red {
