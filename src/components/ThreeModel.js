@@ -21,12 +21,12 @@ const MOVEMENT_CONFIG = {
 
 // Speech text for different sections
 const SPEECH_TEXT = {
-  about: "Hey there! I'm Nexus, Nathan's digital companion. Ready to explore his story together?",
-  skills: "These are Nathan's superpowers! Each skill represents countless hours of dedication and growth.",
-  projects: "Time for the good stuff! These projects showcase Nathan's creativity and technical prowess.",
-  apps: "Mobile magic awaits! These Play Store gems showcase Nathan's journey into mobile app and game development.",
-  unity: "Feeling adventurous? Drag me here and let's dive into some interactive experiences!",
-  default: "Welcome to Nathan's digital realm! I'm Nexus, and I'll be your guide through this journey."
+  about: "GREETINGS.HUMAN // I.AM.NEXUS :: NATHAN.DIGITAL.COMPANION.exe // READY.TO.SCAN.STORY.DATA?",
+  skills: "ANALYZING.NATHAN.CAPABILITIES // SUPERPOWERS.DETECTED :: HOURS.OF.DEDICATION.COMPILED // GROWTH.MATRIX.IMPRESSIVE",
+  projects: "ACCESSING.PROJECT.DATABASE // CREATIVITY.AND.TECHNICAL.PROWESS.VERIFIED :: IMPRESSIVE.WORK.HUMAN",
+  apps: "MOBILE.MAGIC.PROTOCOLS.ACTIVE // PLAYSTORE.GEMS.LOCATED :: NATHAN.MOBILE.DEVELOPMENT.JOURNEY.ARCHIVED",
+  unity: "ADVENTURE.MODE.DETECTED // DRAG.NEXUS.HERE :: INTERACTIVE.EXPERIENCE.LOADING... // WARNING.FUN.LEVELS.HIGH",
+  default: "WELCOME.TO.NATHAN.DIGITAL.REALM // I.AM.NEXUS.EXE :: YOUR.GUIDE.THROUGH.THIS.JOURNEY.PROTOCOL"
 };
 
 function Model({ 

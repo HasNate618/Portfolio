@@ -180,6 +180,11 @@ export default function Home() {
           setShowThreeModel(false);
           setModelDroppedOnUnity(true);
           setPortalLoading(true);
+          
+          // Add game parameter to URL
+          const currentUrl = new URL(window.location);
+          currentUrl.searchParams.set('game', 'balancingact');
+          window.history.pushState({}, '', currentUrl);
         }}
       />
 
@@ -652,8 +657,8 @@ export default function Home() {
                 <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.StreetCleaner" target="_blank" rel="noopener noreferrer">
                   <Image src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" width={140} height={48} className="h-12" />
                 </a>
-                <a href="https://devpost.com/software/street-cleaner" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-400/30 border border-blue-400/30 hover:border-blue-400/60">
-                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <a href="https://devpost.com/software/street-cleaner" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-12 h-12 bg-black/80 hover:bg-black/60 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-cyan-400/30 border border-cyan-400/30 hover:border-cyan-400/60 backdrop-blur-sm">
+                  <svg className="w-6 h-6 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M6.002 1.61L0 12.004L6.002 22.39h11.996L24 12.004L17.998 1.61H6.002zm1.593 4.084h3.947c3.605 0 6.276 1.695 6.276 6.31c0 4.436-3.21 6.302-6.456 6.302H7.595V5.694zm2.517 2.449v7.714h1.241c2.646 0 3.862-1.55 3.862-3.861.009-2.569-1.096-3.853-3.767-3.853H10.112z"/>
                   </svg>
                 </a>
@@ -821,9 +826,23 @@ export default function Home() {
         />
       </div>
     </div>
+    
+    {/* Interactive Demo Disclaimer */}
+    <div className="mt-8 text-center">
+      <div className="cyber-card max-w-2xl mx-auto p-4 bg-gradient-to-r from-cyan-400/5 via-purple-500/5 to-cyan-400/5 border border-cyan-400/20">
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+          <span className="text-cyan-400 font-semibold text-sm uppercase tracking-wider">Work in Progress</span>
+          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+        </div>
+        <p className="text-gray-300 text-sm leading-relaxed">
+          Please imagine some cool game where you control Nexus. In the meantime, you can play with some rocks (one of the games I created for Lumen).
+        </p>
+      </div>
+    </div>
   </section>
 
-  <footer className="text-gray-500 text-sm mt-4 sm:mt-8">&copy; {new Date().getFullYear()} Nathan Espejo. All rights reserved.</footer>
+  <footer className="text-gray-500 text-sm mt-16 sm:mt-24">&copy; {new Date().getFullYear()} Nathan Espejo. All rights reserved.</footer>
   </div>
 </main>
 );
