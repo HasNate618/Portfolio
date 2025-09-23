@@ -102,6 +102,7 @@ export default function Home() {
   const [isMobile, setIsMobile] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
   const [gameLoaded, setGameLoaded] = useState(false);
+  const [modelFlyingIntoGame, setModelFlyingIntoGame] = useState(false);
 
   // Check if mobile
   useEffect(() => {
@@ -176,10 +177,17 @@ export default function Home() {
         modelRotation={[0, 0, 0]}
         transparent={true}
         visible={showThreeModel}
+        flyingIntoGame={modelFlyingIntoGame}
+        onDropStarted={() => {
+          // Start rotation immediately when drop begins
+          setModelFlyingIntoGame(true);
+        }}
         onDropOnUnity={() => {
+          // Complete the drop sequence after animation
           setShowThreeModel(false);
           setModelDroppedOnUnity(true);
           setPortalLoading(true);
+          setModelFlyingIntoGame(false);
           
           // Add game parameter to URL
           const currentUrl = new URL(window.location);
@@ -794,7 +802,7 @@ export default function Home() {
                   DIMENSIONAL GATEWAY
                 </div>
                 <div style={{ fontSize: '14px', opacity: 0.8 }}>
-                  Drop the 3D model here to activate
+                  Drop Nexus here to activate
                 </div>
                 <div style={{ fontSize: '12px', opacity: 0.6, marginTop: '8px' }}>
                   [ PORTAL STATUS: STANDBY ]

@@ -39,6 +39,7 @@ function Model({
   isMoving = false,
   hasArrived = false,
   disableVerticalRotation = false,
+  flyingIntoGame = false,
   onClick
 }) {
   const group = useRef();
@@ -92,7 +93,7 @@ function Model({
       Object.values(actions).forEach(action => action.stop());
       
       // Play Robot6Attack1 when clicked
-      let animationToPlay = 'Robot4Attack';
+      let animationToPlay// = 'Robot4Attack';
       
       // Fallback to first animation if Robot6Attack1 doesn't exist
       if (!actions[animationToPlay]) {
@@ -134,8 +135,23 @@ function Model({
   // Handle rotation and movement based on target direction
   useFrame((state, delta) => {
     if (group.current) {
+      // Special rotation when flying into game
+      if (flyingIntoGame) {
+        // Rotate to face into the page (180 degrees Y rotation)
+        group.current.rotation.y = THREE.MathUtils.lerp(
+          group.current.rotation.y,
+          Math.PI, // 180 degrees
+          0.1
+        );
+        // Slight tilt forward to show flying motion
+        group.current.rotation.x = THREE.MathUtils.lerp(
+          group.current.rotation.x,
+          -0.2, // Slight forward tilt
+          0.1
+        );
+      }
       // Determine behavior based on movement state
-      if (isMoving && !hasArrived) {
+      else if (isMoving && !hasArrived) {
         // Look towards target while moving
         // Calculate speed in each direction
         const speedX = Math.abs(targetDirection.x * MOVEMENT_CONFIG.MOVEMENT_SPEED);
@@ -246,7 +262,9 @@ function ThreeModel({
   cameraPosition = [0, 0, 5],
   style = {},
   onDropOnUnity = () => {},
-  visible = true
+  onDropStarted = () => {},
+  visible = true,
+  flyingIntoGame = false
 }) {
   // Helper function to get about section position
   const getAboutOffScreenPosition = () => {
@@ -693,13 +711,45 @@ function ThreeModel({
               ) {
                 setIsPlayingAnimation(true);
                 
+                // Call the drop started callback immediately for rotation
+                onDropStarted();
+                
                 const modelElement = modelRef.current;
                 if (modelElement) {
-                  modelElement.style.transition = "transform 0.5s ease-in";
-                  modelElement.style.transform = "translate(-50%, -50%) scale(0.2)";
+                  // Find the actual Unity canvas wrapper for more precise centering
+                  const unityWrapper = unitySection.querySelector('[id*="unity-wrapper"]');
+                  let targetRect = unityRect;
+
+                  if (unityWrapper) {
+                    targetRect = unityWrapper.getBoundingClientRect();
+                  }
+
+                  // Calculate center of Unity game container (in viewport coordinates)
+                  const unityCenterX = targetRect.left + (targetRect.width / 2);
+                  const unityCenterY = targetRect.top + (targetRect.height / 2);
+
+                  // Current model center (in viewport coordinates)
+                  const modelRect = modelElement.getBoundingClientRect();
+                  const modelCenterX = modelRect.left + modelRect.width / 2;
+                  const modelCenterY = modelRect.top + modelRect.height / 2;
+
+                  // Delta to move from current center to Unity center
+                  const dx = unityCenterX - modelCenterX;
+                  const dy = unityCenterY - modelCenterY;
+
+                  // Preserve the base centering translate(-50%,-50%) and add pixel delta
+                  // Phase 1: move towards center without scaling
+                  modelElement.style.transition = "transform 0.4s ease-out";
+                  modelElement.style.transform = `translate(-50%, -50%) translate(${dx}px, ${dy}px) scale(1)`;
+
+                  // Phase 2: after a brief delay, scale down while maintaining position
+                  setTimeout(() => {
+                    modelElement.style.transition = "transform 0.8s ease-in";
+                    modelElement.style.transform = `translate(-50%, -50%) translate(${dx}px, ${dy}px) scale(0.1)`;
+                  }, 200);
                 }
                 
-                setTimeout(() => onDropOnUnity(), 500);
+                setTimeout(() => onDropOnUnity(), 800);
                 return;
               }
             }
@@ -877,6 +927,7 @@ function ThreeModel({
           isMoving={isMoving}
           hasArrived={hasArrived}
           disableVerticalRotation={isYClamped}
+          flyingIntoGame={flyingIntoGame}
           onClick={handleModelClick}
         />
       </Canvas>
