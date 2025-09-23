@@ -1,51 +1,36 @@
-# Nathan Espejo - Portfolio
+# Nathan Espejo - Interactive Portfolio
 
-A modern, responsive portfolio website showcasing my projects, mobile games, and technical expertise. Built with Next.js 15 and optimized for performance and mobile experience.
-
-🌐 **Live Site**: [Portfolio Website](https://nathan-espejo.vercel.app/)
+A cutting-edge, cyberpunk-themed portfolio website featuring interactive 3D elements, Unity WebGL game integration, and responsive design. Built with Next.js and modern web technologies.
 
 ## ✨ Features
 
-- **Responsive Design**: Mobile-first approach with optimized layouts for all screen sizes
-- **Interactive Navigation**: Floating navigation bar with smooth scrolling to sections
-- **Typewriter Animation**: Dynamic title rotation with mobile/desktop variants
-- **Project Showcase**: Grid layout featuring web development and hardware projects
-- **Mobile Games Gallery**: Dedicated section for published Android games with Google Play Store links
-- **Resume Download**: Convenient download buttons for both desktop and mobile users
-- **Modern UI**: VS Code-inspired dark theme with Tailwind CSS styling
-- **Performance Optimized**: Next.js Image components with automatic optimization
-- **Deployment Ready**: ESLint compliant and optimized for Vercel hosting
+### 🎮 Interactive 3D Experience
+- **3D Robot Companion**: Interactive robot model with robotic speech patterns and personality
+- **Unity WebGL Integration**: Drag-and-drop the robot into a portal to launch an integrated Unity game
+- **Dynamic URL Management**: Game state tracking through URL parameters for seamless navigation
 
-## 🛠 Tech Stack
+### 🎨 Cyberpunk Aesthetic
+- **Glitch Effects**: Custom CSS animations with cyberpunk-style text distortions
+- **Neon Color Scheme**: Purple and green neon accents throughout the interface
+- **Responsive Design**: Optimized for both desktop and mobile devices
 
-- **Framework**: Next.js 15.4.6 (App Router)
-- **Styling**: Tailwind CSS with custom responsive design
-- **Language**: JavaScript (ES6+)
-- **Images**: Next.js Image optimization
-- **Deployment**: Vercel with automatic GitHub integration
-- **Version Control**: Git/GitHub
+### 📱 Mobile Optimization
+- **Adaptive Navigation**: Clean, simplified header for mobile devices
+- **Content Hiding**: Strategic hiding of interactive elements on smaller screens
+- **Touch-Friendly**: Optimized interactions for touch devices
 
-## 📱 Sections
-
-### Projects
-- **Lumen**: Award-winning hackathon project for social connection
-- **Careerly**: AI-powered virtual job fair platform
-- **SafeRoute**: Real-time hazard reporting Android app
-- **Animarker**: Wildlife tracking with computer vision
-- **FLEXFIRE-X**: Cyberpunk-inspired wearable projectile launcher
-- **Rubber Band Turret**: Bluetooth-controlled hardware project
-
-### Mobile Games
-- **Street Cleaner**: 🥇 Hackathon-winning environmental game
-- **Zenith Tower**: Futuristic dungeon crawler
-- **Mōtaru**: Fast-paced ninja action game
-- **Tic Tac Toe Ultimate**: Enhanced classic game experience
+### 🔧 Technical Highlights
+- **Next.js 15**: Latest Next.js framework with App Router
+- **React Three Fiber**: 3D graphics and animations
+- **Three.js**: Advanced 3D model loading and manipulation
+- **Tailwind CSS 4**: Modern styling with custom cyberpunk theme
+- **Vercel Analytics**: Performance and user interaction tracking
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18.17 or later
-- npm, yarn, pnpm, or bun
+- Node.js 18+ 
+- npm or yarn package manager
 
 ### Installation
 
@@ -58,92 +43,126 @@ A modern, responsive portfolio website showcasing my projects, mobile games, and
 2. **Install dependencies**
    ```bash
    npm install
-   # or
-   yarn install
-   # or
-   pnpm install
    ```
 
 3. **Run the development server**
    ```bash
    npm run dev
-   # or
-   yarn dev
-   # or
-   pnpm dev
-   # or
-   bun dev
    ```
 
 4. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000) to see the portfolio
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
-### Development
-
-- The main page component is located in `src/app/page.js`
-- Global styles are in `src/app/globals.css`
-- Static assets (images, resume) are in the `public/` directory
-- The page auto-updates as you edit files during development
-
-## 📦 Project Structure
+## 🏗️ Project Structure
 
 ```
 portfolio/
+├── public/
+│   ├── models/                 # 3D model files
+│   │   └── model.glb          # Robot 3D model
+│   ├── unity/                 # Unity WebGL build
+│   │   └── build/             # Unity game files
+│   └── [images]               # Project screenshots and icons
 ├── src/
-│   └── app/
-│       ├── page.js          # Main portfolio component
-│       ├── layout.js        # Root layout with metadata
-│       └── globals.css      # Global styles and Tailwind imports
-├── public/                  # Static assets
-│   ├── *.png               # Project images and app icons
-│   ├── *.jpg               # Project screenshots
-│   └── resume.pdf          # Downloadable resume
-├── next.config.mjs         # Next.js configuration
-├── tailwind.config.js      # Tailwind CSS configuration
-├── postcss.config.mjs      # PostCSS configuration
-└── package.json            # Dependencies and scripts
+│   ├── app/
+│   │   ├── globals.css        # Global styles with cyberpunk theme
+│   │   ├── layout.js          # Root layout component
+│   │   └── page.js            # Main portfolio page
+│   └── components/
+│       ├── ThreeModel.js      # 3D robot component
+│       └── UnityEmbed.js      # Unity game integration
+├── package.json               # Dependencies and scripts
+└── README.md                  # This file
 ```
 
-## 🎨 Design Features
+## 🎯 Key Components
 
-- **Color Scheme**: Dark theme with blue accents (`#3b82f6`)
-- **Typography**: System fonts with proper spacing and hierarchy
-- **Animations**: Smooth hover effects and typewriter animations
-- **Layout**: CSS Grid and Flexbox for responsive layouts
-- **Icons**: Emoji and Unicode symbols for visual elements
-- **Images**: Optimized with Next.js Image component for performance
+### ThreeModel.js
+Interactive 3D robot companion that:
+- Responds to user interactions with robotic speech
+- Can be dragged and dropped into the Unity portal
+- Features smooth animations and model loading
 
-## 🔧 Build & Deployment
+### UnityEmbed.js
+Unity WebGL game integration that:
+- Loads Unity game seamlessly within the portfolio
+- Handles game state management
+- Provides clean loading transitions
 
-### Local Build
+### Main Portfolio (page.js)
+Central hub featuring:
+- Typewriter animation for developer titles
+- Project showcase with cyberpunk styling
+- Dynamic navigation and responsive layout
+- Portal system for Unity game integration
+
+## 🎨 Customization
+
+### Color Scheme
+The cyberpunk theme uses CSS custom properties that can be easily modified in `globals.css`:
+- Primary: Purple/violet tones
+- Accent: Neon green highlights
+- Background: Dark grays with transparency
+
+### 3D Model
+Replace the robot model by updating `public/models/model.glb` with your own GLTF/GLB file.
+
+### Unity Game
+Replace the Unity WebGL build in `public/unity/build/` with your own Unity export.
+
+## 📱 Responsive Features
+
+- **Desktop**: Full interactive experience with 3D models and Unity integration
+- **Mobile**: Streamlined interface with hidden complex interactions
+- **Tablet**: Balanced experience optimized for touch interactions
+
+## 🔧 Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint checks
+
+## 🌐 Deployment
+
+This project is optimized for deployment on Vercel:
+
+1. Connect your GitHub repository to Vercel
+2. Vercel will automatically detect the Next.js framework
+3. Deploy with default settings
+
+Alternatively, build and deploy to any static hosting provider:
 ```bash
 npm run build
 npm run start
 ```
 
-### Vercel Deployment
-1. Connect your GitHub repository to Vercel
-2. Vercel automatically detects Next.js and configures build settings
-3. Each push to the main branch triggers automatic deployment
-4. Build includes ESLint validation and image optimization
+## 🛠️ Technologies Used
 
-### Build Optimization
-- **ESLint**: Enforces code quality and Next.js best practices
-- **Image Optimization**: Automatic WebP conversion and responsive sizing
-- **Bundle Analysis**: Tree shaking and code splitting for optimal loading
-- **Performance**: Lighthouse score optimization
+- **Frontend Framework**: Next.js 15 with React 19
+- **3D Graphics**: Three.js, React Three Fiber, @react-three/drei
+- **Styling**: Tailwind CSS 4 with custom cyberpunk theme
+- **Game Integration**: Unity WebGL
+- **Analytics**: Vercel Analytics
+- **Development**: ESLint, PostCSS
+
+## 📈 Performance
+
+- Optimized 3D model loading with compression
+- Lazy loading for Unity WebGL content
+- Responsive images and assets
+- Minimal bundle size with code splitting
+
+## 🤝 Contributing
+
+This is a personal portfolio project, but feedback and suggestions are welcome!
+
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🤝 Contact
-
-- **Portfolio**: [Live Website](https://nathan-espejo.vercel.app/)
-- **GitHub**: [@HasNate618](https://github.com/HasNate618)
-- **LinkedIn**: [Nathan Espejo](https://linkedin.com/in/nathan-espejo)
-- **Email**: Available in resume download
-
----
-
-Built with ❤️ using Next.js and deployed on Vercel
+This project is for portfolio purposes. Feel free to use it as inspiration for your own portfolio!
