@@ -82,11 +82,14 @@ function TypewriterTitles() {
   );
 }
 
-const sections = [
+const baseSections = [
   { id: "about", label: "About", mobileLabel: "About" },
   { id: "skills", label: "Skills", mobileLabel: "Skills" },
   { id: "projects", label: "Projects", mobileLabel: "Projects" },
   { id: "apps", label: "Mobile Games", mobileLabel: "Games" },
+];
+
+const desktopOnlySections = [
   { id: "unity", label: "Interactive Demo"}
 ];
 
@@ -96,6 +99,20 @@ export default function Home() {
   const sectionRefs = useRef({});
   const [showThreeModel, setShowThreeModel] = useState(true);
   const [modelDroppedOnUnity, setModelDroppedOnUnity] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [portalLoading, setPortalLoading] = useState(false);
+  const [gameLoaded, setGameLoaded] = useState(false);
+
+  // Check if mobile
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Dynamic sections based on screen size
+  const sections = isMobile ? baseSections : [...baseSections, ...desktopOnlySections];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -141,7 +158,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#11111b] text-white relative overflow-hidden">
+    <main className="min-h-screen text-white relative overflow-hidden">
       <Analytics />
       {/* Glowing cursor follower */}
       <div
@@ -162,13 +179,14 @@ export default function Home() {
         onDropOnUnity={() => {
           setShowThreeModel(false);
           setModelDroppedOnUnity(true);
+          setPortalLoading(true);
         }}
       />
 
       <div className="relative z-10 flex flex-col items-center px-4">
         {/* Enhanced Header with Navigation */}
         <header className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 mb-8 w-full max-w-5xl px-4">
-          <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-white/20 dark:border-slate-700/50 shadow-xl shadow-blue-500/10 p-2">
+          <div className="backdrop-blur-lg border border-cyan-400/20 rounded-lg shadow-lg bg-black/80 p-3">
             <div className="flex items-center justify-between w-full">
               <nav className="vsc-tabs flex-1">
                 {sections.map(({ id, label, mobileLabel }) => (
@@ -198,7 +216,7 @@ export default function Home() {
                 <a
                   href="/Nathan_Espejo_Resume.pdf"
                   target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors shadow-sm"
+                  className="cyber-button inline-flex items-center rounded-lg text-sm font-medium"
                 >
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -214,42 +232,44 @@ export default function Home() {
         <section className="w-full max-w-4xl mx-auto flex flex-col items-center text-center mb-16 sm:mb-32 pt-24 sm:pt-50 pb-4 sm:pb-8">
           <div className="relative">
             {/* Background glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 rounded-full blur-3xl opacity-20 scale-150"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-green-400 to-cyan-600 rounded-full blur-3xl opacity-30 scale-150"></div>
 
             {/* Main content */}
             <div className="relative">
-              <p className="text-2xl sm:text-3xl font-light text-blue-300 mb-2 tracking-wide">Hi, I&apos;m</p>
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold mb-4 sm:mb-6 text-white leading-tight">
+              <p className="text-2xl sm:text-3xl font-light cyber-cyan mb-2 tracking-wide">Hi, I&apos;m</p>
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold mb-4 sm:mb-6 text-white leading-tight cyber-glitch-name" data-text="Nathan Espejo">
                 Nathan Espejo
               </h1>
               
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-light text-slate-600 dark:text-slate-300 mb-4 sm:mb-8 h-12 sm:h-16 flex items-center justify-center max-w-full overflow-hidden px-4">
-                <TypewriterTitles />
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-light mb-4 sm:mb-8 h-12 sm:h-16 flex items-center justify-center w-full">
+                <div style={{ minWidth: '320px', textAlign: 'center' }} className="sm:min-w-[480px]">
+                  <TypewriterTitles />
+                </div>
               </div>
               
-              <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed mb-10">
-                Passionate <span className="font-semibold text-blue-600 dark:text-blue-400">Software Engineering</span> student crafting innovative solutions that bridge hardware and software, from VR experiences to AI-driven applications.
+              <p className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-10">
+                Passionate <span className="font-semibold cyber-cyan">Software Engineering</span> student crafting innovative solutions that bridge hardware and software, from VR experiences to AI-driven applications.
               </p>
               
               {/* Social Links */}
               <div className="flex justify-center gap-6 mb-10">
-                <a href="mailto:nate.e.espejo@gmail.com" className="flex items-center justify-center w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full transition-colors">
-                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <a href="mailto:nate.e.espejo@gmail.com" className="flex items-center justify-center w-12 h-12 bg-cyan-400/10 hover:bg-cyan-400/20 border border-cyan-400/30 hover:border-cyan-400/60 rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-cyan-400/25">
+                  <svg className="w-6 h-6 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                   </svg>
                 </a>
-                <a href="https://github.com/HasNate618" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full transition-colors">
-                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <a href="https://github.com/HasNate618" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-12 h-12 bg-cyan-400/10 hover:bg-cyan-400/20 border border-cyan-400/30 hover:border-cyan-400/60 rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-cyan-400/25">
+                  <svg className="w-6 h-6 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                   </svg>
                 </a>
-                <a href="https://linkedin.com/in/nathan-espejo" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full transition-colors">
-                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <a href="https://linkedin.com/in/nathan-espejo" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-12 h-12 bg-cyan-400/10 hover:bg-cyan-400/20 border border-cyan-400/30 hover:border-cyan-400/60 rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-cyan-400/25">
+                  <svg className="w-6 h-6 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                   </svg>
                 </a>
-                <a href="https://devpost.com/nate-e-espejo" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full transition-colors">
-                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <a href="https://devpost.com/nate-e-espejo" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-12 h-12 bg-cyan-400/10 hover:bg-cyan-400/20 border border-cyan-400/30 hover:border-cyan-400/60 rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-cyan-400/25">
+                  <svg className="w-6 h-6 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M6.002 1.61L0 12.004L6.002 22.39h11.996L24 12.004L17.998 1.61H6.002zm1.593 4.084h3.947c3.605 0 6.276 1.695 6.276 6.31c0 4.436-3.21 6.302-6.456 6.302H7.595V5.694zm2.517 2.449v7.714h1.241c2.646 0 3.862-1.55 3.862-3.861.009-2.569-1.096-3.853-3.767-3.853H10.112z"/>
                   </svg>
                 </a>
@@ -259,7 +279,7 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
                 <a
                   href="#projects"
-                  className="inline-flex items-center px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl w-[220px] justify-center"
+                  className="cyber-button inline-flex items-center rounded-xl font-semibold transform hover:scale-105 transition-all duration-200 w-[280px] justify-center text-lg"
                   onClick={e => {
                     e.preventDefault();
                     const el = document.getElementById('projects');
@@ -282,7 +302,7 @@ export default function Home() {
                   <a
                     href="/Nathan_Espejo_Resume.pdf"
                     target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl w-[220px] justify-center"
+                    className="cyber-button inline-flex items-center rounded-xl font-semibold transform hover:scale-105 transition-all duration-200 w-[280px] justify-center"
                   >
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -296,13 +316,13 @@ export default function Home() {
         </section>
 
         {/* About Section */}
-        <section id="about" className="w-full max-w-4xl mx-auto mb-16 sm:mb-38 relative">
-          <div className="bg-[#11111a]/80 backdrop-blur rounded-xl border border-gray-600 p-6 sm:p-8 shadow-lg relative">
-            <h2 className="text-3xl font-bold mb-6 text-blue-400">About Me</h2>
+        <section id="about" className="w-full max-w-4xl mx-auto mb-16 sm:mb-38 relative mt-20 sm:mt-32">
+          <div className="cyber-card">
+            <h2 className="text-3xl font-bold mb-6 cyber-cyan cyber-section-title" data-text="About Me">About Me</h2>
             
             <div className="space-y-4">
               <p className="text-gray-300 leading-relaxed text-lg">
-                I&apos;m a <span className="text-green-400 font-semibold">Software Engineering</span> student at <span className="text-purple-400 font-semibold">Western University</span> with strong skills in game development, Android app creation, and hardware prototyping. I enjoy building immersive VR games, crafting intuitive Android apps, and designing wearable devices that merge software with physical interaction.
+                I&apos;m a <span className="cyber-green font-semibold">Software Engineering</span> student at <span className="cyber-purple font-semibold">Western University</span> with strong skills in game development, Android app creation, and hardware prototyping. I enjoy building immersive VR games, crafting intuitive Android apps, and designing wearable devices that merge software with physical interaction.
               </p>
               <p className="text-gray-300 leading-relaxed">
                 My multidisciplinary approach blends full-stack development, embedded systems, and artificial intelligence to create technology that feels like a natural extension of the body and mind. Passionate about mental health, accessibility, and ethical design, I&apos;m excited to explore how AI and emerging technologies can shape the future of human-computer interaction.
@@ -313,11 +333,11 @@ export default function Home() {
 
   {/* Skills Section */}
   <section id="skills" className="w-full max-w-4xl mx-auto mb-16 sm:mb-40 relative">
-    <div className="bg-[#11111a]/80 backdrop-blur rounded-xl border border-gray-600 p-6 sm:p-8 shadow-lg">
-      <h2 className="text-3xl font-bold mb-6 text-blue-400">Skills</h2>
+    <div className="cyber-card">
+      <h2 className="text-3xl font-bold mb-6 cyber-cyan cyber-section-title" data-text="Skills">Skills</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
-          <div className="flex items-center gap-2 mb-2"><span className="text-blue-500">💻</span><span className="font-semibold group-blue">Programming Languages</span></div>
+          <div className="flex items-center gap-2 mb-2"><span className="text-cyan-400">💻</span><span className="font-semibold cyber-cyan">Programming Languages</span></div>
           <div className="flex flex-wrap gap-2 mb-4">
             <span className="badge badge-blue">Java</span>
             <span className="badge badge-blue">C#</span>
@@ -473,20 +493,22 @@ export default function Home() {
 
   {/* Projects Section */}
   <section id="projects" className="w-full max-w-4xl mx-auto mb-16 sm:mb-32">
-     <h2 className="text-3xl font-bold mb-6 sm:mb-8 text-blue-400 text-center">
+     <h2 className="text-3xl font-bold mb-6 sm:mb-8 cyber-cyan text-center cyber-section-title" data-text="Projects I'm Proud Of">
       <span className="sm:hidden">Projects</span>
       <span className="hidden sm:inline">Projects I&apos;m Proud Of</span>
     </h2>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           {/* Lumen */}
-    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-400/20 transition-all duration-300 cursor-pointer hover:border-blue-300 hover:border-2">
-            <span className="absolute top-3 left-3 bg-yellow-400/80 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10">🥇 Hackathon Winner</span>
-            <span className="absolute top-3 right-3 bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Game Dev</span>
+    <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <Image src="/lumen_card.png" alt="Lumen Project" fill className="object-cover rounded-t-lg" />
             </div>
-            <div className="p-6 flex flex-col flex-1">
-              <h3 className="font-semibold text-lg mb-2">Lumen</h3>
+            <div className="p-4 flex flex-col flex-1">
+              <div className="flex flex-wrap gap-2 mb-3">
+                <span className="badge badge-yellow flex items-center gap-1">🥇 Hackathon Winner</span>
+                <span className="badge badge-cyan">Game Dev</span>
+              </div>
+              <h3 className="font-semibold text-xl mb-2 cyber-cyan">Lumen</h3>
               <p className="text-gray-600 dark:text-gray-400 flex-1">A calming companion that listens, understands, and responds with personalized mini-games.</p>
                 <div className="mt-4 flex flex-row gap-6">
                   <a href="https://llumen.netlify.app/" target="_blank" rel="noopener noreferrer" className="hidden sm:inline text-green-600 dark:text-green-400 hover:underline underline-offset-2 transition">&gt; Live Demo</a>
@@ -496,14 +518,16 @@ export default function Home() {
             </div>
           </div>
           {/* Eyecandy */}
-    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-400/20 transition-all duration-300 cursor-pointer hover:border-blue-300 hover:border-2">
-            <span className="absolute top-3 left-3 bg-yellow-400/80 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10">🥇 Hackathon Winner</span>
-            <span className="absolute top-3 right-3 bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Game Dev</span>
+    <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <Image src="/eyecandy_card.jpg" alt="Lumen Project" fill className="object-cover rounded-t-lg" />
             </div>
-            <div className="p-6 flex flex-col flex-1">
-              <h3 className="font-semibold text-lg mb-2">Eyecandy</h3>
+            <div className="p-4 flex flex-col flex-1">
+              <div className="flex flex-wrap gap-2 mb-3">
+                <span className="badge badge-yellow flex items-center gap-1">🥇 Hackathon Winner</span>
+                <span className="badge badge-cyan">Game Dev</span>
+              </div>
+              <h3 className="font-semibold text-xl mb-2 cyber-cyan">Eyecandy</h3>
               <p className="text-gray-600 dark:text-gray-400 flex-1">An AR shopping experience that turns any product photo into a virtual try-on.</p>
                 <div className="mt-4 flex flex-row gap-6">
                   <a href="https://devpost.com/software/eye-candy" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; Devpost</a>
@@ -512,14 +536,16 @@ export default function Home() {
             </div>
           </div>
           {/* Careerly */}
-    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-400/20 transition-all duration-300 cursor-pointer hover:border-blue-300 hover:border-2">
-            <span className="absolute top-3 left-3 bg-yellow-400/80 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 z-10">🥇 Hackathon Winner</span>
-            <span className="absolute top-3 right-3 bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Game Dev</span>
+    <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <Image src="/careerly_card.jpg" alt="Project 2" fill className="object-cover rounded-t-lg" />
             </div>
-            <div className="p-6 flex flex-col flex-1">
-              <h3 className="font-semibold text-lg mb-2">Careerly</h3>
+            <div className="p-4 flex flex-col flex-1">
+              <div className="flex flex-wrap gap-2 mb-3">
+                <span className="badge badge-yellow flex items-center gap-1">🥇 Hackathon Winner</span>
+                <span className="badge badge-cyan">Game Dev</span>
+              </div>
+              <h3 className="font-semibold text-xl mb-2 cyber-cyan">Careerly</h3>
               <p className="text-gray-600 dark:text-gray-400 flex-1">Making career exploration fun and inclusive through an AI-powered virtual job fair.</p>
               <div className="mt-4 flex flex-row gap-6">
                 <a href="https://devpost.com/software/career-fair-xz0f67" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; Devpost</a>
@@ -528,25 +554,29 @@ export default function Home() {
             </div>
           </div>
           {/* SafeRoute */}
-    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-green-400/20 transition-all duration-300 cursor-pointer hover:border-green-300 hover:border-2">
-            <span className="absolute top-3 right-3 bg-green-100 dark:bg-green-900/60 text-green-700 dark:text-green-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Android</span>
+    <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <Image src="/saferoute_card.png" alt="Project 3" fill className="object-cover rounded-t-lg" />
             </div>
-            <div className="p-6 flex flex-col flex-1">
-              <h3 className="font-semibold text-lg mb-2">SafeRoute</h3>
+            <div className="p-4 flex flex-col flex-1">
+              <div className="flex flex-wrap gap-2 mb-3">
+                <span className="badge badge-green">Android</span>
+              </div>
+              <h3 className="font-semibold text-xl mb-2 cyber-cyan">SafeRoute</h3>
               <p className="text-gray-600 dark:text-gray-400 flex-1">A real-time hazard reporting app with crowdsourced data, drone integration, and safe routing.</p>
               <a href="https://github.com/HasNate618/SafeRoute" target="_blank" rel="noopener noreferrer" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>
             </div>
           </div>
           {/* Nude Donations */}
-    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-green-400/20 transition-all duration-300 cursor-pointer hover:border-green-300 hover:border-2">
-            <span className="absolute top-3 right-3 bg-green-100 dark:bg-green-900/60 text-green-700 dark:text-green-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Android</span>
+    <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <Image src="/nude_donations_card.jpg" alt="Project 3" fill className="object-cover rounded-t-lg" />
             </div>
-            <div className="p-6 flex flex-col flex-1">
-              <h3 className="font-semibold text-lg mb-2">Nude Donations</h3>
+            <div className="p-4 flex flex-col flex-1">
+              <div className="flex flex-wrap gap-2 mb-3">
+                <span className="badge badge-green">Android</span>
+              </div>
+              <h3 className="font-semibold text-xl mb-2 cyber-cyan">Nude Donations</h3>
               <p className="text-gray-600 dark:text-gray-400 flex-1">A real-time hazard reporting app with crowdsourced data, drone integration, and safe routing.</p>
                 <div className="mt-4 flex flex-row gap-6">
                   <a href="https://taikai.network/hackbox/hackathons/hawkhacks/projects/clwdievy80fcez901sgpemwxf/idea" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; Taikai</a>
@@ -555,13 +585,15 @@ export default function Home() {
               </div>
           </div>
           {/* Animarker */}
-    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-green-400/20 transition-all duration-300 cursor-pointer hover:border-green-300 hover:border-2">
-            <span className="absolute top-3 right-3 bg-green-100 dark:bg-green-900/60 text-green-700 dark:text-green-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Android</span>
+    <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <Image src="/animarker_card.png" alt="Project 4" fill className="object-cover rounded-t-lg" />
             </div>
-            <div className="p-6 flex flex-col flex-1">
-              <h3 className="font-semibold text-lg mb-2">Animarker</h3>
+            <div className="p-4 flex flex-col flex-1">
+              <div className="flex flex-wrap gap-2 mb-3">
+                <span className="badge badge-green">Android</span>
+              </div>
+              <h3 className="font-semibold text-xl mb-2 cyber-cyan">Animarker</h3>
               <p className="text-gray-600 dark:text-gray-400 flex-1">A crowdsourced wildlife tracker using computer vision to identify and map animal sightings worldwide.</p>
               <div className="mt-4 flex flex-row gap-6">
                 <a href="https://devpost.com/software/endangered-animal-app" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">&gt; Devpost</a>
@@ -570,25 +602,29 @@ export default function Home() {
             </div>
           </div>
           {/* FLEXFIRE-X */}
-    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-400/20 transition-all duration-300 cursor-pointer hover:border-purple-300 hover:border-2">
-            <span className="absolute top-3 right-3 bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Hardware</span>
+    <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <Image src="/flexfire-x_card.png" alt="Project 5" fill className="object-cover rounded-t-lg" />
             </div>
-            <div className="p-6 flex flex-col flex-1">
-              <h3 className="font-semibold text-lg mb-2">FLEXFIRE-X</h3>
+            <div className="p-4 flex flex-col flex-1">
+              <div className="flex flex-wrap gap-2 mb-3">
+                <span className="badge badge-purple">Hardware</span>
+              </div>
+              <h3 className="font-semibold text-xl mb-2 cyber-cyan">FLEXFIRE-X</h3>
               <p className="text-gray-600 dark:text-gray-400 flex-1">A collaborative robot platform with adaptive mechanics for versatile autonomous mission execution.</p>
               <a href="https://github.com/HasNate618/FLEXFIRE-X" target="_blank" rel="noopener noreferrer" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline">&gt; GitHub</a>
             </div>
           </div>
           {/* Rubber Band Turret */}
-    <div className="bg-[#11111a]/95 rounded-lg shadow p-0 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 relative hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-400/20 transition-all duration-300 cursor-pointer hover:border-purple-300 hover:border-2">
-            <span className="absolute top-3 right-3 bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-200 text-xs font-semibold px-3 py-1 rounded-full z-10">Hardware</span>
+    <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
               <Image src="/turret_card.png" alt="Project 6" fill className="object-cover rounded-t-lg" />
             </div>
-            <div className="p-6 flex flex-col flex-1">
-              <h3 className="font-semibold text-lg mb-2">Rubber Band Turret</h3>
+            <div className="p-4 flex flex-col flex-1">
+              <div className="flex flex-wrap gap-2 mb-3">
+                <span className="badge badge-purple">Hardware</span>
+              </div>
+              <h3 className="font-semibold text-xl mb-2 cyber-cyan">Rubber Band Turret</h3>
               <p className="text-gray-600 dark:text-gray-400 flex-1">Bluetooth-controlled rubber band turret with smooth servo movement and wireless app control.</p>
               <a href="https://github.com/HasNate618/Rubber-Band-Turret" target="_blank" rel="noopener noreferrer" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline">&gt; GitHub</a>
             </div>
@@ -598,26 +634,26 @@ export default function Home() {
 
   {/* Mobile Apps Section */}
   <section id="apps" className="w-full max-w-4xl mx-auto mb-16 sm:mb-32">
-    <h2 className="text-3xl font-bold mb-6 sm:mb-8 text-blue-400 text-center">Mobile Games</h2>
+    <h2 className="text-3xl font-bold mb-6 sm:mb-8 cyber-cyan text-center cyber-section-title" data-text="Mobile Games">Mobile Games</h2>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           {/* Street Cleaner */}
-          <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center relative border border-gray-200 dark:border-gray-700 hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-yellow-400/20 transition-all duration-300 cursor-pointer hover:border-yellow-300 hover:border-2">
+          <div className="cyber-card flex flex-row items-center relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer p-4">
             <Image src="/street_cleaner_icon.png" alt="App 1 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-3xl mr-4 shadow flex-shrink-0" style={{borderRadius: '30%'}} />
             <div className="flex-1 flex flex-col items-start">
               <div className="w-full flex items-center gap-2 mb-1">
-                <h3 className="font-semibold text-lg md:text-xl">
+                <h3 className="font-semibold text-lg md:text-xl cyber-cyan">
                   <span className="md:hidden">Street Cleaner</span>
                   <span className="hidden md:inline">Street Cleaner&nbsp;</span>
                 </h3>
-                <span className="bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-full flex items-center">🥇</span>
+                <span className="badge badge-yellow flex items-center gap-1">🥇</span>
               </div>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Drag litter into the correct bin to win!</p>
               <div className="flex flex-row gap-4 items-center mt-2">
                 <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.StreetCleaner" target="_blank" rel="noopener noreferrer">
                   <Image src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" width={140} height={48} className="h-12" />
                 </a>
-                <a href="https://devpost.com/software/street-cleaner" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
-                  <svg className="w-5 h-5 text-gray-200" fill="currentColor" viewBox="0 0 24 24">
+                <a href="https://devpost.com/software/street-cleaner" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-400/30 border border-blue-400/30 hover:border-blue-400/60">
+                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M6.002 1.61L0 12.004L6.002 22.39h11.996L24 12.004L17.998 1.61H6.002zm1.593 4.084h3.947c3.605 0 6.276 1.695 6.276 6.31c0 4.436-3.21 6.302-6.456 6.302H7.595V5.694zm2.517 2.449v7.714h1.241c2.646 0 3.862-1.55 3.862-3.861.009-2.569-1.096-3.853-3.767-3.853H10.112z"/>
                   </svg>
                 </a>
@@ -625,10 +661,10 @@ export default function Home() {
             </div>
           </div>
           {/* Zenith Tower */}
-          <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center border border-gray-200 dark:border-gray-700 hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-400/20 transition-all duration-300 cursor-pointer hover:border-blue-400 hover:border-2">
+          <div className="cyber-card flex flex-row items-center relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer p-4">
             <Image src="/zenith_tower_icon.png" alt="App 2 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-3xl mr-4 shadow flex-shrink-0" style={{borderRadius: '30%'}} />
             <div className="flex-1 flex flex-col items-start">
-              <h3 className="font-semibold text-lg md:text-xl mb-1">Zenith Tower</h3>
+              <h3 className="font-semibold text-lg md:text-xl mb-1 cyber-cyan">Zenith Tower</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Ascend the tower in a futuristic dungeon crawler.</p>
               <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.ZenithTower" target="_blank" rel="noopener noreferrer">
                 <Image src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" width={140} height={48} className="h-12 mt-2" />
@@ -636,10 +672,10 @@ export default function Home() {
             </div>
           </div>
           {/* Mōtaru */}
-          <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center border border-gray-200 dark:border-gray-700 hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-400/20 transition-all duration-300 cursor-pointer hover:border-blue-400 hover:border-2">
+          <div className="cyber-card flex flex-row items-center relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer p-4">
             <Image src="/motaru_icon.png" alt="App 3 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-3xl mr-4 shadow flex-shrink-0" style={{borderRadius: '30%'}} />
             <div className="flex-1 flex flex-col items-start">
-              <h3 className="font-semibold text-lg md:text-xl mb-1">Mōtaru</h3>
+              <h3 className="font-semibold text-lg md:text-xl mb-1 cyber-cyan">Mōtaru</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Take down ninjas using quick reflexes!</p>
               <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.Mtaru" target="_blank" rel="noopener noreferrer">
                 <Image src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" width={140} height={48} className="h-12 mt-2" />
@@ -647,10 +683,10 @@ export default function Home() {
             </div>
           </div>
           {/* Tic Tac Toe Ultimate */}
-          <div className="bg-[#11111a]/80 rounded-lg shadow p-4 flex flex-row items-center border border-gray-200 dark:border-gray-700 hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-400/20 transition-all duration-300 cursor-pointer hover:border-blue-400 hover:border-2">
+          <div className="cyber-card flex flex-row items-center relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer p-4">
             <Image src="/tttu_icon.png" alt="App 4 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-3xl mr-4 shadow flex-shrink-0" style={{borderRadius: '30%'}} />
             <div className="flex-1 flex flex-col items-start">
-              <h3 className="font-semibold text-lg md:text-xl mb-1">Tic Tac Toe Ultimate</h3>
+              <h3 className="font-semibold text-lg md:text-xl mb-1 cyber-cyan">Tic Tac Toe Ultimate</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">The Ultimate Tic Tac Toe experience.</p>
               <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.TicTacToeUltimate" target="_blank" rel="noopener noreferrer">
                 <Image src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" width={140} height={48} className="h-12 mt-2" />
@@ -665,26 +701,125 @@ export default function Home() {
   <div className="w-full max-w-7xl h-8 sm:h-12 md:h-24 lg:h-24 flex-shrink-0" />
 
   {/* Unity Interactive Section */}
-  <section id="unity" className="w-full max-w-4xl mx-auto mb-20">
-    <h2 className="text-3xl font-bold mb-6 text-blue-400 text-center">Interactive Demo</h2>
-    <p className="text-center text-gray-400 mb-4 text-sm hidden sm:block">Drag the 3D robot into the game below to start! (Desktop only)</p>
-    <div className="rounded-xl border border-gray-700 bg-[#11111a]/80 p-4 shadow-lg">
-      {/* Lazy dynamic import note: for now we statically import */}
-      {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-      <DynamicUnity 
-        buildName="build"            /* Folder under /public/unity (you rebuilt with /unity/build) */
-        buildSubPath=""              /* No nested Build/ folder now */
-        fileBase="build"             /* Base filename: build.loader.js, build.data, etc. */
-        compression="none"           /* Rebuilt uncompressed */
-        height={540}
-        style={{ background: '#000', borderRadius: '0.75rem' }}
-        startButtonText="Drag the 3D model here to begin!"
-        modelDropped={modelDroppedOnUnity}
-        onDropEffectComplete={() => {
-          // You could add additional effects or actions here
-        }}
-      />
-      <p className="mt-3 text-xs text-gray-500 text-center">Build files expected at /public/unity/build/ (loader, data, framework.js, wasm)</p>
+  <section id="unity" className="w-full max-w-4xl mx-auto mb-20 hidden lg:block">
+    <h2 className="text-3xl font-bold mb-6 cyber-cyan text-center cyber-section-title" data-text="Interactive Demo">Interactive Demo</h2>
+    <div className="portal-container" style={{ height: '540px', position: 'relative' }}>
+      {/* Portal overlay - hidden when game is loaded */}
+      {!gameLoaded && (
+        <div className="portal-overlay" style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 2,
+          background: 'radial-gradient(circle at center, #001122 0%, #000811 50%, #000000 100%)',
+          borderRadius: '0.75rem',
+          transition: 'opacity 0.5s ease'
+        }}>
+          {/* Portal background effects */}
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            width: '300px',
+            height: '300px',
+            background: 'radial-gradient(circle, rgba(0, 255, 255, 0.3) 0%, rgba(0, 255, 255, 0.1) 30%, rgba(138, 43, 226, 0.1) 60%, transparent 100%)',
+            borderRadius: '50%',
+            transform: 'translate(-50%, -50%)',
+            animation: 'portalSpin 8s linear infinite',
+            zIndex: 1
+          }}></div>
+          
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            width: '200px',
+            height: '200px',
+            background: 'radial-gradient(circle, rgba(0, 255, 255, 0.4) 0%, rgba(138, 43, 226, 0.2) 50%, transparent 70%)',
+            borderRadius: '50%',
+            transform: 'translate(-50%, -50%)',
+            animation: 'portalSpin 6s linear infinite reverse',
+            zIndex: 2
+          }}></div>
+          
+          {/* Tech grid background */}
+          <div className="tech-grid"></div>
+          
+          {/* Portal rings */}
+          <div className="portal-rings">
+            <div className="portal-ring"></div>
+            <div className="portal-ring"></div>
+            <div className="portal-ring"></div>
+          </div>
+          
+          {/* Portal text */}
+          <div className="portal-text">
+            {portalLoading ? (
+              <>
+                <div style={{ fontSize: '18px', marginBottom: '8px' }}>
+                  DIMENSIONAL GATEWAY
+                </div>
+                <div style={{ fontSize: '14px', opacity: 0.8, marginBottom: '16px' }}>
+                  Initializing portal matrix...
+                </div>
+                <div className="loading-bar" style={{
+                  width: '200px',
+                  height: '4px',
+                  backgroundColor: 'rgba(0, 255, 255, 0.2)',
+                  borderRadius: '2px',
+                  overflow: 'hidden',
+                  margin: '0 auto'
+                }}>
+                  <div className="loading-progress" style={{
+                    width: '100%',
+                    height: '100%',
+                    background: 'linear-gradient(90deg, transparent, #00ffff, transparent)',
+                    animation: 'loading-scan 2s linear infinite'
+                  }}></div>
+                </div>
+                <div style={{ fontSize: '12px', opacity: 0.6, marginTop: '12px' }}>
+                  [ PORTAL STATUS: LOADING ]
+                </div>
+              </>
+            ) : (
+              <>
+                <div style={{ fontSize: '18px', marginBottom: '8px' }}>
+                  DIMENSIONAL GATEWAY
+                </div>
+                <div style={{ fontSize: '14px', opacity: 0.8 }}>
+                  Drop the 3D model here to activate
+                </div>
+                <div style={{ fontSize: '12px', opacity: 0.6, marginTop: '8px' }}>
+                  [ PORTAL STATUS: STANDBY ]
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+      
+      {/* Unity component */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+        <DynamicUnity 
+          buildName="build"
+          buildSubPath=""
+          fileBase="build"
+          compression="none"
+          height={540}
+          style={{ background: 'transparent', borderRadius: '0.75rem' }}
+          startButtonText=""
+          modelDropped={modelDroppedOnUnity}
+          onDropEffectComplete={() => {
+            // Portal activation effect complete
+          }}
+          onUnityLoaded={() => {
+            setPortalLoading(false);
+            setGameLoaded(true);
+          }}
+        />
+      </div>
     </div>
   </section>
 

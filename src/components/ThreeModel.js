@@ -19,6 +19,16 @@ const MOVEMENT_CONFIG = {
   DESKTOP_BREAKPOINT: 1024
 };
 
+// Speech text for different sections
+const SPEECH_TEXT = {
+  about: "Hey there! I'm Nexus, Nathan's digital companion. Ready to explore his story together?",
+  skills: "These are Nathan's superpowers! Each skill represents countless hours of dedication and growth.",
+  projects: "Time for the good stuff! These projects showcase Nathan's creativity and technical prowess.",
+  apps: "Mobile magic awaits! These Play Store gems showcase Nathan's journey into mobile app and game development.",
+  unity: "Feeling adventurous? Drag me here and let's dive into some interactive experiences!",
+  default: "Welcome to Nathan's digital realm! I'm Nexus, and I'll be your guide through this journey."
+};
+
 function Model({ 
   url, 
   scale = 1, 
@@ -302,6 +312,35 @@ function ThreeModel({
     return chosenX;
   };
 
+  // Helper function to determine current section and update speech
+  const updateSpeechForCurrentSection = (scrollTop) => {
+    if (typeof window === 'undefined') return;
+    
+    const sections = ['about', 'projects', 'skills', 'apps', 'unity'];
+    const middleY = scrollTop + window.innerHeight / 2;
+    let foundSection = null;
+    
+    for (const sectionId of sections) {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        const rect = section.getBoundingClientRect();
+        const sectionTop = rect.top + scrollTop;
+        const sectionBottom = sectionTop + rect.height;
+        
+        // Add some buffer to make section detection more forgiving
+        if (middleY >= sectionTop - 100 && middleY <= sectionBottom + 100) {
+          foundSection = sectionId;
+          break;
+        }
+      }
+    }
+    
+    const newSpeech = foundSection ? SPEECH_TEXT[foundSection] : SPEECH_TEXT.default;
+    if (newSpeech !== currentSpeech) {
+      setCurrentSpeech(newSpeech);
+    }
+  };
+
   // Helper: get the document Y of the middle of the about section
   const getAboutMiddleDocumentY = () => {
     if (typeof window === 'undefined') return null;
@@ -327,12 +366,38 @@ function ThreeModel({
   const [isDragging, setIsDragging] = useState(false);
   const [isOverUnity, setIsOverUnity] = useState(false);
   const [isDesktop, setIsDesktop] = useState(true);
+  const [currentSpeech, setCurrentSpeech] = useState(SPEECH_TEXT.default);
+  const [displayedText, setDisplayedText] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
   // Track last scroll position for render-time viewport-based clamping
   const lastScrollYRef = useRef(0);
   
   // Refs
   const modelRef = useRef(null);
   const dragOffsetRef = useRef({ x: 0, y: 0 });
+  
+  // Typewriter effect for speech bubble
+  useEffect(() => {
+    if (!currentSpeech) return;
+    
+    setIsTyping(true);
+    setDisplayedText('');
+    
+    let currentIndex = 0;
+    const typingSpeed = 25; // milliseconds per character - increased speed
+    
+    const typeInterval = setInterval(() => {
+      if (currentIndex < currentSpeech.length) {
+        setDisplayedText(currentSpeech.slice(0, currentIndex + 1));
+        currentIndex++;
+      } else {
+        setIsTyping(false);
+        clearInterval(typeInterval);
+      }
+    }, typingSpeed);
+    
+    return () => clearInterval(typeInterval);
+  }, [currentSpeech]);
   
   // Handle model click to trigger animation
   const handleModelClick = () => {
@@ -427,6 +492,9 @@ function ThreeModel({
           setTargetPosition(newTarget);
         }
       }
+
+      // Update speech text based on current section (always, not just when staggered)
+      updateSpeechForCurrentSection(scrollTop);
 
       // Only update model position after stagger is triggered
       if (!staggerTriggered) return;
@@ -642,6 +710,136 @@ function ThreeModel({
           }}
         />
       )}
+      
+      {/* Speech bubble */}
+      {staggerTriggered && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '100%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%)',
+            border: '2px solid #00ffff',
+            borderRadius: '20px',
+            padding: '16px 20px',
+            marginBottom: '15px',
+            minWidth: '280px',
+            maxWidth: '420px',
+            fontSize: '15px',
+            fontFamily: '"Courier New", monospace',
+            fontWeight: '600',
+            color: '#00ffff',
+            textShadow: '0 0 10px rgba(0, 255, 255, 0.6)',
+            whiteSpace: 'pre-wrap',
+            wordWrap: 'break-word',
+            boxShadow: `
+              0 0 30px rgba(0, 255, 255, 0.4),
+              inset 0 2px 0 rgba(255, 255, 255, 0.15),
+              inset 0 -2px 0 rgba(0, 255, 255, 0.1),
+              0 8px 20px rgba(0, 0, 0, 0.5)
+            `,
+            backdropFilter: 'blur(8px)',
+            pointerEvents: 'none',
+            zIndex: 1000,
+            animation: isTyping ? 'none' : 'roboticPulse 2s ease-in-out infinite alternate',
+            opacity: displayedText ? 1 : 0,
+            transition: 'opacity 0.3s ease',
+          }}
+        >
+          <div style={{
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            {/* Robot indicator */}
+            <div style={{
+              width: '6px',
+              height: '6px',
+              backgroundColor: '#00ffff',
+              borderRadius: '50%',
+              animation: 'roboticBlink 1.5s ease-in-out infinite',
+              boxShadow: '0 0 6px rgba(0, 255, 255, 0.8)',
+              flexShrink: 0
+            }} />
+            
+            <div style={{ flex: 1, lineHeight: '1.4' }}>
+              {displayedText}
+              {isTyping && (
+                <span style={{
+                  display: 'inline-block',
+                  width: '2px',
+                  height: '14px',
+                  backgroundColor: '#00ffff',
+                  marginLeft: '2px',
+                  animation: 'roboticCursor 1s ease-in-out infinite'
+                }}>|</span>
+              )}
+            </div>
+          </div>
+          
+          {/* Circuit pattern overlay */}
+          <div style={{
+            position: 'absolute',
+            top: '4px',
+            right: '4px',
+            width: '12px',
+            height: '12px',
+            background: `
+              linear-gradient(45deg, transparent 40%, #00ffff 41%, #00ffff 44%, transparent 45%),
+              linear-gradient(-45deg, transparent 40%, #00ffff 41%, #00ffff 44%, transparent 45%)
+            `,
+            opacity: 0.3
+          }} />
+          
+          {/* Speech bubble tail */}
+          <div style={{
+            position: 'absolute',
+            top: '100%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: 0,
+            height: 0,
+            borderLeft: '10px solid transparent',
+            borderRight: '10px solid transparent',
+            borderTop: '12px solid #1a1a1a',
+            filter: 'drop-shadow(0 0 4px rgba(0, 255, 255, 0.3))'
+          }} />
+          <div style={{
+            position: 'absolute',
+            top: '100%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            marginTop: '-2px',
+            width: 0,
+            height: 0,
+            borderLeft: '12px solid transparent',
+            borderRight: '12px solid transparent',
+            borderTop: '14px solid #00ffff',
+            opacity: 0.8
+          }} />
+        </div>
+      )}
+      
+      {/* Add CSS keyframes for animations */}
+      <style jsx>{`
+        @keyframes roboticPulse {
+          0% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 4px 12px rgba(0, 0, 0, 0.4); }
+          100% { box-shadow: 0 0 30px rgba(0, 255, 255, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 6px 16px rgba(0, 0, 0, 0.5); }
+        }
+        
+        @keyframes roboticBlink {
+          0%, 50% { opacity: 1; }
+          51%, 100% { opacity: 0.3; }
+        }
+        
+        @keyframes roboticCursor {
+          0%, 50% { opacity: 1; }
+          51%, 100% { opacity: 0; }
+        }
+      `}</style>
+      
       <Canvas 
         camera={{ position: cameraPosition, fov: 45 }}
         style={{ background: 'transparent' }}

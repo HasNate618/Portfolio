@@ -21,7 +21,8 @@ export default function UnityEmbed({
   startButtonText = 'Click to Start Game',
   startButtonStyle = {},
   modelDropped = false,
-  onDropEffectComplete = () => {}
+  onDropEffectComplete = () => {},
+  onUnityLoaded = () => {}
 }) {
   const canvasWrapperRef = useRef(null);
   const [error, setError] = useState(null);
@@ -29,9 +30,6 @@ export default function UnityEmbed({
   const [gameStarted, setGameStarted] = useState(false);
   const [unityInstance, setUnityInstance] = useState(null);
   const [isDesktop, setIsDesktop] = useState(true);
-  
-  // State for model drop animation
-  const [showDropAnimation, setShowDropAnimation] = useState(false);
   
   // Check if we're on desktop
   useEffect(() => {
@@ -43,19 +41,12 @@ export default function UnityEmbed({
     }
   }, []);
   
-  // When model is dropped, trigger the animation and then start the game
+  // When model is dropped, start the game immediately
   useEffect(() => {
     if (modelDropped && !gameStarted) {
-      setShowDropAnimation(true);
-      
-      // After animation completes, start the game
-      setTimeout(() => {
-        setShowDropAnimation(false);
-        setGameStarted(true);
-        
-        // Notify parent that drop effect is complete
-        setTimeout(() => onDropEffectComplete(), 500);
-      }, 1500); // Animation duration
+      setGameStarted(true);
+      // Notify parent that drop effect is complete
+      onDropEffectComplete();
     }
   }, [modelDropped, gameStarted, onDropEffectComplete]);
 
@@ -123,6 +114,7 @@ export default function UnityEmbed({
             if (!canceled) {
               setUnityInstance(instance);
               setLoading(false);
+              onUnityLoaded(); // Notify parent that Unity is loaded
               console.log('[UnityEmbed] Unity instance loaded successfully');
             }
           }).catch(e => {
@@ -187,133 +179,6 @@ export default function UnityEmbed({
   return (
     <div id={`unity-container-${buildName.replace(/[^a-zA-Z0-9]/g, '-')}`} className={`unity-embed ${className}`} style={{ width, maxWidth: '100%', ...style }}>
       <div id={`unity-wrapper-${buildName.replace(/[^a-zA-Z0-9]/g, '-')}`} ref={canvasWrapperRef} style={{ position: 'relative', width: '100%', height, background: '#000', borderRadius: 12 }} />
-      
-      {/* Model drop animation */}
-      {showDropAnimation && (
-        <div 
-          style={{ 
-            position: 'relative', 
-            marginTop: -height, 
-            height, 
-            display: 'flex', 
-            flexDirection: 'column',
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            color: '#fff', 
-            fontSize: 16, 
-            background: 'rgba(0,0,0,0.8)', 
-            borderRadius: 12,
-            zIndex: 20,
-            overflow: 'hidden'
-          }}
-        >
-          <div className="model-drop-animation">
-            <div className="model-drop-circle"></div>
-            <div className="model-drop-pulse"></div>
-            <h3 style={{ fontSize: '24px', fontWeight: 'bold', marginTop: '20px', color: '#4fc3f7' }}>
-              Starting Game...
-            </h3>
-          </div>
-          <style jsx>{`
-            .model-drop-animation {
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              justify-content: center;
-            }
-            .model-drop-circle {
-              width: 100px;
-              height: 100px;
-              background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-              border-radius: 50%;
-              animation: dropIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), glow 2s infinite alternate;
-            }
-            .model-drop-pulse {
-              position: absolute;
-              width: 100px;
-              height: 100px;
-              border-radius: 50%;
-              background: transparent;
-              border: 3px solid #3b82f6;
-              animation: pulse 1.5s infinite;
-            }
-            @keyframes dropIn {
-              0% { transform: translateY(-200px) scale(0.2); opacity: 0; }
-              60% { transform: translateY(20px) scale(1.1); }
-              80% { transform: translateY(-10px) scale(0.95); }
-              100% { transform: translateY(0) scale(1); opacity: 1; }
-            }
-            @keyframes pulse {
-              0% { transform: scale(1); opacity: 1; }
-              100% { transform: scale(2.5); opacity: 0; }
-            }
-            @keyframes glow {
-              0% { box-shadow: 0 0 20px 5px rgba(59, 130, 246, 0.6); }
-              100% { box-shadow: 0 0 30px 8px rgba(139, 92, 246, 0.8); }
-            }
-          `}</style>
-        </div>
-      )}
-      
-      {!gameStarted && !showDropAnimation && (
-        <div 
-          style={{ 
-            position: 'relative', 
-            marginTop: -height, 
-            height, 
-            display: 'flex', 
-            flexDirection: 'column',
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            color: '#fff', 
-            fontSize: 16, 
-            background: 'rgba(0,0,0,0.7)', 
-            borderRadius: 12,
-            cursor: 'pointer',
-            zIndex: 10
-          }}
-        >
-          <button 
-            onClick={handleStartGame}
-            style={{
-              padding: '12px 24px',
-              background: 'linear-gradient(to right, #3b82f6, #8b5cf6)',
-              color: 'white',
-              borderRadius: '8px',
-              fontSize: '16px',
-              fontWeight: 'bold',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'transform 0.2s, box-shadow 0.2s',
-              boxShadow: '0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08)',
-              ...startButtonStyle
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08)';
-              // Prevent event bubbling
-              e.stopPropagation();
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08)';
-              // Prevent event bubbling
-              e.stopPropagation();
-            }}
-          >
-            {startButtonText}
-          </button>
-          <p style={{ marginTop: '16px', fontSize: '14px', opacity: 0.7 }}>
-            Click to enable audio and input controls
-          </p>
-        </div>
-      )}
-      
-      {gameStarted && loading && !error && (
-        <div style={{ position: 'relative', marginTop: -height, height, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 14, background: 'rgba(0,0,0,0.4)', borderRadius: 12 }}>
-          Loading Unity Experience...
-        </div>
-      )}
       
       {error && (
         <div style={{ position: 'relative', marginTop: -height, height, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f87171', fontSize: 14, background: 'rgba(0,0,0,0.6)', borderRadius: 12, textAlign: 'center', padding: 16 }}>
