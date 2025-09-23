@@ -11,7 +11,7 @@ const MOVEMENT_CONFIG = {
   LERP_SPEED: 0.05,
   MIN_MOVEMENT_STEP: 4,
   TARGET_SCREEN_X_PERCENT: 0.9,
-  TARGET_SCREEN_Y_PERCENT: 0.5,
+  TARGET_SCREEN_Y_PERCENT: 0.6,
   OFF_SCREEN_X: 80,
   MOVEMENT_THRESHOLD: 20,
   HORIZONTAL_ROTATE_INTENSITY: 0.004,
@@ -296,38 +296,44 @@ function ThreeModel({
   };
 
   // Helper function for panel side switching logic
+  // Returns the horizontal midpoint between the visible panel edge (on its side)
+  // and the corresponding viewport edge.
   const calculateTargetX = (scrollTop, panelElems) => {
-    const defaultTargetX = window.innerWidth * MOVEMENT_CONFIG.TARGET_SCREEN_X_PERCENT;
-    const leftX = Math.max(120, window.innerWidth * 0.15);
-    const rightX = Math.max(200, window.innerWidth * 0.85);
+    const defaultTargetX = window.innerWidth * 0.5; // fallback: screen center
     const middleY = scrollTop + window.innerHeight / 2;
 
-    let chosenX = defaultTargetX;
-    let found = false;
+    let active = null; // { el, side }
     let nearest = { el: null, dist: Infinity, side: null };
 
-    panelElems.forEach((el) => {
+    panelElems.forEach((el, idx) => {
       const rect = el.getBoundingClientRect();
       const panelTop = rect.top + scrollTop;
       const panelBottom = panelTop + rect.height;
-      const side = el.dataset.staggerSide || (panelElems.indexOf(el) % 2 === 0 ? 'left' : 'right');
+      const side = el.dataset.staggerSide || (idx % 2 === 0 ? 'left' : 'right');
 
       if (middleY >= panelTop && middleY <= panelBottom) {
-        chosenX = side === 'left' ? rightX : leftX;
-        found = true;
+        active = { el, side };
       } else {
         const dist = middleY < panelTop ? panelTop - middleY : middleY - panelBottom;
-        if (dist < nearest.dist) {
-          nearest = { el, dist, side };
-        }
+        if (dist < nearest.dist) nearest = { el, dist, side };
       }
     });
 
-    if (!found && nearest.el) {
-      chosenX = nearest.side === 'left' ? rightX : leftX;
-    }
+    const pick = active || (nearest.el ? nearest : null);
+    if (!pick) return defaultTargetX;
 
-    return chosenX;
+    const rect = pick.el.getBoundingClientRect();
+    if (pick.side === 'left') {
+      // Center between the panel's right edge and the right edge of the page
+      const panelRight = rect.right;
+      const pageRight = window.innerWidth;
+      return (panelRight + pageRight) / 2;
+    } else {
+      // Center between the left edge of the page and the panel's left edge
+      const panelLeft = rect.left;
+      const pageLeft = 0;
+      return (pageLeft + panelLeft) / 2;
+    }
   };
 
   // Helper function to determine current section and update speech
