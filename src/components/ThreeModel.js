@@ -750,9 +750,9 @@ function ThreeModel({
 
                   // Phase 2: after a brief delay, scale down while maintaining position
                   setTimeout(() => {
-                    modelElement.style.transition = "transform 0.8s ease-in";
+                    modelElement.style.transition = "transform .4s ease-in";
                     modelElement.style.transform = `translate(-50%, -50%) translate(${dx}px, ${dy}px) scale(0.1)`;
-                  }, 200);
+                  }, 400);
                 }
                 
                 setTimeout(() => onDropOnUnity(), 800);
