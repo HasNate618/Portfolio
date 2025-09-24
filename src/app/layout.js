@@ -15,7 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata = {
-  title: "Nathan Espejo | Software Engineer",
+  title: "Nathan Espejo's Portfolio",
   description: "Nathan Espejo's personal portfolio",
   icons: {
     icon: [
