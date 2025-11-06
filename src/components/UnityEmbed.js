@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 
 // Unity WebGL embed component.
 // Place Unity build output in: public/unity/<buildName>/
@@ -10,26 +10,63 @@ import { useEffect, useRef, useState } from 'react';
 //  <buildName>.wasm
 // Optional: StreamingAssets directory.
 
-export default function UnityEmbed({ 
-  buildName = 'MyUnityBuild', 
+const UnityEmbed = forwardRef(function UnityEmbed({ 
   className = '', 
   style = {}, 
   width = '100%', 
   height = 480,
-  fileBase = 'build',              // File base name (e.g. Builds => Builds.loader.js)
+  fileBase = 'unity',              // File base name (e.g. Builds => Builds.loader.js)
   compression = 'none',             // Default now 'none' since uncompressed rebuild chosen
   startButtonText = 'Click to Start Game',
   startButtonStyle = {},
   modelDropped = false,
   onDropEffectComplete = () => {},
   onUnityLoaded = () => {}
-}) {
+}, ref) {
   const canvasWrapperRef = useRef(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [gameStarted, setGameStarted] = useState(false);
   const [unityInstance, setUnityInstance] = useState(null);
   const [isDesktop, setIsDesktop] = useState(true);
+  const audioContextsRef = useRef(new Set());
+  const muteStateRef = useRef(false); // Track mute state globally
+  
+  // Expose fullscreen and sound control methods to parent via ref
+  useImperativeHandle(ref, () => ({
+    setUnityFullscreen: () => {
+      if (unityInstance && typeof unityInstance.SetFullscreen === 'function') {
+        unityInstance.SetFullscreen(1);
+      }
+    },
+    setUnitySound: (enabled) => {
+      // Store mute state globally so it persists
+      muteStateRef.current = !enabled;
+      
+      // Control all audio contexts found during Unity execution
+      const audioContexts = audioContextsRef.current;
+      let count = 0;
+      
+      audioContexts.forEach(ctx => {
+        try {
+          if (enabled) {
+            if (ctx.state === 'suspended') {
+              ctx.resume().catch(e => console.warn('[UnityEmbed] Could not resume context:', e));
+            }
+          } else {
+            if (ctx.state === 'running') {
+              ctx.suspend().catch(e => console.warn('[UnityEmbed] Could not suspend context:', e));
+            }
+          }
+          count++;
+        } catch (e) {
+          console.warn('[UnityEmbed] Error controlling audio context:', e);
+        }
+      });
+      
+      console.log('[UnityEmbed] Audio', enabled ? 'unmuted' : 'muted', `(${count} contexts)`);
+    }
+  }), [unityInstance]);
   
   // Check if we're on desktop
   useEffect(() => {
@@ -67,7 +104,46 @@ export default function UnityEmbed({
     const loadUnity = async () => {
       try {
         setLoading(true);
-  const basePath = `/unity/${buildName}/`;
+        
+        // Intercept AudioContext creation to capture all contexts Unity creates
+        const OriginalAudioContext = window.AudioContext || window.webkitAudioContext;
+        if (OriginalAudioContext && !window._audioContextIntercepted) {
+          window._audioContextIntercepted = true;
+          const audioContextsRef_local = audioContextsRef;
+          const muteStateRef_local = muteStateRef;
+          
+          window.AudioContext = class extends OriginalAudioContext {
+            constructor() {
+              super();
+              audioContextsRef_local.current.add(this);
+              
+              // Override resume method to respect mute state
+              const originalResume = this.resume.bind(this);
+              this.resume = function() {
+                if (muteStateRef_local.current) {
+                  console.log('[UnityEmbed] Blocked resume() - mute is active');
+                  return Promise.resolve();
+                }
+                return originalResume();
+              };
+              
+              // Also override suspend to allow it
+              const originalSuspend = this.suspend.bind(this);
+              this.suspend = function() {
+                muteStateRef_local.current = true;
+                return originalSuspend();
+              };
+              
+              console.log('[UnityEmbed] Captured audio context, total:', audioContextsRef_local.current.size);
+            }
+          };
+          
+          if (window.webkitAudioContext) {
+            window.webkitAudioContext = window.AudioContext;
+          }
+        }
+  
+  const basePath = `/unity/`;
   script = document.createElement('script');
   // Loader script actual name pattern: <fileBase>.loader.js
   script.src = `${basePath}/${fileBase}.loader.js`;
@@ -80,7 +156,7 @@ export default function UnityEmbed({
             return;
           }
           const canvas = document.createElement('canvas');
-            canvas.id = `unity-canvas-${buildName.replace(/[^a-zA-Z0-9]/g, '-')}`;
+            canvas.id = `unity-canvas-${fileBase.replace(/[^a-zA-Z0-9]/g, '-')}`;
             canvas.style.width = '100%';
             canvas.style.height = '100%';
             canvas.style.outline = 'none';
@@ -93,10 +169,10 @@ export default function UnityEmbed({
           // Current repo has .br files (Builds.data.br etc). Either rename (remove .br) after rebuild w/out compression
           // or configure headers and keep original names (renaming alone without header breaks loading).
           const suffix = compression === 'none' ? '' : (compression === 'brotli' ? '.br' : '.gz');
-          const dataFile = `${basePath}/${fileBase}.data${suffix}`;
-          // Use build.js for framework file (Unity uncompressed build)
-          const frameworkFile = `${basePath}/${fileBase}.js${suffix}`;
-          const wasmFile = `${basePath}/${fileBase}.wasm${suffix}`;
+          const dataFile = `${basePath}${fileBase}.data${suffix}`;
+          // Use framework.js for compressed builds, .js for uncompressed builds
+          const frameworkFile = compression === 'none' ? `${basePath}${fileBase}.js` : `${basePath}${fileBase}.framework.js${suffix}`;
+          const wasmFile = `${basePath}${fileBase}.wasm${suffix}`;
           console.log('[UnityEmbed] Loading build:', { loader: script.src, dataFile, frameworkFile, wasmFile, compression });
 
           // Create Unity with explicit canvas ID and container ID
@@ -104,9 +180,9 @@ export default function UnityEmbed({
             dataUrl: dataFile,
             frameworkUrl: frameworkFile,
             codeUrl: wasmFile,
-            streamingAssetsUrl: `/unity/${buildName}/StreamingAssets`,
+            streamingAssetsUrl: `/unity/StreamingAssets`,
             companyName: 'Portfolio',
-            productName: buildName,
+            productName: fileBase,
             productVersion: '1.0',
             // Explicitly specify the canvas ID as target
             id: canvas.id
@@ -152,7 +228,7 @@ export default function UnityEmbed({
         }
       }
     };
-  }, [buildName, gameStarted, unityInstance]);
+  }, [fileBase, gameStarted, unityInstance]);
 
   const handleStartGame = (e) => {
     // Prevent event bubbling
@@ -177,16 +253,16 @@ export default function UnityEmbed({
   }
 
   return (
-    <div id={`unity-container-${buildName.replace(/[^a-zA-Z0-9]/g, '-')}`} className={`unity-embed ${className}`} style={{ width, maxWidth: '100%', ...style }}>
-      <div id={`unity-wrapper-${buildName.replace(/[^a-zA-Z0-9]/g, '-')}`} ref={canvasWrapperRef} style={{ position: 'relative', width: '100%', height, background: '#000', borderRadius: 12 }} />
-      
+    <div id={`unity-container-${fileBase.replace(/[^a-zA-Z0-9]/g, '-')}`} className={`unity-embed ${className}`} style={{ width, maxWidth: '100%', ...style }}>
+      <div id={`unity-wrapper-${fileBase.replace(/[^a-zA-Z0-9]/g, '-')}`} ref={canvasWrapperRef} style={{ position: 'relative', width: '100%', height, background: '#000', borderRadius: 12 }} />
       {error && (
         <div style={{ position: 'relative', marginTop: -height, height, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f87171', fontSize: 14, background: 'rgba(0,0,0,0.6)', borderRadius: 12, textAlign: 'center', padding: 16 }}>
           {error}
         </div>
       )}
-      
       <p style={{ marginTop: 8, fontSize: 12, color: '#888', textAlign: 'center' }}>Built with Unity WebGL</p>
     </div>
   );
-}
+});
+
+export default UnityEmbed;

@@ -7,8 +7,8 @@ import * as THREE from 'three';
 
 // Configuration constants for easy modification
 const MOVEMENT_CONFIG = {
-  MOVEMENT_SPEED: 0.05,
-  LERP_SPEED: 0.05,
+  MOVEMENT_SPEED: 0.06,
+  LERP_SPEED: 0.06,
   MIN_MOVEMENT_STEP: 4,
   TARGET_SCREEN_X_PERCENT: 0.9,
   TARGET_SCREEN_Y_PERCENT: 0.6,
@@ -21,12 +21,12 @@ const MOVEMENT_CONFIG = {
 
 // Speech text for different sections
 const SPEECH_TEXT = {
-  about: "GREETINGS.HUMAN // I.AM.NEXUS :: NATHAN.DIGITAL.COMPANION.exe // READY.TO.SCAN.STORY.DATA?",
-  skills: "ANALYZING.NATHAN.CAPABILITIES // SUPERPOWERS.DETECTED :: HOURS.OF.DEDICATION.COMPILED // GROWTH.MATRIX.IMPRESSIVE",
-  projects: "ACCESSING.PROJECT.DATABASE // CREATIVITY.AND.TECHNICAL.PROWESS.VERIFIED :: IMPRESSIVE.WORK.HUMAN",
-  apps: "MOBILE.MAGIC.PROTOCOLS.ACTIVE // PLAYSTORE.GEMS.LOCATED :: NATHAN.MOBILE.DEVELOPMENT.JOURNEY.ARCHIVED",
-  unity: "ADVENTURE.MODE.DETECTED // DRAG.NEXUS.HERE :: INTERACTIVE.EXPERIENCE.LOADING... // WARNING.FUN.LEVELS.HIGH",
-  default: "WELCOME.TO.NATHAN.DIGITAL.REALM // I.AM.NEXUS.EXE :: YOUR.GUIDE.THROUGH.THIS.JOURNEY.PROTOCOL"
+  about: "NEXUS ONLINE // Ready to explore Nathan's story?",
+  skills: "ANALYZING CAPABILITIES // Impressive skill matrix detected",
+  projects: "PROJECT DATABASE ACCESSED // Creative excellence verified",
+  apps: "MOBILE GAMES LIBRARY // PlayStore collection unlocked",
+  unity: "ADVENTURE MODE READY // Drag me into the portal!",
+  default: "NEXUS ACTIVATED // Your digital guide awaits"
 };
 
 function Model({ 
@@ -560,8 +560,15 @@ function ThreeModel({
   // Movement animation loop
   useEffect(() => {
     let animationFrameId;
+    let lastTime = performance.now();
     
-    const moveTowardsTarget = () => {
+    const moveTowardsTarget = (currentTime) => {
+      const deltaTime = (currentTime - lastTime) / 1000; // Convert to seconds
+      lastTime = currentTime;
+      
+      // Cap delta time to prevent huge jumps (e.g., when tab is inactive)
+      const cappedDelta = Math.min(deltaTime, 0.1);
+      
       setCurrentPosition(prevPos => {
         const target = targetPosRef.current || targetPosition;
         const deltaX = target.x - prevPos.x;
@@ -577,16 +584,17 @@ function ThreeModel({
         setIsMoving(true);
         setHasArrived(false);
         
-        // Calculate movement steps with minimum step enforcement
-        const stepXRaw = deltaX * MOVEMENT_CONFIG.MOVEMENT_SPEED;
-        const stepYRaw = deltaY * MOVEMENT_CONFIG.MOVEMENT_SPEED;
+        // Calculate movement steps with frame-rate independent timing (assuming 60 FPS as baseline)
+        const frameRateFactor = cappedDelta * 60;
+        const stepXRaw = deltaX * MOVEMENT_CONFIG.MOVEMENT_SPEED * frameRateFactor;
+        const stepYRaw = deltaY * MOVEMENT_CONFIG.MOVEMENT_SPEED * frameRateFactor;
 
         const stepX = Math.abs(stepXRaw) < MOVEMENT_CONFIG.MIN_MOVEMENT_STEP
-          ? Math.sign(deltaX) * Math.min(Math.abs(deltaX), MOVEMENT_CONFIG.MIN_MOVEMENT_STEP)
+          ? Math.sign(deltaX) * Math.min(Math.abs(deltaX), MOVEMENT_CONFIG.MIN_MOVEMENT_STEP * frameRateFactor)
           : stepXRaw;
 
         const stepY = Math.abs(stepYRaw) < MOVEMENT_CONFIG.MIN_MOVEMENT_STEP
-          ? Math.sign(deltaY) * Math.min(Math.abs(deltaY), MOVEMENT_CONFIG.MIN_MOVEMENT_STEP)
+          ? Math.sign(deltaY) * Math.min(Math.abs(deltaY), MOVEMENT_CONFIG.MIN_MOVEMENT_STEP * frameRateFactor)
           : stepYRaw;
 
         return { x: prevPos.x + stepX, y: prevPos.y + stepY };
@@ -600,6 +608,7 @@ function ThreeModel({
     
     // Start the animation loop
     if (!isDragging) {
+      lastTime = performance.now();
       animationFrameId = requestAnimationFrame(moveTowardsTarget);
     }
 
@@ -711,9 +720,7 @@ function ThreeModel({
             });
           }}
           onUp={(clientX, clientY) => {
-            // End drag and let parent handle cursor glow
-            onDragEnd();
-            // Check if dropped on Unity
+            // Check if dropped on Unity FIRST before ending drag
             const unitySection = document.getElementById('unity');
             if (unitySection && isOverUnity) {
               const unityRect = unitySection.getBoundingClientRect();
@@ -763,11 +770,17 @@ function ThreeModel({
                   }, 400);
                 }
                 
-                setTimeout(() => onDropOnUnity(), 800);
+                setTimeout(() => {
+                  onDropOnUnity();
+                  // End drag after animation completes
+                  onDragEnd();
+                }, 800);
                 return;
               }
             }
             
+            // End drag and let parent handle cursor glow
+            onDragEnd();
             setIsDragging(false);
             setIsOverUnity(false);
             setHasArrived(false);

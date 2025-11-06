@@ -103,6 +103,8 @@ export default function Home() {
   const [portalLoading, setPortalLoading] = useState(false);
   const [gameLoaded, setGameLoaded] = useState(false);
   const [modelFlyingIntoGame, setModelFlyingIntoGame] = useState(false);
+  const unityRef = useRef(); // Add a ref to access UnityEmbed instance
+  const [soundEnabled, setSoundEnabled] = useState(true);
 
   // Check if mobile
   useEffect(() => {
@@ -199,11 +201,6 @@ export default function Home() {
           setModelDroppedOnUnity(true);
           setPortalLoading(true);
           setModelFlyingIntoGame(false);
-          
-          // Add game parameter to URL
-          const currentUrl = new URL(window.location);
-          currentUrl.searchParams.set('game', 'balancingact');
-          window.history.pushState({}, '', currentUrl);
         }}
       />
 
@@ -735,7 +732,7 @@ export default function Home() {
 
   {/* Unity Interactive Section */}
   <section id="unity" className="w-full max-w-4xl mx-auto mb-20 hidden lg:block">
-    <h2 className="text-3xl font-bold mb-6 cyber-cyan text-center cyber-section-title" data-text="Interactive Demo">Interactive Demo</h2>
+    <h2 className="text-3xl font-bold mb-6 cyber-cyan text-center cyber-section-title" data-text="Interactive Demo (WIP)">Interactive Demo (WIP)</h2>
     <div className="portal-container" style={{ height: '540px', position: 'relative' }}>
       {/* Portal overlay - hidden when game is loaded */}
       {!gameLoaded && (
@@ -836,10 +833,11 @@ export default function Home() {
       {/* Unity component */}
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
         <DynamicUnity 
-          buildName="build"
+          ref={unityRef}
+          buildName="unity"
           buildSubPath=""
-          fileBase="build"
-          compression="none"
+          fileBase="unity"
+          compression="brotli"
           height={540}
           style={{ background: 'transparent', borderRadius: '0.75rem' }}
           startButtonText=""
@@ -852,20 +850,50 @@ export default function Home() {
             setGameLoaded(true);
           }}
         />
-      </div>
-    </div>
-    
-    {/* Interactive Demo Disclaimer */}
-    <div className="mt-8 text-center">
-      <div className="cyber-card max-w-2xl mx-auto p-4 bg-gradient-to-r from-cyan-400/5 via-purple-500/5 to-cyan-400/5 border border-cyan-400/20">
-        <div className="flex items-center justify-center gap-2 mb-2">
-          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-          <span className="text-cyan-400 font-semibold text-sm uppercase tracking-wider">Work in Progress</span>
-          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-        </div>
-        <p className="text-gray-300 text-sm leading-relaxed">
-          Please imagine some cool game where you control Nexus. In the meantime, you can play with some rocks (one of the games I created for Lumen).
-        </p>
+        {/* Fullscreen Button - Only show when game is loaded */}
+        {gameLoaded && (
+          <div className="absolute bottom-4 right-4 z-20 flex items-center gap-2">
+            {/* Sound Toggle Button */}
+            <button
+              className="bg-cyan-500/20 hover:bg-cyan-500/30 backdrop-blur-md text-cyan-400 border border-cyan-400/30 hover:border-cyan-400/60 p-3 rounded-full shadow-lg hover:shadow-cyan-400/25 transition-all duration-300 flex items-center justify-center"
+              onClick={() => {
+                const newSoundState = !soundEnabled;
+                setSoundEnabled(newSoundState);
+                // Call Unity sound control
+                if (unityRef.current && unityRef.current.setUnitySound) {
+                  unityRef.current.setUnitySound(newSoundState);
+                }
+              }}
+              aria-label="Toggle Sound"
+            >
+              {soundEnabled ? (
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.26 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M3.63 3.63a.996.996 0 000 1.41L7.29 8.7 7 9H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h3l3.29 3.29c.63.63 1.71.18 1.71-.71v-4.17l4.18 4.18c-.49.37-1.02.68-1.6.91-.36.15-.58.53-.58.92 0 .72.73 1.18 1.39.91.8-.33 1.55-.77 2.22-1.31l1.34 1.34a.996.996 0 101.41-1.41L5.05 3.63c-.39-.39-1.02-.39-1.42 0zM19 12c0 .82-.15 1.61-.41 2.34l1.53 1.53c.56-1.17.88-2.48.88-3.87 0-3.83-2.4-7.11-5.78-8.4-.59-.23-1.22.23-1.22.86v.19c0 .38.25.71.61.85C17.18 6.54 19 9.06 19 12zm-8.71-6.29l-.17.17L12 7.76V6.41c0-.89-1.08-1.33-1.71-.7zM16.5 12A4.5 4.5 0 0014 7.97v1.79l2.48 2.48c.01-.08.02-.16.02-.24z"/>
+                </svg>
+              )}
+            </button>
+            
+            {/* Fullscreen Button */}
+            <button
+              className="bg-cyan-500/20 hover:bg-cyan-500/30 backdrop-blur-md text-cyan-400 border border-cyan-400/30 hover:border-cyan-400/60 p-3 rounded-full shadow-lg hover:shadow-cyan-400/25 transition-all duration-300 flex items-center justify-center"
+              onClick={() => {
+                // Try to call SetFullscreen on Unity instance
+                if (unityRef.current && unityRef.current.setUnityFullscreen) {
+                  unityRef.current.setUnityFullscreen();
+                }
+              }}
+              aria-label="Go Fullscreen"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   </section>
