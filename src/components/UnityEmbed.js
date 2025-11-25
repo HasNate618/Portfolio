@@ -117,6 +117,20 @@ const UnityEmbed = forwardRef(function UnityEmbed({
               super();
               audioContextsRef_local.current.add(this);
               
+              // Create a master gain node for volume control (25% volume)
+              const masterGain = this.createGain();
+              masterGain.gain.value = 0.25;
+              masterGain.connect(this.destination);
+              
+              // Override destination to route through gain node
+              Object.defineProperty(this, '_masterGain', { value: masterGain });
+              
+              // Intercept connect calls to route through master gain
+              const originalDestination = this.destination;
+              Object.defineProperty(this, 'destination', {
+                get: () => masterGain
+              });
+              
               // Override resume method to respect mute state
               const originalResume = this.resume.bind(this);
               this.resume = function() {
@@ -134,7 +148,7 @@ const UnityEmbed = forwardRef(function UnityEmbed({
                 return originalSuspend();
               };
               
-              console.log('[UnityEmbed] Captured audio context, total:', audioContextsRef_local.current.size);
+              console.log('[UnityEmbed] Captured audio context with 70% volume, total:', audioContextsRef_local.current.size);
             }
           };
           

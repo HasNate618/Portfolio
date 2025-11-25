@@ -856,20 +856,6 @@ function ThreeModel({
             </div>
           </div>
           
-          {/* Circuit pattern overlay */}
-          <div style={{
-            position: 'absolute',
-            top: '4px',
-            right: '4px',
-            width: '12px',
-            height: '12px',
-            background: `
-              linear-gradient(45deg, transparent 40%, #00ffff 41%, #00ffff 44%, transparent 45%),
-              linear-gradient(-45deg, transparent 40%, #00ffff 41%, #00ffff 44%, transparent 45%)
-            `,
-            opacity: 0.3
-          }} />
-          
           {/* Speech bubble tail */}
           <div style={{
             position: 'absolute',

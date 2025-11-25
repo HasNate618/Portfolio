@@ -353,171 +353,66 @@ export default function Home() {
         </section>
 
   {/* Skills Section */}
-  <section id="skills" className="w-full max-w-4xl mx-auto mb-16 sm:mb-40 relative">
+  <section id="skills" className="w-full max-w-4xl mx-auto mb-16 sm:mb-32 relative">
     <div className="cyber-card">
       <h2 className="text-3xl font-bold mb-6 cyber-cyan cyber-section-title" data-text="Skills">Skills</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div>
-          <div className="flex items-center gap-2 mb-2"><span className="text-cyan-400">💻</span><span className="font-semibold cyber-cyan skill-title">Programming Languages</span></div>
-          <div className="flex flex-wrap gap-2 mb-4">
-            <span className="badge badge-blue">Java</span>
-            <span className="badge badge-blue">C#</span>
-            <span className="badge badge-blue">Python</span>
-            <span className="badge badge-blue">JavaScript</span>
-            <span className="badge badge-blue">C++</span>
-            <span className="badge badge-blue">Kotlin</span>
-            <span className="badge badge-blue">SQL</span>
-            <span className="badge badge-blue">HTML</span>
-            <span className="badge badge-blue">CSS</span>
-            <span className="badge badge-blue">XML</span>
+      
+      {/* Technical Skills */}
+      <div className="mb-6">
+        <h3 className="text-lg font-bold text-blue-400 mb-4 pb-2 border-b border-blue-400/30">Technical</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="skill-group">
+            <h4 className="text-sm font-semibold text-indigo-300 uppercase tracking-wider mb-2">Languages</h4>
+            <p className="text-gray-300 text-base leading-relaxed">
+              Java • C# • Python • JavaScript • C++ • Kotlin • SQL • HTML • CSS • XML
+            </p>
           </div>
-          <div className="flex items-center gap-2 mb-2"><span className="text-yellow-500">🔗</span><span className="font-semibold cyber-yellow skill-title">APIs & SDKs</span></div>
-          <div className="flex flex-wrap gap-2 mb-4">
-            <span className="badge badge-yellow">OpenAI API</span>
-            <span className="badge badge-yellow">Google Maps API</span>
-            <span className="badge badge-yellow">HERE Maps SDK</span>
-            <span className="badge badge-yellow">JsonBin API</span>
-            <span className="badge badge-yellow">REST APIs</span>
-          </div>
-          <div className="flex items-center gap-2 mb-2"><span className="text-pink-500">🚀</span><span className="font-semibold cyber-pink skill-title">Development Areas</span></div>
-          <div className="flex flex-wrap gap-2 mb-4">
-            <span className="badge badge-pink">Full-Stack Development</span>
-            <span className="badge badge-pink">Game Development</span>
-            <span className="badge badge-pink">Virtual Reality</span>
-            <span className="badge badge-pink">AI (CNN, LLMs)</span>
-            <span className="badge badge-pink">Computer Vision</span>
-            <span className="badge badge-pink">Android Development</span>
-            <span className="badge badge-pink">API Integration</span>
-            <span className="badge badge-pink">UI/UX Design Principles</span>
-            <span className="badge badge-pink">Chrome Extensions</span>
-          </div>
-        </div>
-        <div>
-          <div className="flex items-center gap-2 mb-2"><span className="text-green-600">🧰</span><span className="font-semibold cyber-green skill-title">Tools & Platforms</span></div>
-          <div className="flex flex-wrap gap-2 mb-4">
-            <span className="badge badge-green">GitHub</span>
-            <span className="badge badge-green">Unity3D</span>
-            <span className="badge badge-green">Android Studio</span>
-            <span className="badge badge-green">Arduino IDE</span>
-            <span className="badge badge-green">React</span>
-            <span className="badge badge-green">Blender (3D Modeling)</span>
-            <span className="badge badge-green">OnShape (CAD)</span>
-            <span className="badge badge-green">MySQL</span>
-            <span className="badge badge-green">TensorFlow</span>
-          </div>
-          <div className="flex items-center gap-2 mb-2"><span className="text-orange-500">🔌</span><span className="font-semibold cyber-orange skill-title">Hardware & Embedded</span></div>
-          <div className="flex flex-wrap gap-2 mb-4">
-            <span className="badge badge-orange">Arduino</span>
-            <span className="badge badge-orange">ESP32</span>
-            <span className="badge badge-orange">M5Stack</span>
-            <span className="badge badge-orange">3D Printing (Design & Prototyping)</span>
-            <span className="badge badge-orange">Bluetooth Low Energy (BLE)</span>
-          </div>
-          <div className="flex items-center gap-2 mb-2"><span className="text-gray-500">🤝</span><span className="font-semibold cyber-gray skill-title">Professional Skills</span></div>
-          <div className="flex flex-wrap gap-2">
-            <span className="badge badge-gray">Team Collaboration & Agile Workflow</span>
-            <span className="badge badge-gray">Problem Solving & Rapid Prototyping</span>
-            <span className="badge badge-gray">Technical Instruction & Mentorship</span>
-            <span className="badge badge-gray">Project Management</span>
-            <span className="badge badge-gray">Time Management</span>
+          <div className="skill-group">
+            <h4 className="text-sm font-semibold text-sky-300 uppercase tracking-wider mb-2">APIs & SDKs</h4>
+            <p className="text-gray-300 text-base leading-relaxed">
+              OpenAI API • Google Maps API • HERE Maps SDK • JsonBin API • REST APIs
+            </p>
           </div>
         </div>
       </div>
-      <style jsx>{`
-        /* Ensure neon style applies to all skill titles with respective colors */
-        .cyber-pink {
-          color: #ff1493 !important;
-          text-shadow: 0 0 8px rgba(255, 20, 147, 0.6) !important;
-        }
-        .cyber-orange {
-          color: #ff8c00 !important;
-          text-shadow: 0 0 8px rgba(255, 140, 0, 0.6) !important;
-        }
-        .badge {
-          display: inline-block;
-          border-radius: 9999px;
-          padding: 0.25rem 0.75rem;
-          font-size: 0.97em;
-          font-family: inherit;
-          margin-bottom: 0.15rem;
-          margin-right: 0.1rem;
-          font-weight: 500;
-          transition: background 0.2s, border 0.2s;
-        }
-        .badge-blue {
-          background: #60a5fa33; /* lighter blue background */
-          color: #3b82f6;       /* brighter blue text */
-        }
-        .group-blue {
-          color: #3b82f6;
-        }
-        .group-yellow {
-          color: #fbbf24;
-        }
-        .group-pink {
-          color: #f472b6;
-        }
-        .group-green {
-          color: #22c55e;
-        }
-        .group-orange {
-          color: #fb923c;
-        }
-        .group-gray {
-          color: #cbd5e1;
-        }
-        .badge-purple {
-          background: #6d28d922;
-          color: #a78bfa;
-        }
-        .badge-green {
-          background: #16653422;
-          color: #22c55e;
-        }
-        .badge-yellow {
-          background: #f59e0b22;
-          color: #fbbf24;
-        }
-        .badge-orange {
-          background: #ea580c22;
-          color: #fb923c;
-        }
-        .badge-pink {
-          background: #be185d22;
-          color: #f472b6;
-        }
-        .badge-gray {
-          background: #64748b22;
-          color: #cbd5e1;
-        }
-        .badge:hover {
-          filter: brightness(1.15);
-          box-shadow: 0 0 0 2px #2563eb33;
-        }
-      `}</style>
-    <style jsx>{`
-      .badge-blue {
-        @apply bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-200 px-3 py-1 rounded font-medium;
-      }
-      .badge-purple {
-        @apply bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-200 px-3 py-1 rounded font-medium;
-      }
-      .badge-green {
-        @apply bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-200 px-3 py-1 rounded font-medium;
-      }
-      .badge-yellow {
-        @apply bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-800 px-3 py-1 rounded font-medium;
-      }
-      .badge-orange {
-        @apply bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-200 px-3 py-1 rounded font-medium;
-      }
-      .badge-pink {
-        @apply bg-pink-100 dark:bg-pink-900/40 text-pink-700 dark:text-pink-200 px-3 py-1 rounded font-medium;
-      }
-      .badge-gray {
-        @apply bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1 rounded font-medium;
-      }
-    `}</style>
+      
+      {/* Development */}
+      <div className="mb-6">
+        <h3 className="text-lg font-bold text-emerald-400 mb-4 pb-2 border-b border-emerald-400/30">Development</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="skill-group">
+            <h4 className="text-sm font-semibold text-teal-300 uppercase tracking-wider mb-2">Specializations</h4>
+            <p className="text-gray-300 text-base leading-relaxed">
+              Full-Stack • Game Dev • VR/AR • Android • AI/ML • Computer Vision • UI/UX Design
+            </p>
+          </div>
+          <div className="skill-group">
+            <h4 className="text-sm font-semibold text-green-300 uppercase tracking-wider mb-2">Tools & Platforms</h4>
+            <p className="text-gray-300 text-base leading-relaxed">
+              Unity3D • React • Android Studio • Blender • OnShape • TensorFlow • MySQL • Git
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      {/* Hardware & Soft Skills */}
+      <div>
+        <h3 className="text-lg font-bold text-purple-400 mb-4 pb-2 border-b border-purple-400/30">Hardware & Professional</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="skill-group">
+            <h4 className="text-sm font-semibold text-violet-300 uppercase tracking-wider mb-2">Embedded Systems</h4>
+            <p className="text-gray-300 text-base leading-relaxed">
+              Arduino • ESP32 • M5Stack • 3D Printing & Prototyping • Bluetooth Low Energy
+            </p>
+          </div>
+          <div className="skill-group">
+            <h4 className="text-sm font-semibold text-fuchsia-300 uppercase tracking-wider mb-2">Professional</h4>
+            <p className="text-gray-300 text-base leading-relaxed">
+              Team Collaboration • Agile • Problem Solving • Rapid Prototyping • Mentorship
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -528,6 +423,25 @@ export default function Home() {
       <span className="hidden sm:inline">Projects I&apos;m Proud Of</span>
     </h2>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+          {/* Auralis */}
+    <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
+            <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
+              <Image src="/auralis_card.png" alt="Auralis Project" fill className="object-cover rounded-t-lg" />
+            </div>
+            <div className="p-4 flex flex-col flex-1">
+              <div className="flex flex-wrap gap-2 mb-3">
+                <span className="badge badge-yellow flex items-center gap-1">🥇 Hackathon Winner</span>
+                <span className="badge badge-indigo">3D</span>
+              </div>
+              <h3 className="font-semibold text-xl mb-2 cyber-cyan">Auralis</h3>
+              <p className="text-gray-600 dark:text-gray-400 flex-1">A virtual 3D healthcare assistant combining emotion detection and natural voice interaction for empathetic telemedicine.</p>
+                <div className="mt-4 flex flex-row gap-6">
+                  <a href="https://stop-googling-symptoms.tech" target="_blank" rel="noopener noreferrer" className="hidden sm:inline text-green-600 dark:text-green-400 hover:underline underline-offset-2 transition">&gt; Live Demo</a>
+                  <a href="https://devpost.com/software/docai-evq74t" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; Devpost</a>
+                  <a href="https://github.com/rickytang666/auralis" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>
+                </div>
+            </div>
+          </div>
           {/* Lumen */}
     <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
             <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
@@ -555,7 +469,7 @@ export default function Home() {
             <div className="p-4 flex flex-col flex-1">
               <div className="flex flex-wrap gap-2 mb-3">
                 <span className="badge badge-yellow flex items-center gap-1">🥇 Hackathon Winner</span>
-                <span className="badge badge-cyan">Game Dev</span>
+                <span className="badge badge-teal">AR</span>
               </div>
               <h3 className="font-semibold text-xl mb-2 cyber-cyan">Eyecandy</h3>
               <p className="text-gray-600 dark:text-gray-400 flex-1">An AR shopping experience that turns any product photo into a virtual try-on.</p>
@@ -596,23 +510,6 @@ export default function Home() {
               <p className="text-gray-600 dark:text-gray-400 flex-1">A real-time hazard reporting app with crowdsourced data, drone integration, and safe routing.</p>
               <a href="https://github.com/HasNate618/SafeRoute" target="_blank" rel="noopener noreferrer" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>
             </div>
-          </div>
-          {/* Nude Donations */}
-    <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
-            <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
-              <Image src="/nude_donations_card.jpg" alt="Project 3" fill className="object-cover rounded-t-lg" />
-            </div>
-            <div className="p-4 flex flex-col flex-1">
-              <div className="flex flex-wrap gap-2 mb-3">
-                <span className="badge badge-green">Android</span>
-              </div>
-              <h3 className="font-semibold text-xl mb-2 cyber-cyan">Nude Donations</h3>
-              <p className="text-gray-600 dark:text-gray-400 flex-1">A transparent charity platform using blockchain technology to track donations with full accountability.</p>
-                <div className="mt-4 flex flex-row gap-6">
-                  <a href="https://taikai.network/hackbox/hackathons/hawkhacks/projects/clwdievy80fcez901sgpemwxf/idea" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; Taikai</a>
-                  <a href="https://github.com/danielyousif1/HawkHacks24" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>
-                </div>            
-              </div>
           </div>
           {/* Animarker */}
     <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
