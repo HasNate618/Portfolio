@@ -538,7 +538,7 @@ export default function Home() {
                 <span className="badge badge-purple">Hardware</span>
               </div>
               <h3 className="font-semibold text-xl mb-2 cyber-cyan">FLEXFIRE-X</h3>
-              <p className="text-gray-600 dark:text-gray-400 flex-1">A collaborative robot platform with adaptive mechanics for versatile autonomous mission execution.</p>
+              <p className="text-gray-600 dark:text-gray-400 flex-1"> A wrist mounted projectile launcher controlled using muscle signals for intuitive body-driven activation.</p>
               <a href="https://github.com/HasNate618/FLEXFIRE-X" target="_blank" rel="noopener noreferrer" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline">&gt; GitHub</a>
             </div>
           </div>
