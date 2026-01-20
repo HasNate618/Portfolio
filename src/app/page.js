@@ -423,14 +423,14 @@ export default function Home() {
       <h2 className="text-3xl font-bold mb-6 cyber-cyan cyber-section-title" data-text="Experience">Experience</h2>
       
       <div className="relative pl-8 border-l-2 border-cyan-400/30">
-        {/* Experience: Software Developer - Pipeline Team */}
+        {/* Experience: Software Developer*/}
         <div className="mb-8 relative">
           <div className="absolute -left-[41px] top-1 w-4 h-4 rounded-full bg-cyan-400 border-4 border-black shadow-lg shadow-cyan-400/50"></div>
           <div className="skill-group">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2">
               <div>
-                <h3 className="text-lg font-semibold text-cyan-300">Software Developer - Pipeline Team</h3>
-                <h4 className="text-base text-gray-400">3D Western | London, ON</h4>
+                <h3 className="text-lg font-semibold text-cyan-300">Software Developer</h3>
+                <h4 className="text-base text-gray-400">3D Western | Western University</h4>
               </div>
               <span className="text-sm text-gray-500 sm:text-right">Sept 2025 — Present</span>
             </div>
@@ -441,7 +441,9 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Experience: Software Engineering Intern */}
+        
+
+          {/* Experience: Software Engineering Intern */}
         <div className="mb-8 relative">
           <div className="absolute -left-[41px] top-1 w-4 h-4 rounded-full bg-emerald-400 border-4 border-black shadow-lg shadow-emerald-400/50"></div>
           <div className="skill-group">
@@ -459,7 +461,7 @@ export default function Home() {
         </div>
 
         {/* Experience: IT Intern */}
-        <div className="mb-0 relative">
+        <div className="mb-8 relative">
           <div className="absolute -left-[41px] top-1 w-4 h-4 rounded-full bg-purple-400 border-4 border-black shadow-lg shadow-purple-400/50"></div>
           <div className="skill-group">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2">
@@ -471,6 +473,25 @@ export default function Home() {
             </div>
             <ul className="list-disc list-inside text-gray-300 space-y-1 text-sm">
               <li>Configured and deployed client computers for multiple companies, including Windows installation, user account setup, and application/configuration changes based on company requirements.</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Experience: WEMars*/}
+        <div className="mb-0 relative">
+          <div className="absolute -left-[41px] top-1 w-4 h-4 rounded-full bg-yellow-200 border-4 border-black shadow-lg shadow-yellow-200/30"></div>
+          <div className="skill-group">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2">
+              <div>
+                <h3 className="text-lg font-semibold text-yellow-200">Software Developer</h3>
+                <h4 className="text-base text-gray-400">WEMars | Western University</h4>
+              </div>
+              <span className="text-sm text-gray-500 sm:text-right">Sept 2024 — Apr 2025</span>
+            </div>
+            <ul className="list-disc list-inside text-gray-300 space-y-1 text-sm">
+              <li>Developed wireless camera and video streaming solutions using ESP32-CAM for a Mars rover platform.</li>
+              <li>Researched networking protocols for reliable communication with a central hub.</li>
+              <li>Investigated computer vision techniques for detecting visual markers used in rover navigation and competition tasks.</li>
             </ul>
           </div>
         </div>
