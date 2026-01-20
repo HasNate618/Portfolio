@@ -23,6 +23,7 @@ const MOVEMENT_CONFIG = {
 const SPEECH_TEXT = {
   about: "NEXUS ONLINE // Ready to explore Nathan's story?",
   skills: "ANALYZING CAPABILITIES // Impressive skill matrix detected",
+  experience: "CAREER LOG ACCESSED // Tracking professional journey",
   projects: "PROJECT DATABASE ACCESSED // Creative excellence verified",
   apps: "MOBILE GAMES LIBRARY // PlayStore collection unlocked",
   unity: "ADVENTURE MODE READY // Drag me into the portal!",
@@ -343,7 +344,7 @@ function ThreeModel({
   const updateSpeechForCurrentSection = (scrollTop) => {
     if (typeof window === 'undefined') return;
     
-    const sections = ['about', 'projects', 'skills', 'apps', 'unity'];
+    const sections = ['about', 'skills', 'experience', 'projects', 'apps', 'unity'];
     const middleY = scrollTop + window.innerHeight / 2;
     let foundSection = null;
     

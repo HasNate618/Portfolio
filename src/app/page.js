@@ -85,6 +85,7 @@ function TypewriterTitles() {
 const baseSections = [
   { id: "about", label: "About", mobileLabel: "About" },
   { id: "skills", label: "Skills", mobileLabel: "Skills" },
+  { id: "experience", label: "Experience", mobileLabel: "Experience" },
   { id: "projects", label: "Projects", mobileLabel: "Projects" },
   { id: "apps", label: "Mobile Games", mobileLabel: "Games" },
 ];
@@ -206,7 +207,7 @@ export default function Home() {
 
       <div className="relative z-10 flex flex-col items-center px-4">
         {/* Enhanced Header with Navigation */}
-        <header className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 mb-8 w-full max-w-5xl px-4">
+        <header className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 mb-8 w-full max-w-5xl px-4 hidden sm:block">
           <div className="backdrop-blur-lg border border-cyan-400/20 rounded-lg shadow-lg bg-black/80 p-3">
             <div className="flex items-center justify-between w-full">
               <nav className="vsc-tabs flex-1">
@@ -410,6 +411,67 @@ export default function Home() {
             <p className="text-gray-300 text-base leading-relaxed">
               Team Collaboration • Agile • Problem Solving • Rapid Prototyping • Mentorship
             </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* Experience Section */}
+  <section id="experience" className="w-full max-w-4xl mx-auto mb-16 sm:mb-32 relative">
+    <div className="cyber-card">
+      <h2 className="text-3xl font-bold mb-6 cyber-cyan cyber-section-title" data-text="Experience">Experience</h2>
+      
+      <div className="relative pl-8 border-l-2 border-cyan-400/30">
+        {/* Experience: Software Developer - Pipeline Team */}
+        <div className="mb-8 relative">
+          <div className="absolute -left-[41px] top-1 w-4 h-4 rounded-full bg-cyan-400 border-4 border-black shadow-lg shadow-cyan-400/50"></div>
+          <div className="skill-group">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2">
+              <div>
+                <h3 className="text-lg font-semibold text-cyan-300">Software Developer - Pipeline Team</h3>
+                <h4 className="text-base text-gray-400">3D Western | London, ON</h4>
+              </div>
+              <span className="text-sm text-gray-500 sm:text-right">Sept 2025 — Present</span>
+            </div>
+            <ul className="list-disc list-inside text-gray-300 space-y-1 text-sm">
+              <li>Developing an AI-augmented 3D model slicing pipeline to automate 3D printing workflows across a 24-printer farm, enabling a free and accessible printing service for students at Western University.</li>
+              <li>Collaborating with subteams to design a Dockerized full-stack system that automates print orientation, support generation, and heuristic validation for printability using AI-driven tools and models.</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Experience: Software Engineering Intern */}
+        <div className="mb-8 relative">
+          <div className="absolute -left-[41px] top-1 w-4 h-4 rounded-full bg-emerald-400 border-4 border-black shadow-lg shadow-emerald-400/50"></div>
+          <div className="skill-group">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2">
+              <div>
+                <h3 className="text-lg font-semibold text-emerald-300">Software Engineering Intern</h3>
+                <h4 className="text-base text-gray-400">TeraGo | Markham, ON</h4>
+              </div>
+              <span className="text-sm text-gray-500 sm:text-right">May 2025 — Aug 2025</span>
+            </div>
+            <ul className="list-disc list-inside text-gray-300 space-y-1 text-sm">
+              <li>Developed a fully automated system to manage Jira tickets based on email notifications by using a Local LLM (Ollama) for structured and secure data extraction, Python for logic, and Microsoft’s Graph API for email retrieval.</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Experience: IT Intern */}
+        <div className="mb-0 relative">
+          <div className="absolute -left-[41px] top-1 w-4 h-4 rounded-full bg-purple-400 border-4 border-black shadow-lg shadow-purple-400/50"></div>
+          <div className="skill-group">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2">
+              <div>
+                <h3 className="text-lg font-semibold text-purple-300">IT Intern</h3>
+                <h4 className="text-base text-gray-400">Microcomputer Consulting Inc. | Mississauga, ON</h4>
+              </div>
+              <span className="text-sm text-gray-500 sm:text-right">May 2025 — Aug 2025</span>
+            </div>
+            <ul className="list-disc list-inside text-gray-300 space-y-1 text-sm">
+              <li>Configured and deployed client computers for multiple companies, including Windows installation, user account setup, and application/configuration changes based on company requirements.</li>
+            </ul>
           </div>
         </div>
       </div>
