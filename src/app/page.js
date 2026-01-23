@@ -425,6 +425,24 @@ export default function Home() {
       <div className="relative pl-8 border-l-2 border-cyan-400/30">
         {/* Experience: Software Developer*/}
         <div className="mb-8 relative">
+          <div className="absolute -left-[41px] top-1 w-4 h-4 rounded-full bg-rose-200 border-4 border-black shadow-lg shadow-rose-200/30"></div>
+          <div className="skill-group">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2">
+              <div>
+                <h3 className="text-lg font-semibold text-rose-300">Software Developer</h3>
+                <h4 className="text-base text-gray-400">WEFirst (Robotics) | Western University</h4>
+              </div>
+              <span className="text-sm text-gray-500 sm:text-right">Jan 2026 — Present</span>
+            </div>
+            <ul className="list-disc list-inside text-gray-300 space-y-1 text-sm">
+              <li>Programmed the swerve module to translate Xbox controller inputs into smooth omnidirectional motion.</li>
+              <li>Working on computer vision pipelines using OpenCV for automated path following.</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Experience: Software Developer*/}
+        <div className="mb-8 relative">
           <div className="absolute -left-[41px] top-1 w-4 h-4 rounded-full bg-cyan-400 border-4 border-black shadow-lg shadow-cyan-400/50"></div>
           <div className="skill-group">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2">
@@ -440,8 +458,6 @@ export default function Home() {
             </ul>
           </div>
         </div>
-
-        
 
           {/* Experience: Software Engineering Intern */}
         <div className="mb-8 relative">
