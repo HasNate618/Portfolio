@@ -109,6 +109,8 @@ export default function Home() {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [projectFilter, setProjectFilter] = useState("featured");
   const [projectsFullscreen, setProjectsFullscreen] = useState(false);
+  // Viewport middle inside projects section (matches ThreeModel side-switch point)
+  const [viewportMiddleInProjects, setViewportMiddleInProjects] = useState(false);
 
   const filteredProjects = useMemo(() => {
     if (projectFilter === "all") return PROJECTS;
@@ -123,29 +125,79 @@ export default function Home() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // When toggling fullscreen for Projects, temporarily clear the stagger
+  // transform applied by the 3D model logic and restore it when collapsing.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const section = document.getElementById("projects");
+    if (!section) return;
+
+    if (projectsFullscreen) {
+      if (section.dataset.originalTransform === undefined) {
+        section.dataset.originalTransform = section.style.transform || "";
+      }
+      section.style.transform = "none";
+    } else {
+      if (section.dataset.originalTransform !== undefined) {
+        section.style.transform = section.dataset.originalTransform;
+      }
+    }
+  }, [projectsFullscreen]);
+
+  // Re-run viewport-in-projects check when fullscreen toggles (layout changes after transition)
+  useEffect(() => {
+    if (typeof window === "undefined" || !projectsFullscreen) return;
+    const runCheck = () => {
+      const scrollTop = window.scrollY;
+      const projectsEl = document.getElementById("projects");
+      if (!projectsEl) return;
+      const rect = projectsEl.getBoundingClientRect();
+      const panelTop = rect.top + scrollTop;
+      const panelBottom = panelTop + rect.height;
+      const middleY = scrollTop + window.innerHeight / 2;
+      setViewportMiddleInProjects(middleY >= panelTop && middleY <= panelBottom);
+    };
+    runCheck();
+    const t = setTimeout(runCheck, 600);
+    return () => clearTimeout(t);
+  }, [projectsFullscreen]);
+
   // Dynamic sections based on screen size
   const sections = isMobile ? baseSections : [...baseSections, ...desktopOnlySections];
 
   useEffect(() => {
     const handleScroll = () => {
+      const scrollTop = typeof window !== "undefined" ? window.scrollY : 0;
       let current = "about";
       let minDist = Infinity;
       const headerHeight = 80; // Account for fixed header
       const triggerPoint = headerHeight + 100; // Point where section becomes active
-      
+
+      // Same as ThreeModel: viewport middle in projects — when true, model is on projects side.
+      // Fade when viewport middle has passed projects top (so we fade as soon as we scroll into projects).
+      const projectsEl = document.getElementById("projects");
+      if (projectsEl) {
+        const rect = projectsEl.getBoundingClientRect();
+        const panelTop = rect.top + scrollTop;
+        const panelBottom = panelTop + rect.height;
+        const middleY = scrollTop + window.innerHeight / 2;
+        const inProjects = middleY >= panelTop && middleY <= panelBottom;
+        setViewportMiddleInProjects(inProjects);
+      }
+
       for (const { id } of sections) {
         const el = document.getElementById(id);
         if (el) {
           const rect = el.getBoundingClientRect();
           const sectionTop = rect.top;
           const sectionBottom = rect.bottom;
-          
+
           // Section is active if it's in the viewport accounting for header
           if (sectionTop <= triggerPoint && sectionBottom > triggerPoint) {
             current = id;
             break;
           }
-          
+
           // Fallback: find closest section to trigger point
           const distToTop = Math.abs(sectionTop - triggerPoint);
           if (distToTop < minDist) {
@@ -189,7 +241,7 @@ export default function Home() {
         modelRotation={[0, 0, 0]}
         transparent={true}
         visible={showThreeModel}
-        fadeOut={projectsFullscreen || activeTab === "projects"}
+        fadeOut={projectsFullscreen && viewportMiddleInProjects}
         flyingIntoGame={modelFlyingIntoGame}
         onDragStart={() => {
           setIsDraggingModel(true);
@@ -374,13 +426,13 @@ export default function Home() {
           <div className="skill-group">
             <h4 className="text-sm font-semibold text-indigo-300 uppercase tracking-wider mb-2">Languages</h4>
             <p className="text-gray-300 text-base leading-relaxed">
-              Java • C# • Python • JavaScript • C++ • Kotlin • SQL • HTML • CSS • XML
+              Java • C# • Python • JavaScript • TypeScript • C++ • Kotlin • SQL • HTML • CSS • XML
             </p>
           </div>
           <div className="skill-group">
-            <h4 className="text-sm font-semibold text-sky-300 uppercase tracking-wider mb-2">APIs & SDKs</h4>
+            <h4 className="text-sm font-semibold text-sky-300 uppercase tracking-wider mb-2">Frameworks & APIs</h4>
             <p className="text-gray-300 text-base leading-relaxed">
-              OpenAI API • Google Maps API • HERE Maps SDK • JsonBin API • REST APIs
+              React • REST APIs • OpenAI / LLM APIs • Google Maps API • HERE Maps SDK • JsonBin API
             </p>
           </div>
         </div>
@@ -393,13 +445,13 @@ export default function Home() {
           <div className="skill-group">
             <h4 className="text-sm font-semibold text-teal-300 uppercase tracking-wider mb-2">Specializations</h4>
             <p className="text-gray-300 text-base leading-relaxed">
-              Full-Stack • Game Dev • VR/AR • Android • AI/ML • Computer Vision • UI/UX Design
+              Full-Stack • Game Dev • VR/AR • Android • AI/ML • Computer Vision • CNNs • Vision–Language Models (VLMs) • UI/UX Design
             </p>
           </div>
           <div className="skill-group">
             <h4 className="text-sm font-semibold text-green-300 uppercase tracking-wider mb-2">Tools & Platforms</h4>
             <p className="text-gray-300 text-base leading-relaxed">
-              Unity3D • React • Android Studio • Blender • OnShape • TensorFlow • MySQL • Git
+            Git • Linux • Docker • Unity3D • Android Studio • Blender • OnShape • TensorFlow • PyTorch • MySQL
             </p>
           </div>
         </div>
@@ -412,7 +464,7 @@ export default function Home() {
           <div className="skill-group">
             <h4 className="text-sm font-semibold text-violet-300 uppercase tracking-wider mb-2">Embedded Systems</h4>
             <p className="text-gray-300 text-base leading-relaxed">
-              Arduino • ESP32 • M5Stack • 3D Printing & Prototyping • Bluetooth Low Energy
+              Arduino • ESP32 • Raspberry Pi • M5Stack • 3D Printing & Prototyping • Bluetooth Low Energy • Electronics & Circuits
             </p>
           </div>
           <div className="skill-group">
@@ -525,45 +577,66 @@ export default function Home() {
   </section>
 
   {/* Projects Section */}
-  <section id="projects" className="w-full mx-auto mb-16 sm:mb-32 transition-all duration-500 ease-in-out" style={{ maxWidth: projectsFullscreen ? "90rem" : "56rem" }}>
-     <div className="flex flex-col sm:flex-row items-center justify-between mb-6 sm:mb-8 gap-4">
-       <h2 className="text-3xl font-bold cyber-cyan text-center cyber-section-title" data-text="Projects I'm Proud Of">
-        <span className="sm:hidden">Projects</span>
-        <span className="hidden sm:inline">Projects I&apos;m Proud Of</span>
-      </h2>
-      {/* Fullscreen toggle — desktop only */}
-      <button
-        onClick={() => setProjectsFullscreen((v) => !v)}
-        className="hidden lg:flex items-center gap-1.5 vsc-tab text-sm"
-        aria-label={projectsFullscreen ? "Exit fullscreen" : "Expand fullscreen"}
-      >
-        {projectsFullscreen ? "⊟ Collapse" : "⊞ Expand"}
-      </button>
-    </div>
-
-    {/* Filter tabs */}
-    <div className="vsc-tabs flex-wrap justify-center mb-6 sm:mb-8">
-      {FILTER_TABS.map((tab) => (
-        <button
-          key={tab.id}
-          onClick={() => setProjectFilter(tab.id)}
-          className={`vsc-tab ${projectFilter === tab.id ? "active" : ""}`}
+  <section
+    id="projects"
+    className={`w-full mb-16 sm:mb-32 transition-all duration-500 ease-in-out ${
+      projectsFullscreen ? "w-screen -mx-4" : "max-w-4xl mx-auto"
+    }`}
+  >
+    <div
+      className={`mx-auto ${
+        projectsFullscreen ? "w-full px-8 lg:px-96" : ""
+      }`}
+    >
+      <div className="flex flex-col sm:flex-row items-center justify-between mb-6 sm:mb-8 gap-4">
+        <h2
+          className="text-3xl font-bold cyber-cyan text-center cyber-section-title"
+          data-text="Projects I'm Proud Of"
         >
-          {tab.label}
+          <span className="sm:hidden">Projects</span>
+          <span className="hidden sm:inline">Projects I&apos;m Proud Of</span>
+        </h2>
+        {/* Fullscreen toggle — desktop only */}
+        <button
+          onClick={() => setProjectsFullscreen((v) => !v)}
+          className="hidden lg:flex items-center gap-1.5 vsc-tab text-sm"
+          aria-label={projectsFullscreen ? "Exit fullscreen" : "Expand fullscreen"}
+        >
+          {projectsFullscreen ? "⊟ Collapse" : "⊞ Expand"}
         </button>
-      ))}
-    </div>
+      </div>
 
-    <div key={projectFilter} className={`grid gap-6 sm:gap-8 transition-all duration-500 ease-in-out ${
-      projectsFullscreen
-        ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-        : "grid-cols-1 md:grid-cols-2"
-    }`}>
-      {filteredProjects.map((project, i) => (
-        <div key={project.id} className="animate-fade-in" style={{ animationDelay: `${i * 0.04}s` }}>
-          <ProjectCard project={project} />
-        </div>
-      ))}
+      {/* Filter tabs */}
+      <div className="vsc-tabs flex-wrap justify-center mb-6 sm:mb-8">
+        {FILTER_TABS.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setProjectFilter(tab.id)}
+            className={`vsc-tab ${projectFilter === tab.id ? "active" : ""}`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      <div
+        key={projectFilter}
+        className={`grid w-full gap-6 sm:gap-8 transition-all duration-500 ease-in-out ${
+          projectsFullscreen
+            ? "grid-cols-[repeat(auto-fit,minmax(360px,1fr))]"
+            : "grid-cols-1 md:grid-cols-2"
+        }`}
+      >
+        {filteredProjects.map((project, i) => (
+          <div
+            key={project.id}
+            className="animate-fade-in"
+            style={{ animationDelay: `${i * 0.04}s` }}
+          >
+            <ProjectCard project={project} />
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 

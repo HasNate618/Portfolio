@@ -33,11 +33,11 @@ export default function ProjectCard({ project }) {
         {project.isHackathonWinner && (
           <span className="absolute top-2 left-2 z-10 text-xs font-semibold uppercase tracking-wide px-2.5 py-1 rounded"
             style={{
-              background: "rgba(255, 255, 0, 0.25)",
-              color: "var(--accent-yellow)",
-              border: "1px solid rgba(255, 255, 0, 0.6)",
-              backdropFilter: "blur(6px)",
-              textShadow: "0 0 6px rgba(255, 255, 0, 0.5)",
+              background: "rgba(80, 65, 0, 0.95)",
+              color: "#fef08a",
+              border: "1px solid rgba(255, 220, 100, 0.8)",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.4)",
+              textShadow: "0 0 8px rgba(254, 240, 138, 0.9), 0 0 16px rgba(254, 240, 138, 0.6), 0 0 24px rgba(255, 220, 100, 0.4)",
             }}
           >
             Hackathon Winner
