@@ -18,11 +18,12 @@ export const PROJECTS = [
     title: "CareBridge",
     description:
       "AI healthcare platform connecting rural patients and providers with intelligent check-ins and risk tracking.",
-    categories: ["featured", "ai-ml", "full-stack"],
+    categories: [ "ai-ml", "full-stack"],
     isHackathonWinner: true,
-    techStack: ["React", "TypeScript", "FastAPI", "Supabase", "Cohere", "ElevenLabs", "Vite"],
+    techStack: ["React", "TypeScript", "FastAPI", "Supabase", "Cohere API", "ElevenLabs", "Vite", "Three.js"],
     links: [
-      { label: "Devpost", href: "https://devpost.com/software/carebridge-ai" },
+      { label: "Devpost", href: "https://devpost.com/software/care-bridge-ai" },
+      { label: "GitHub", href: "https://github.com/liamma06/Spark" },
     ],
     media: [
       { src: "/carebridge-dashboard.jpg", alt: "CareBridge Provider Dashboard" },
@@ -37,7 +38,7 @@ export const PROJECTS = [
       "Virtual 3D healthcare assistant with emotion detection and natural voice interaction for telemedicine.",
     categories: ["featured", "ai-ml", "full-stack"],
     isHackathonWinner: true,
-    techStack: ["React", "Three.js", "OpenAI", "WebRTC", "Node.js"],
+    techStack: ["React", "Three.js", "Gemini API", "Node.js", "face-api.js", "Python"],
     links: [
       { label: "Live Demo", href: "https://stop-googling-symptoms.tech", hideOnMobile: true },
       { label: "Devpost", href: "https://devpost.com/software/docai-evq74t" },
@@ -47,36 +48,52 @@ export const PROJECTS = [
       { src: "/auralis_card.png", alt: "Auralis Project Overview" },
       { src: "/auralis-characters.jpg", alt: "Auralis 3D Characters" },
       { src: "/auralis-chat.jpg", alt: "Auralis Chat Interface" },
-      { src: "/auralis-report.jpg", alt: "Auralis Health Report" },
       { src: "/auralis-summary.jpg", alt: "Auralis Summary View" },
+      { src: "/auralis-report.jpg", alt: "Auralis Health Report" },
     ],
   },
   {
-    id: "stupidspotify",
-    title: "Stupid Spotify",
+    id: "whackaml",
+    title: "Whack-A-ML",
     description:
-      "Cursed Spotify clone featuring real OAuth playback, AI roasts, face CAPTCHA, 3D skull, and Comic Sans.",
-    categories: ["featured", "full-stack", "games"],
-    isHackathonWinner: true,
-    techStack: ["Next.js", "React", "Spotify API", "Cohere AI", "Three.js", "face-api.js", "Python"],
+      "Reinforcement learning agent training a robotic arm to strike targets in Unity using PPO and curriculum learning.",
+    categories: ["featured", "ai-ml", "games"],
+    isHackathonWinner: false,
+    techStack: ["Pytorch", "Unity", "C#", "PPO"],
     links: [
-      { label: "Devpost", href: "https://devpost.com/software/stupid-spotify" },
+      { label: "GitHub", href: "https://github.com/HasNate618/Whack-A-ML" },
+    ],
+    media: [{ src: "/whackaml-training.jpg", alt: "Whack-A-ML Training" }],
+  },
+  {
+    id: "flexfire-x",
+    title: "FLEXFIRE-X",
+    description:
+      "A wrist-mounted projectile launcher controlled by EMG muscle signals for intuitive, body-driven activation.",
+    categories: ["featured", "hardware"],
+    isHackathonWinner: false,
+    techStack: ["Arduino", "EMG Sensor", "C++", "CAD", "3D Printing"],
+    links: [
+      { label: "GitHub", href: "https://github.com/HasNate618/FLEXFIRE-X" },
     ],
     media: [
-      { src: "/stupidspotify-dashboard.jpg", alt: "Stupid Spotify Dashboard" },
-      { src: "/stupidspotify-captcha.jpg", alt: "Stupid Spotify Face CAPTCHA" },
+      { src: "/flexfire-demorender.gif", alt: "FLEXFIRE-X Demo Render" },
+      { src: "/flexfire-demo.png", alt: "FLEXFIRE-X Demo" },
+      { src: "/flexfire-exploded.png", alt: "FLEXFIRE-X Exploded View" },
+      { src: "/flexfire-launcher.gif", alt: "FLEXFIRE-X Launcher" },
     ],
   },
   {
     id: "oli",
     title: "Object-Love-Interface",
     description:
-      "Multi-device IoT system that gives objects personality and voice—talk to your ramen bowl with Raspberry Pi and ESP32.",
+      "Multi-device IoT system that gives objects personality and voice so you can finally get a date with your ramen bowl.",
     categories: ["featured", "hardware", "ai-ml"],
     isHackathonWinner: true,
-    techStack: ["Python", "Node.js", "Raspberry Pi", "ESP32", "Gemini API", "ElevenLabs", "OpenCV"],
+    techStack: ["Python", "Node.js", "Raspberry Pi", "ESP32", "Gemini API", "ElevenLabs"],
     links: [
       { label: "Devpost", href: "https://devpost.com/software/object-love-interface" },
+      { label: "GitHub", href: "https://github.com/HasNate618/Object-Love-Interface" },
     ],
     media: [
       { src: "/oli-open.jpg", alt: "OLI Device Open" },
@@ -88,9 +105,9 @@ export const PROJECTS = [
     title: "Lumen",
     description:
       "A calming companion that listens, understands, and responds with personalized mini-games tailored to your emotional state.",
-    categories: ["featured", "ai-ml", "games"],
+    categories: ["ai-ml", "games"],
     isHackathonWinner: true,
-    techStack: ["React", "Gemini API", "Phaser.js", "Node.js"],
+    techStack: ["React", "Unity3D", "Gemini API", "Phaser.js", "Node.js"],
     links: [
       { label: "Live Demo", href: "https://llumen.netlify.app/", hideOnMobile: true },
       { label: "Devpost", href: "https://devpost.com/software/lumen-qsgcn4" },
@@ -98,8 +115,8 @@ export const PROJECTS = [
     ],
     media: [
       { src: "/lumen_card.png", alt: "Lumen Project" },
-      { src: "/lumen-analytics.png", alt: "Lumen Analytics" },
       { src: "/lumen-game1.png", alt: "Lumen Mini Game" },
+      { src: "/lumen-analytics.png", alt: "Lumen Analytics" },
       { src: "/lumen-game2.png", alt: "Lumen Mini Game 2" },
     ],
   },
@@ -107,10 +124,10 @@ export const PROJECTS = [
     id: "eyecandy",
     title: "Eyecandy",
     description:
-      "An AR shopping experience that turns any product photo into a virtual try-on using augmented reality.",
-    categories: ["featured", "ai-ml", "full-stack"],
+      "An AR shopping experience that turns any shopify product into a virtual try-on using augmented reality.",
+    categories: ["featured", "ai-ml", "games"],
     isHackathonWinner: true,
-    techStack: ["React", "AR.js", "TensorFlow", "Firebase"],
+    techStack: ["Snap Spectacles", "Lens Studio", "Shopify API"],
     links: [
       { label: "Devpost", href: "https://devpost.com/software/eye-candy" },
       { label: "GitHub", href: "https://github.com/Duck-luv-pie/eyecandy" },
@@ -121,13 +138,27 @@ export const PROJECTS = [
     ],
   },
   {
+    id: "glyph",
+    title: "Glyph",
+    description:
+      "Leader-key command overlay for Windows with discoverable actions, per-app bindings, and custom themes.",
+    categories: ["featured", "full-stack"],
+    isHackathonWinner: false,
+    techStack: ["C#", ".NET", "WPF", "YAML", "WinGet"],
+    links: [
+      { label: "GitHub", href: "https://github.com/HasNate618/Glyph" },
+    ],
+    media: [{ src: "/glyph-logo.png", alt: "Glyph Logo", imageContain: true }],
+    imageContain: true,
+  },
+  {
     id: "careerly",
     title: "Careerly",
     description:
       "Making career exploration fun and inclusive through an AI-powered virtual job fair built in Unity.",
-    categories: ["featured", "ai-ml", "games"],
+    categories: ["ai-ml", "games"],
     isHackathonWinner: true,
-    techStack: ["Unity", "C#", "OpenAI", "Firebase"],
+    techStack: ["Unity", "C#", "Cohere API"],
     links: [
       { label: "Devpost", href: "https://devpost.com/software/career-fair-xz0f67" },
       { label: "GitHub", href: "https://github.com/she11fish/careerly" },
@@ -144,7 +175,7 @@ export const PROJECTS = [
     title: "VR ODM Gear Sim",
     description:
       "VR simulation of Attack on Titan's ODM Gear with custom Arduino glove controller and Google Cardboard.",
-    categories: ["featured", "games", "hardware"],
+    categories: ["games", "hardware"],
     isHackathonWinner: false,
     techStack: ["Unity", "C#", "Google Cardboard SDK", "Arduino", "Blender"],
     links: [
@@ -160,11 +191,12 @@ export const PROJECTS = [
     title: "Wasteland",
     description:
       "Horror game with wearable glove controller using accelerometer, flex sensors, and heart rate input.",
-    categories: ["featured", "games", "hardware"],
+    categories: ["games", "hardware"],
     isHackathonWinner: false,
-    techStack: ["Unity", "C#", "Arduino", "C++", "Python", "Bluetooth"],
+    techStack: ["Unity", "C#", "Arduino", "C++"],
     links: [
       { label: "Devpost", href: "https://devpost.com/software/wasteland" },
+      { label: "GitHub", href: "https://github.com/HasNate618/Wasteland" },
     ],
     media: [
       { src: "/wasteland-game.jpg", alt: "Wasteland Gameplay" },
@@ -177,9 +209,9 @@ export const PROJECTS = [
     title: "SafeRoute",
     description:
       "A real-time hazard reporting app with crowdsourced data, drone integration, and safe routing for Android.",
-    categories: ["featured", "android", "full-stack"],
+    categories: ["android", "full-stack"],
     isHackathonWinner: false,
-    techStack: ["Kotlin", "Google Maps API", "Firebase", "Jetpack Compose"],
+    techStack: ["Kotlin", "Google Maps API", "Android Studio"],
     links: [
       { label: "GitHub", href: "https://github.com/HasNate618/SafeRoute" },
     ],
@@ -193,9 +225,9 @@ export const PROJECTS = [
     title: "Animarker",
     description:
       "A crowdsourced wildlife tracker using computer vision to identify and map animal sightings worldwide.",
-    categories: ["featured", "android", "ai-ml"],
+    categories: ["android", "ai-ml"],
     isHackathonWinner: false,
-    techStack: ["Kotlin", "TensorFlow Lite", "Google Maps API", "Firebase"],
+    techStack: ["Kotlin", "TensorFlow", "Google Maps API", "MySQL", "Android Studio"],
     links: [
       { label: "Devpost", href: "https://devpost.com/software/endangered-animal-app" },
       { label: "GitHub", href: "https://github.com/HasNate618/Animarker" },
@@ -208,49 +240,22 @@ export const PROJECTS = [
   },
   // ── Hardware ──
   {
-    id: "flexfire-x",
-    title: "FLEXFIRE-X",
-    description:
-      "A wrist-mounted projectile launcher controlled by EMG muscle signals for intuitive, body-driven activation.",
-    categories: ["featured", "hardware"],
-    isHackathonWinner: false,
-    techStack: ["Arduino", "EMG Sensor", "C++", "3D Printing"],
-    links: [
-      { label: "GitHub", href: "https://github.com/HasNate618/FLEXFIRE-X" },
-    ],
-    media: [{ src: "/flexfire-x_card.png", alt: "FLEXFIRE-X Project" }],
-  },
-  {
     id: "rubber-band-turret",
     title: "Rubber Band Turret",
     description:
       "Bluetooth-controlled rubber band turret with smooth servo movement and wireless Android app control.",
     categories: ["hardware", "android"],
     isHackathonWinner: false,
-    techStack: ["Arduino", "Bluetooth", "Servo Motors", "Kotlin"],
+    techStack: ["Arduino", "C++", "Servo Motors", "Unity"],
     links: [
       { label: "GitHub", href: "https://github.com/HasNate618/Rubber-Band-Turret" },
     ],
     media: [
-      { src: "/turret_card.png", alt: "Rubber Band Turret" },
       { src: "/turret.jpg", alt: "Rubber Band Turret Build" },
+      { src: "/turret_card.png", alt: "Rubber Band Turret" },
     ],
   },
   // ── Tools / Desktop ──
-  {
-    id: "glyph",
-    title: "Glyph",
-    description:
-      "Leader-key command overlay for Windows with discoverable actions, per-app bindings, and custom themes.",
-    categories: ["featured", "full-stack"],
-    isHackathonWinner: false,
-    techStack: ["C#", ".NET", "WPF", "YAML", "WinGet"],
-    links: [
-      { label: "GitHub", href: "https://github.com/HasNate618/Glyph" },
-    ],
-    media: [{ src: "/glyph-logo.png", alt: "Glyph Logo", imageContain: true }],
-    imageContain: true,
-  },
   {
     id: "mealplan",
     title: "UWO Mealplan Calc",
@@ -260,11 +265,29 @@ export const PROJECTS = [
     isHackathonWinner: false,
     techStack: ["JavaScript", "Chrome Extension API", "HTML", "CSS"],
     links: [
-      { label: "GitHub", href: "https://github.com/HasNate618/UWO-Mealplan-Calc" },
+      { label: "Chrome Web Store", href: "https://chromewebstore.google.com/detail/uwo-mealplan-calc/ligfhpfnfnmkmoloelfpcjpeajifkmpo" },
+      { label: "GitHub", href: "https://github.com/HasNate618/UWO-Mealplan-Calculator" },
     ],
     media: [
       { src: "/mealplan-settings.png", alt: "Mealplan Settings View" },
       { src: "/mealplan-projections.png", alt: "Mealplan Projections" },
+    ],
+  },
+  {
+    id: "stupidspotify",
+    title: "Stupid Spotify",
+    description:
+      "Cursed Spotify clone featuring real OAuth playback, AI roasts, face CAPTCHA, 3D skull, and Comic Sans.",
+    categories: ["ai-ml", "full-stack"],
+    isHackathonWinner: true,
+    techStack: ["Next.js", "React", "Spotify API", "Cohere API", "Three.js", "face-api.js", "Python"],
+    links: [
+      { label: "Devpost", href: "https://devpost.com/software/stupid-spotify" },
+      { label: "GitHub", href: "https://github.com/HasNate618/stupid-spotify" },
+    ],
+    media: [
+      { src: "/stupidspotify-dashboard.jpg", alt: "Stupid Spotify Dashboard" },
+      { src: "/stupidspotify-captcha.jpg", alt: "Stupid Spotify Face CAPTCHA" },
     ],
   },
   // ── AI/ML ──
@@ -275,9 +298,11 @@ export const PROJECTS = [
       "Real-time web app translating ASL gestures and facial expressions into emotion-aware speech for natural communication.",
     categories: ["featured", "ai-ml", "full-stack"],
     isHackathonWinner: false,
-    techStack: ["Next.js", "React", "MediaPipe", "Cohere AI", "ElevenLabs", "face-api.js"],
+    techStack: ["React", "MediaPipe", "Gemini API", "ElevenLabs", "face-api.js"],
     links: [
+      { label: "Live Demo", href: "https://www.sure-heres-a-list-of-funny-domain-names-you-can-get-using.tech/", hideOnMobile: true },
       { label: "Devpost", href: "https://devpost.com/software/vital-sign" },
+      { label: "GitHub", href: "https://github.com/liamma06/VitalSign" },
     ],
     media: [
       { src: "/vitalsign-titlecard.jpg", alt: "VitalSign Title Card" },
@@ -285,35 +310,23 @@ export const PROJECTS = [
     ],
   },
   {
-    id: "whackaml",
-    title: "Whack-A-ML",
-    description:
-      "Reinforcement learning agent training a robotic arm to strike targets in Unity using PPO and curriculum learning.",
-    categories: ["ai-ml", "games"],
-    isHackathonWinner: false,
-    techStack: ["Unity", "ML-Agents", "C#", "PPO", "TensorBoard"],
-    links: [
-      { label: "GitHub", href: "https://github.com/HasNate618/Whack-A-ML" },
-    ],
-    media: [{ src: "/whackaml-training.jpg", alt: "Whack-A-ML Training" }],
-  },
-  // ── Mobile Games ──
-  {
     id: "nowandthen",
     title: "NowAndThen",
     description:
       "Geotagged memory map app for leaving comments, photos, and videos tied to locations with AI personality summaries.",
-    categories: ["android", "full-stack", "ai-ml"],
+    categories: ["full-stack", "ai-ml"],
     isHackathonWinner: false,
-    techStack: ["React Native", "Node.js", "Express.js", "MongoDB", "Google Maps API"],
+    techStack: ["React Native", "Expo Go", "MongoDB", "Google Maps API"],
     links: [
-      { label: "Devpost", href: "https://devpost.com/software/nowandthen" },
+      { label: "Devpost", href: "https://devpost.com/software/now-then" },
+      { label: "GitHub", href: "https://github.com/vichekaoeun/uofthacks13" },
     ],
     media: [
       { src: "/nowandthen1.jpg", alt: "NowAndThen Map View" },
       { src: "/nowandthen2.jpg", alt: "NowAndThen Memory Feed" },
     ],
   },
+  // ── Mobile Games ──
   {
     id: "street-cleaner",
     title: "Street Cleaner",
@@ -324,9 +337,13 @@ export const PROJECTS = [
     links: [
       { label: "Google Play", href: "https://play.google.com/store/apps/details?id=com.NathanEspejo.StreetCleaner" },
       { label: "Devpost", href: "https://devpost.com/software/street-cleaner" },
+      { label: "GitHub", href: "https://github.com/HasNate618/Street-Cleaner-Game" },
     ],
-    media: [{ src: "/street_cleaner_icon.png", alt: "Street Cleaner Icon", imageContain: true }],
-    imageContain: true,
+    media: [
+      { src: "/streetcleaner-guide.png", alt: "Street Cleaner How To Play" },
+      { src: "/streetcleaner-demo.png", alt: "Street Cleaner Gameplay" },
+      { src: "/streetcleaner-results.png", alt: "Street Cleaner Results Screen" },
+    ],
   },
   {
     id: "zenith-tower",
@@ -338,8 +355,9 @@ export const PROJECTS = [
     links: [
       { label: "Google Play", href: "https://play.google.com/store/apps/details?id=com.NathanEspejo.ZenithTower" },
     ],
-    media: [{ src: "/zenith_tower_icon.png", alt: "Zenith Tower Icon", imageContain: true }],
-    imageContain: true,
+    media: [
+      { src: "/zenithtower-wipdemo.jpg", alt: "Zenith Tower Gameplay" },
+    ],
   },
   {
     id: "motaru",
@@ -351,8 +369,11 @@ export const PROJECTS = [
     links: [
       { label: "Google Play", href: "https://play.google.com/store/apps/details?id=com.NathanEspejo.Mtaru" },
     ],
-    media: [{ src: "/motaru_icon.png", alt: "Mōtaru Icon", imageContain: true }],
-    imageContain: true,
+    media: [
+      { src: "/motaru-customization.png", alt: "Mōtaru Character Customization" },
+      { src: "/motaru-game.png", alt: "Mōtaru Gameplay" },
+      { src: "/motaru-game2.png", alt: "Mōtaru Second Level" },
+    ],
   },
   {
     id: "tic-tac-toe-ultimate",
@@ -364,8 +385,10 @@ export const PROJECTS = [
     links: [
       { label: "Google Play", href: "https://play.google.com/store/apps/details?id=com.NathanEspejo.TicTacToeUltimate" },
     ],
-    media: [{ src: "/tttu_icon.png", alt: "Tic Tac Toe Ultimate Icon", imageContain: true }],
-    imageContain: true,
+    media: [
+      { src: "/tictactoe-game.png", alt: "Tic Tac Toe Ultimate Gameplay" },
+      { src: "/tictactoe-end.png", alt: "Tic Tac Toe Ultimate Win Screen" },
+    ],
   },
 ];
 
