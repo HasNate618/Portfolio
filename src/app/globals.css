@@ -142,9 +142,9 @@
 
 /* Cyberpunk/Robotic Theme Color Palette */
 :root {
-  --background: #0a0a0a;
-  --background-secondary: #1a1a1a;
-  --background-tertiary: #0f0f0f;
+  --background: #080808;
+  --background-secondary: #101010;
+  --background-tertiary: #0b0b0b;
   --foreground: #e0e0e0;
   --foreground-secondary: #b0b0b0;
   --accent-cyan: #00ffff;
@@ -163,9 +163,9 @@
 /* Override light mode - Force dark cyberpunk theme */
 @media (prefers-color-scheme: light) {
   :root {
-    --background: #0a0a0a;
-    --background-secondary: #1a1a1a;
-    --background-tertiary: #0f0f0f;
+    --background: #080808;
+    --background-secondary: #101010;
+    --background-tertiary: #0b0b0b;
     --foreground: #e0e0e0;
     --foreground-secondary: #b0b0b0;
     --accent-cyan: #00ffff;
@@ -229,7 +229,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Circuit board background pattern */
+/* Circuit board background pattern (static) */
 body::before {
   content: '';
   position: fixed;
@@ -237,7 +237,7 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: 
+  background-image:
     linear-gradient(rgba(0, 255, 255, 0.08) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 255, 255, 0.08) 1px, transparent 1px),
     linear-gradient(rgba(0, 255, 255, 0.04) 1px, transparent 1px),
@@ -246,18 +246,7 @@ body::before {
   background-position: -1px -1px, -1px -1px, -1px -1px, -1px -1px;
   pointer-events: none;
   z-index: -1;
-  opacity: 0.8;
-  animation: gridPulse 8s ease-in-out infinite, gridShift 20s linear infinite;
-}
-
-@keyframes gridPulse {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.5; }
-}
-
-@keyframes gridShift {
-  0% { background-position: -1px -1px, -1px -1px, -1px -1px, -1px -1px; }
-  100% { background-position: 99px 99px, 99px 99px, 19px 19px, 19px 19px; }
+  opacity: 0.4;
 }
 
 /* Additional cyberpunk UI elements */
