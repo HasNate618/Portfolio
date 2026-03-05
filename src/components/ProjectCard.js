@@ -61,8 +61,8 @@ export default function ProjectCard({ project }) {
             >
               ›
             </button>
-            {/* Dot indicators */}
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+            {/* Dot indicators — always visible */}
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 flex gap-1.5 px-2 py-1 rounded-full" style={{ background: "rgba(0,0,0,0.55)" }}>
               {images.map((_, i) => (
                 <button
                   key={i}

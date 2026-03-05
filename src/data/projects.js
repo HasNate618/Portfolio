@@ -80,6 +80,7 @@ export const PROJECTS = [
     ],
     media: [
       { src: "/oli-open.jpg", alt: "OLI Device Open" },
+      { src: "/oli-product.jpg", alt: "OLI Product Shot" },
     ],
   },
   {
@@ -95,7 +96,12 @@ export const PROJECTS = [
       { label: "Devpost", href: "https://devpost.com/software/lumen-qsgcn4" },
       { label: "GitHub", href: "https://github.com/Dawgsrlife/lumen" },
     ],
-    media: [{ src: "/lumen_card.png", alt: "Lumen Project" }],
+    media: [
+      { src: "/lumen_card.png", alt: "Lumen Project" },
+      { src: "/lumen-analytics.png", alt: "Lumen Analytics" },
+      { src: "/lumen-game1.png", alt: "Lumen Mini Game" },
+      { src: "/lumen-game2.png", alt: "Lumen Mini Game 2" },
+    ],
   },
   {
     id: "eyecandy",
@@ -126,7 +132,11 @@ export const PROJECTS = [
       { label: "Devpost", href: "https://devpost.com/software/career-fair-xz0f67" },
       { label: "GitHub", href: "https://github.com/she11fish/careerly" },
     ],
-    media: [{ src: "/careerly_card.jpg", alt: "Careerly Project" }],
+    media: [
+      { src: "/careerly_card.jpg", alt: "Careerly Project" },
+      { src: "/careerly-demo.jpg", alt: "Careerly Demo" },
+      { src: "/careerly-professional.jpg", alt: "Careerly Professional View" },
+    ],
   },
   // ── VR / Games / Hardware ──
   {
@@ -173,7 +183,10 @@ export const PROJECTS = [
     links: [
       { label: "GitHub", href: "https://github.com/HasNate618/SafeRoute" },
     ],
-    media: [{ src: "/saferoute_card.png", alt: "SafeRoute Project" }],
+    media: [
+      { src: "/saferoute_card.png", alt: "SafeRoute Project" },
+      { src: "/saferoute-user-flow.jpg", alt: "SafeRoute User Flow" },
+    ],
   },
   {
     id: "animarker",
@@ -256,6 +269,22 @@ export const PROJECTS = [
   },
   // ── AI/ML ──
   {
+    id: "vitalsign",
+    title: "VitalSign",
+    description:
+      "Real-time web app that translates ASL gestures and facial expressions into emotion-aware speech—helping Deaf and non-verbal users communicate naturally using only a webcam.",
+    categories: ["featured", "ai-ml", "full-stack"],
+    isHackathonWinner: false,
+    techStack: ["Next.js", "React", "MediaPipe", "Cohere AI", "ElevenLabs", "face-api.js"],
+    links: [
+      { label: "Devpost", href: "https://devpost.com/software/vital-sign" },
+    ],
+    media: [
+      { src: "/vitalsign-titlecard.jpg", alt: "VitalSign Title Card" },
+      { src: "/vitalsign-demo.png", alt: "VitalSign Demo" },
+    ],
+  },
+  {
     id: "whackaml",
     title: "Whack-A-ML",
     description:
@@ -269,6 +298,22 @@ export const PROJECTS = [
     media: [{ src: "/whackaml-training.jpg", alt: "Whack-A-ML Training" }],
   },
   // ── Mobile Games ──
+  {
+    id: "nowandthen",
+    title: "NowAndThen",
+    description:
+      "A map that reveals nearby memories—leave comments, photos, or videos tied to your exact location, replay trails, and get an AI-generated personality summary for any place.",
+    categories: ["android", "full-stack", "ai-ml"],
+    isHackathonWinner: false,
+    techStack: ["React Native", "Node.js", "Express.js", "MongoDB", "Google Maps API"],
+    links: [
+      { label: "Devpost", href: "https://devpost.com/software/nowandthen" },
+    ],
+    media: [
+      { src: "/nowandthen1.jpg", alt: "NowAndThen Map View" },
+      { src: "/nowandthen2.jpg", alt: "NowAndThen Memory Feed" },
+    ],
+  },
   {
     id: "street-cleaner",
     title: "Street Cleaner",
