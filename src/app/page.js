@@ -365,6 +365,8 @@ export default function Home() {
                   className="cyber-button inline-flex items-center rounded-xl font-semibold transform hover:scale-105 transition-all duration-200 w-[280px] justify-center text-lg"
                   onClick={e => {
                     e.preventDefault();
+                    setProjectFilter("all");
+                    setProjectsFullscreen(true);
                     const el = document.getElementById('projects');
                     if (el) {
                       const headerHeight = 80; // Account for fixed header
@@ -598,11 +600,16 @@ export default function Home() {
         </h2>
         {/* Fullscreen toggle — desktop only */}
         <button
-          onClick={() => setProjectsFullscreen((v) => !v)}
+          onClick={() => {
+            if (!projectsFullscreen) {
+              setProjectFilter("all");
+            }
+            setProjectsFullscreen((v) => !v);
+          }}
           className="hidden lg:flex items-center gap-1.5 vsc-tab text-sm"
           aria-label={projectsFullscreen ? "Exit fullscreen" : "Expand fullscreen"}
         >
-          {projectsFullscreen ? "⊟ Collapse" : "⊞ Expand"}
+          {projectsFullscreen ? "Collapse" : "Expand"}
         </button>
       </div>
 
