@@ -17,7 +17,7 @@ export const PROJECTS = [
     id: "carebridge",
     title: "CareBridge",
     description:
-      "AI-powered healthcare coordination platform that connects rural patients and providers through intelligent check-ins, risk-aware timelines, and a unified dashboard—closing the loop on missed follow-ups before they become crises.",
+      "AI healthcare platform connecting rural patients and providers with intelligent check-ins and risk tracking.",
     categories: ["featured", "ai-ml", "full-stack"],
     isHackathonWinner: true,
     techStack: ["React", "TypeScript", "FastAPI", "Supabase", "Cohere", "ElevenLabs", "Vite"],
@@ -34,7 +34,7 @@ export const PROJECTS = [
     id: "auralis",
     title: "Auralis",
     description:
-      "A virtual 3D healthcare assistant combining real-time emotion detection and natural voice interaction for empathetic telemedicine.",
+      "Virtual 3D healthcare assistant with emotion detection and natural voice interaction for telemedicine.",
     categories: ["featured", "ai-ml", "full-stack"],
     isHackathonWinner: true,
     techStack: ["React", "Three.js", "OpenAI", "WebRTC", "Node.js"],
@@ -55,7 +55,7 @@ export const PROJECTS = [
     id: "stupidspotify",
     title: "Stupid Spotify",
     description:
-      "A hilariously cursed Spotify clone built in 5 hours—featuring real OAuth Spotify playback, an AI chatbot that roasts you in Gen Z slang, a face-matching CAPTCHA, a spinning 3D skull, and Comic Sans everywhere.",
+      "Cursed Spotify clone featuring real OAuth playback, AI roasts, face CAPTCHA, 3D skull, and Comic Sans.",
     categories: ["featured", "full-stack", "games"],
     isHackathonWinner: true,
     techStack: ["Next.js", "React", "Spotify API", "Cohere AI", "Three.js", "face-api.js", "Python"],
@@ -71,7 +71,7 @@ export const PROJECTS = [
     id: "oli",
     title: "Object-Love-Interface",
     description:
-      "Place any object in front of the camera and OLI gives it a personality, a voice, and emotional availability—your bowl of ramen becomes your Valentine's date. Multi-device IoT system across Raspberry Pi and three ESP32s.",
+      "Multi-device IoT system that gives objects personality and voice—talk to your ramen bowl with Raspberry Pi and ESP32.",
     categories: ["featured", "hardware", "ai-ml"],
     isHackathonWinner: true,
     techStack: ["Python", "Node.js", "Raspberry Pi", "ESP32", "Gemini API", "ElevenLabs", "OpenCV"],
@@ -143,7 +143,7 @@ export const PROJECTS = [
     id: "vrhtn",
     title: "VR ODM Gear Sim",
     description:
-      "VR simulation of the Omni-Directional Movement Gear from Attack on Titan, played with a custom Arduino glove controller and Google Cardboard headset. Swing through a besieged city and slay Titans.",
+      "VR simulation of Attack on Titan's ODM Gear with custom Arduino glove controller and Google Cardboard.",
     categories: ["featured", "games", "hardware"],
     isHackathonWinner: false,
     techStack: ["Unity", "C#", "Google Cardboard SDK", "Arduino", "Blender"],
@@ -159,7 +159,7 @@ export const PROJECTS = [
     id: "wasteland",
     title: "Wasteland",
     description:
-      "An environmentalism-themed horror game controlled by a wearable glove with accelerometer, gyroscope, flex sensors, and a heart rate tracker—higher heart rate means faster running speed.",
+      "Horror game with wearable glove controller using accelerometer, flex sensors, and heart rate input.",
     categories: ["featured", "games", "hardware"],
     isHackathonWinner: false,
     techStack: ["Unity", "C#", "Arduino", "C++", "Python", "Bluetooth"],
@@ -241,7 +241,7 @@ export const PROJECTS = [
     id: "glyph",
     title: "Glyph",
     description:
-      "A leader-key command overlay for Windows—press the Glyph key to open a discoverable overlay and trigger actions with short mnemonic sequences. Supports per-app bindings, nested layers, custom themes, and a visual keymap editor.",
+      "Leader-key command overlay for Windows with discoverable actions, per-app bindings, and custom themes.",
     categories: ["featured", "full-stack"],
     isHackathonWinner: false,
     techStack: ["C#", ".NET", "WPF", "YAML", "WinGet"],
@@ -255,7 +255,7 @@ export const PROJECTS = [
     id: "mealplan",
     title: "UWO Mealplan Calc",
     description:
-      "Chrome extension for Western University students to track daily meal plan spending and project remaining balances across Residence Dollars, Flex Dollars, and more—with actionable budget recommendations.",
+      "Chrome extension for students to track meal plan spending and project remaining balances with budget recommendations.",
     categories: ["full-stack"],
     isHackathonWinner: false,
     techStack: ["JavaScript", "Chrome Extension API", "HTML", "CSS"],
@@ -272,7 +272,7 @@ export const PROJECTS = [
     id: "vitalsign",
     title: "VitalSign",
     description:
-      "Real-time web app that translates ASL gestures and facial expressions into emotion-aware speech—helping Deaf and non-verbal users communicate naturally using only a webcam.",
+      "Real-time web app translating ASL gestures and facial expressions into emotion-aware speech for natural communication.",
     categories: ["featured", "ai-ml", "full-stack"],
     isHackathonWinner: false,
     techStack: ["Next.js", "React", "MediaPipe", "Cohere AI", "ElevenLabs", "face-api.js"],
@@ -288,7 +288,7 @@ export const PROJECTS = [
     id: "whackaml",
     title: "Whack-A-ML",
     description:
-      "Reinforcement learning for a physics-based 3-DOF robotic arm in Unity. The PPO agent learns to strike a dynamic mole target using velocity-based reward shaping, contact-based feedback, and curriculum-style training.",
+      "Reinforcement learning agent training a robotic arm to strike targets in Unity using PPO and curriculum learning.",
     categories: ["ai-ml", "games"],
     isHackathonWinner: false,
     techStack: ["Unity", "ML-Agents", "C#", "PPO", "TensorBoard"],
@@ -302,7 +302,7 @@ export const PROJECTS = [
     id: "nowandthen",
     title: "NowAndThen",
     description:
-      "A map that reveals nearby memories—leave comments, photos, or videos tied to your exact location, replay trails, and get an AI-generated personality summary for any place.",
+      "Geotagged memory map app for leaving comments, photos, and videos tied to locations with AI personality summaries.",
     categories: ["android", "full-stack", "ai-ml"],
     isHackathonWinner: false,
     techStack: ["React Native", "Node.js", "Express.js", "MongoDB", "Google Maps API"],
