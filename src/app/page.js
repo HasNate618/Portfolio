@@ -1,9 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { Analytics } from '@vercel/analytics/next';
 import ThreeModel from "../components/ThreeModel";
+import ProjectCard from "../components/ProjectCard";
+import { PROJECTS, FILTER_TABS } from "../data/projects";
 import dynamic from 'next/dynamic';
 const DynamicUnity = dynamic(() => import('../components/UnityEmbed').then(m => m.default), { ssr: false });
 
@@ -87,7 +89,6 @@ const baseSections = [
   { id: "skills", label: "Skills", mobileLabel: "Skills" },
   { id: "experience", label: "Experience", mobileLabel: "Experience" },
   { id: "projects", label: "Projects", mobileLabel: "Projects" },
-  { id: "apps", label: "Mobile Games", mobileLabel: "Games" },
 ];
 
 const desktopOnlySections = [
@@ -106,6 +107,13 @@ export default function Home() {
   const [modelFlyingIntoGame, setModelFlyingIntoGame] = useState(false);
   const unityRef = useRef(); // Add a ref to access UnityEmbed instance
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [projectFilter, setProjectFilter] = useState("featured");
+  const [projectsFullscreen, setProjectsFullscreen] = useState(false);
+
+  const filteredProjects = useMemo(() => {
+    if (projectFilter === "all") return PROJECTS;
+    return PROJECTS.filter((p) => p.categories.includes(projectFilter));
+  }, [projectFilter]);
 
   // Check if mobile
   useEffect(() => {
@@ -181,6 +189,7 @@ export default function Home() {
         modelRotation={[0, 0, 0]}
         transparent={true}
         visible={showThreeModel}
+        fadeOut={projectsFullscreen || activeTab === "projects"}
         flyingIntoGame={modelFlyingIntoGame}
         onDragStart={() => {
           setIsDraggingModel(true);
@@ -516,210 +525,46 @@ export default function Home() {
   </section>
 
   {/* Projects Section */}
-  <section id="projects" className="w-full max-w-4xl mx-auto mb-16 sm:mb-32">
-     <h2 className="text-3xl font-bold mb-6 sm:mb-8 cyber-cyan text-center cyber-section-title" data-text="Projects I'm Proud Of">
-      <span className="sm:hidden">Projects</span>
-      <span className="hidden sm:inline">Projects I&apos;m Proud Of</span>
-    </h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-          {/* Auralis */}
-    <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
-            <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
-              <Image src="/auralis_card.png" alt="Auralis Project" fill className="object-cover rounded-t-lg" />
-            </div>
-            <div className="p-4 flex flex-col flex-1">
-              <div className="flex flex-wrap gap-2 mb-3">
-                <span className="badge badge-yellow flex items-center gap-1">🥇 Hackathon Winner</span>
-                <span className="badge badge-indigo">3D</span>
-              </div>
-              <h3 className="font-semibold text-xl mb-2 cyber-cyan">Auralis</h3>
-              <p className="text-gray-600 dark:text-gray-400 flex-1">A virtual 3D healthcare assistant combining emotion detection and natural voice interaction for empathetic telemedicine.</p>
-                <div className="mt-4 flex flex-row gap-6">
-                  <a href="https://stop-googling-symptoms.tech" target="_blank" rel="noopener noreferrer" className="hidden sm:inline text-green-600 dark:text-green-400 hover:underline underline-offset-2 transition">&gt; Live Demo</a>
-                  <a href="https://devpost.com/software/docai-evq74t" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; Devpost</a>
-                  <a href="https://github.com/rickytang666/auralis" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>
-                </div>
-            </div>
-          </div>
-          {/* Lumen */}
-    <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
-            <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
-              <Image src="/lumen_card.png" alt="Lumen Project" fill className="object-cover rounded-t-lg" />
-            </div>
-            <div className="p-4 flex flex-col flex-1">
-              <div className="flex flex-wrap gap-2 mb-3">
-                <span className="badge badge-yellow flex items-center gap-1">🥇 Hackathon Winner</span>
-                <span className="badge badge-cyan">Game Dev</span>
-              </div>
-              <h3 className="font-semibold text-xl mb-2 cyber-cyan">Lumen</h3>
-              <p className="text-gray-600 dark:text-gray-400 flex-1">A calming companion that listens, understands, and responds with personalized mini-games.</p>
-                <div className="mt-4 flex flex-row gap-6">
-                  <a href="https://llumen.netlify.app/" target="_blank" rel="noopener noreferrer" className="hidden sm:inline text-green-600 dark:text-green-400 hover:underline underline-offset-2 transition">&gt; Live Demo</a>
-                  <a href="https://devpost.com/software/lumen-qsgcn4" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; Devpost</a>
-                  <a href="https://github.com/Dawgsrlife/lumen" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>
-                </div>
-            </div>
-          </div>
-          {/* Eyecandy */}
-    <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
-            <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
-              <Image src="/eyecandy_card.jpg" alt="Lumen Project" fill className="object-cover rounded-t-lg" />
-            </div>
-            <div className="p-4 flex flex-col flex-1">
-              <div className="flex flex-wrap gap-2 mb-3">
-                <span className="badge badge-yellow flex items-center gap-1">🥇 Hackathon Winner</span>
-                <span className="badge badge-teal">AR</span>
-              </div>
-              <h3 className="font-semibold text-xl mb-2 cyber-cyan">Eyecandy</h3>
-              <p className="text-gray-600 dark:text-gray-400 flex-1">An AR shopping experience that turns any product photo into a virtual try-on.</p>
-                <div className="mt-4 flex flex-row gap-6">
-                  <a href="https://devpost.com/software/eye-candy" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; Devpost</a>
-                  <a href="https://github.com/Duck-luv-pie/eyecandy" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>
-                </div>
-            </div>
-          </div>
-          {/* Careerly */}
-    <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
-            <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
-              <Image src="/careerly_card.jpg" alt="Project 2" fill className="object-cover rounded-t-lg" />
-            </div>
-            <div className="p-4 flex flex-col flex-1">
-              <div className="flex flex-wrap gap-2 mb-3">
-                <span className="badge badge-yellow flex items-center gap-1">🥇 Hackathon Winner</span>
-                <span className="badge badge-cyan">Game Dev</span>
-              </div>
-              <h3 className="font-semibold text-xl mb-2 cyber-cyan">Careerly</h3>
-              <p className="text-gray-600 dark:text-gray-400 flex-1">Making career exploration fun and inclusive through an AI-powered virtual job fair.</p>
-              <div className="mt-4 flex flex-row gap-6">
-                <a href="https://devpost.com/software/career-fair-xz0f67" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; Devpost</a>
-                <a href="https://github.com/she11fish/careerly" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>
-              </div>
-            </div>
-          </div>
-          {/* SafeRoute */}
-    <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
-            <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
-              <Image src="/saferoute_card.png" alt="Project 3" fill className="object-cover rounded-t-lg" />
-            </div>
-            <div className="p-4 flex flex-col flex-1">
-              <div className="flex flex-wrap gap-2 mb-3">
-                <span className="badge badge-green">Android</span>
-              </div>
-              <h3 className="font-semibold text-xl mb-2 cyber-cyan">SafeRoute</h3>
-              <p className="text-gray-600 dark:text-gray-400 flex-1">A real-time hazard reporting app with crowdsourced data, drone integration, and safe routing.</p>
-              <a href="https://github.com/HasNate618/SafeRoute" target="_blank" rel="noopener noreferrer" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>
-            </div>
-          </div>
-          {/* Animarker */}
-    <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
-            <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
-              <Image src="/animarker_card.png" alt="Project 4" fill className="object-cover rounded-t-lg" />
-            </div>
-            <div className="p-4 flex flex-col flex-1">
-              <div className="flex flex-wrap gap-2 mb-3">
-                <span className="badge badge-green">Android</span>
-              </div>
-              <h3 className="font-semibold text-xl mb-2 cyber-cyan">Animarker</h3>
-              <p className="text-gray-600 dark:text-gray-400 flex-1">A crowdsourced wildlife tracker using computer vision to identify and map animal sightings worldwide.</p>
-              <div className="mt-4 flex flex-row gap-6">
-                <a href="https://devpost.com/software/endangered-animal-app" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">&gt; Devpost</a>
-                <a href="https://github.com/HasNate618/Animarker" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition">&gt; GitHub</a>
-              </div>
-            </div>
-          </div>
-          {/* FLEXFIRE-X */}
-    <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
-            <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
-              <Image src="/flexfire-x_card.png" alt="Project 5" fill className="object-cover rounded-t-lg" />
-            </div>
-            <div className="p-4 flex flex-col flex-1">
-              <div className="flex flex-wrap gap-2 mb-3">
-                <span className="badge badge-purple">Hardware</span>
-              </div>
-              <h3 className="font-semibold text-xl mb-2 cyber-cyan">FLEXFIRE-X</h3>
-              <p className="text-gray-600 dark:text-gray-400 flex-1"> A wrist mounted projectile launcher controlled using muscle signals for intuitive body-driven activation.</p>
-              <a href="https://github.com/HasNate618/FLEXFIRE-X" target="_blank" rel="noopener noreferrer" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline">&gt; GitHub</a>
-            </div>
-          </div>
-          {/* Rubber Band Turret */}
-    <div className="cyber-card flex flex-col overflow-hidden relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
-            <div className="relative w-full" style={{aspectRatio: '3/2', minHeight: 100}}>
-              <Image src="/turret_card.png" alt="Project 6" fill className="object-cover rounded-t-lg" />
-            </div>
-            <div className="p-4 flex flex-col flex-1">
-              <div className="flex flex-wrap gap-2 mb-3">
-                <span className="badge badge-purple">Hardware</span>
-              </div>
-              <h3 className="font-semibold text-xl mb-2 cyber-cyan">Rubber Band Turret</h3>
-              <p className="text-gray-600 dark:text-gray-400 flex-1">Bluetooth-controlled rubber band turret with smooth servo movement and wireless app control.</p>
-              <a href="https://github.com/HasNate618/Rubber-Band-Turret" target="_blank" rel="noopener noreferrer" className="mt-4 text-blue-600 dark:text-blue-400 hover:underline">&gt; GitHub</a>
-            </div>
-          </div>
-        </div>
-  </section>
+  <section id="projects" className="w-full mx-auto mb-16 sm:mb-32 transition-all duration-500 ease-in-out" style={{ maxWidth: projectsFullscreen ? "90rem" : "56rem" }}>
+     <div className="flex flex-col sm:flex-row items-center justify-between mb-6 sm:mb-8 gap-4">
+       <h2 className="text-3xl font-bold cyber-cyan text-center cyber-section-title" data-text="Projects I'm Proud Of">
+        <span className="sm:hidden">Projects</span>
+        <span className="hidden sm:inline">Projects I&apos;m Proud Of</span>
+      </h2>
+      {/* Fullscreen toggle — desktop only */}
+      <button
+        onClick={() => setProjectsFullscreen((v) => !v)}
+        className="hidden lg:flex items-center gap-1.5 vsc-tab text-sm"
+        aria-label={projectsFullscreen ? "Exit fullscreen" : "Expand fullscreen"}
+      >
+        {projectsFullscreen ? "⊟ Collapse" : "⊞ Expand"}
+      </button>
+    </div>
 
-  {/* Mobile Apps Section */}
-  <section id="apps" className="w-full max-w-4xl mx-auto mb-16 sm:mb-32">
-    <h2 className="text-3xl font-bold mb-6 sm:mb-8 cyber-cyan text-center cyber-section-title" data-text="Mobile Games">Mobile Games</h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-          {/* Street Cleaner */}
-          <div className="cyber-card flex flex-row items-center relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer p-4">
-            <Image src="/street_cleaner_icon.png" alt="App 1 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-3xl mr-4 shadow flex-shrink-0" style={{borderRadius: '30%'}} />
-            <div className="flex-1 flex flex-col items-start">
-              <div className="w-full flex items-center gap-2 mb-1">
-                <h3 className="font-semibold text-lg md:text-xl cyber-cyan">
-                  <span className="md:hidden">Street Cleaner</span>
-                  <span className="hidden md:inline">Street Cleaner&nbsp;</span>
-                </h3>
-                <span className="badge badge-yellow flex items-center gap-1">🥇</span>
-              </div>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Drag litter into the correct bin to win!</p>
-              <div className="flex flex-row gap-4 items-center mt-2">
-                <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.StreetCleaner" target="_blank" rel="noopener noreferrer">
-                  <Image src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" width={140} height={48} className="h-12" />
-                </a>
-                <a href="https://devpost.com/software/street-cleaner" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-12 h-12 bg-black/80 hover:bg-black/60 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-cyan-400/30 border border-cyan-400/30 hover:border-cyan-400/60 backdrop-blur-sm">
-                  <svg className="w-6 h-6 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M6.002 1.61L0 12.004L6.002 22.39h11.996L24 12.004L17.998 1.61H6.002zm1.593 4.084h3.947c3.605 0 6.276 1.695 6.276 6.31c0 4.436-3.21 6.302-6.456 6.302H7.595V5.694zm2.517 2.449v7.714h1.241c2.646 0 3.862-1.55 3.862-3.861.009-2.569-1.096-3.853-3.767-3.853H10.112z"/>
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
-          {/* Zenith Tower */}
-          <div className="cyber-card flex flex-row items-center relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer p-4">
-            <Image src="/zenith_tower_icon.png" alt="App 2 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-3xl mr-4 shadow flex-shrink-0" style={{borderRadius: '30%'}} />
-            <div className="flex-1 flex flex-col items-start">
-              <h3 className="font-semibold text-lg md:text-xl mb-1 cyber-cyan">Zenith Tower</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Ascend the tower in a futuristic dungeon crawler.</p>
-              <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.ZenithTower" target="_blank" rel="noopener noreferrer">
-                <Image src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" width={140} height={48} className="h-12 mt-2" />
-              </a>
-            </div>
-          </div>
-          {/* Mōtaru */}
-          <div className="cyber-card flex flex-row items-center relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer p-4">
-            <Image src="/motaru_icon.png" alt="App 3 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-3xl mr-4 shadow flex-shrink-0" style={{borderRadius: '30%'}} />
-            <div className="flex-1 flex flex-col items-start">
-              <h3 className="font-semibold text-lg md:text-xl mb-1 cyber-cyan">Mōtaru</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Take down ninjas using quick reflexes!</p>
-              <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.Mtaru" target="_blank" rel="noopener noreferrer">
-                <Image src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" width={140} height={48} className="h-12 mt-2" />
-              </a>
-            </div>
-          </div>
-          {/* Tic Tac Toe Ultimate */}
-          <div className="cyber-card flex flex-row items-center relative hover:transform hover:scale-105 transition-all duration-300 cursor-pointer p-4">
-            <Image src="/tttu_icon.png" alt="App 4 Icon" width={128} height={128} className="w-28 h-28 md:w-32 md:h-32 rounded-3xl mr-4 shadow flex-shrink-0" style={{borderRadius: '30%'}} />
-            <div className="flex-1 flex flex-col items-start">
-              <h3 className="font-semibold text-lg md:text-xl mb-1 cyber-cyan">Tic Tac Toe Ultimate</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">The Ultimate Tic Tac Toe experience.</p>
-              <a href="https://play.google.com/store/apps/details?id=com.NathanEspejo.TicTacToeUltimate" target="_blank" rel="noopener noreferrer">
-                <Image src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" width={140} height={48} className="h-12 mt-2" />
-              </a>
-            </div>
-          </div>
+    {/* Filter tabs */}
+    <div className="vsc-tabs flex-wrap justify-center mb-6 sm:mb-8">
+      {FILTER_TABS.map((tab) => (
+        <button
+          key={tab.id}
+          onClick={() => setProjectFilter(tab.id)}
+          className={`vsc-tab ${projectFilter === tab.id ? "active" : ""}`}
+        >
+          {tab.label}
+        </button>
+      ))}
+    </div>
+
+    <div key={projectFilter} className={`grid gap-6 sm:gap-8 transition-all duration-500 ease-in-out ${
+      projectsFullscreen
+        ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+        : "grid-cols-1 md:grid-cols-2"
+    }`}>
+      {filteredProjects.map((project, i) => (
+        <div key={project.id} className="animate-fade-in" style={{ animationDelay: `${i * 0.04}s` }}>
+          <ProjectCard project={project} />
         </div>
+      ))}
+    </div>
   </section>
 
   {/* Links Section removed, links are now in About section */}

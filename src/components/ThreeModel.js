@@ -25,7 +25,6 @@ const SPEECH_TEXT = {
   skills: "ANALYZING CAPABILITIES // Impressive skill matrix detected",
   experience: "CAREER LOG ACCESSED // Tracking professional journey",
   projects: "PROJECT DATABASE ACCESSED // Creative excellence verified",
-  apps: "MOBILE GAMES LIBRARY // PlayStore collection unlocked",
   unity: "ADVENTURE MODE READY // Drag me into the portal!",
   default: "NEXUS ACTIVATED // Your digital guide awaits"
 };
@@ -268,6 +267,7 @@ function ThreeModel({
   onDragEnd = () => {},
   onCursorUpdate = () => {},
   visible = true,
+  fadeOut = false,
   flyingIntoGame = false
 }) {
   // Helper function to get about section position
@@ -344,7 +344,7 @@ function ThreeModel({
   const updateSpeechForCurrentSection = (scrollTop) => {
     if (typeof window === 'undefined') return;
     
-    const sections = ['about', 'skills', 'experience', 'projects', 'apps', 'unity'];
+    const sections = ['about', 'skills', 'experience', 'projects', 'unity'];
     const middleY = scrollTop + window.innerHeight / 2;
     let foundSection = null;
     
@@ -678,7 +678,9 @@ function ThreeModel({
         top: `${constrainedDisplayY}px`,
         transform: 'translate(-50%, -50%)',
         zIndex: 30,
-        transition: 'none',
+        transition: 'opacity 0.4s ease',
+        opacity: fadeOut ? 0 : 1,
+        pointerEvents: fadeOut ? 'none' : 'auto',
         cursor: isDragging ? 'grabbing' : 'grab',
       }}
       onPointerDown={(e) => {
