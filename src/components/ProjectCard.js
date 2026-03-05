@@ -65,7 +65,7 @@ export default function ProjectCard({ project }) {
               src={current.src}
               alt={current.alt || project.title}
               fill
-              className={`rounded-t-lg ${useContain ? "object-contain bg-black" : "object-cover"}`}
+              className={`rounded-t-lg ${useContain ? "object-contain" : "object-cover"}`}
               style={{ animation: "carouselFade 0.3s ease-in-out" }}
             />
           )}
