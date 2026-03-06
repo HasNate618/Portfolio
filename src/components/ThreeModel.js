@@ -542,7 +542,12 @@ function ThreeModel({
       window.addEventListener('resize', resizeHandler);
       handleScroll(); // Initial call
 
+      // Re-check position every second to catch page reload with restored scroll
+      // (scroll event won't fire when browser restores scroll position on load)
+      const positionCheckInterval = setInterval(handleScroll, 1000);
+
       return () => {
+        clearInterval(positionCheckInterval);
         window.removeEventListener('scroll', handleScroll);
         window.removeEventListener('resize', resizeHandler);
         // clean up any inline styles we applied
