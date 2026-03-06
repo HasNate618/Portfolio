@@ -148,7 +148,12 @@ export const PROJECTS = [
     links: [
       { label: "GitHub", href: "https://github.com/HasNate618/Glyph" },
     ],
-    media: [{ src: "/glyph-logo.png", alt: "Glyph Logo", imageContain: true }],
+    media: [
+      { src: "/glyph-logo.png", alt: "Glyph Logo", imageContain: true },
+      { src: "/glyph-keymaps.png", alt: "Glyph App Keymap" },
+      { src: "/glyph-overlay.png", alt: "Glyph App Overlay" },
+      { src: "/glyph-settings.png", alt: "Glyph Settings" },
+    ],
     imageContain: true,
   },
   {
