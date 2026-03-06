@@ -586,9 +586,7 @@ export default function Home() {
     }`}
   >
     <div
-      className={`mx-auto ${
-        projectsFullscreen ? "w-full px-8 lg:px-96" : ""
-      }`}
+      className={`mx-auto w-full px-[clamp(1rem,5vw,6rem)]`}
     >
       <div className="flex flex-col sm:flex-row items-center justify-between mb-6 sm:mb-8 gap-4">
         <h2
