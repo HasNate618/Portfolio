@@ -84,6 +84,22 @@ export const PROJECTS = [
     ],
   },
   {
+    id: "cyberdeck",
+    title: "Cyberdeck (WIP)",
+    description:
+      "Custom handheld Linux cyberdeck built around a Raspberry Pi 3B with a terminal-first boot flow, modular hardware, and a custom 3D-printed case.",
+    categories: ["featured", "hardware"],
+    isHackathonWinner: false,
+    techStack: ["Raspberry Pi", "Linux", "Bash", "PlatformIO", "Blender"],
+    links: [
+      { label: "GitHub", href: "https://github.com/HasNate618/cyberdeck" },
+    ],
+    media: [
+      { src: "/cyberdeck-wip1.jpg", alt: "Cyberdeck Work-in-Progress Build" },
+      { src: "/cyberdeck-cad.png", alt: "Cyberdeck CAD Render" },
+    ],
+  },
+  {
     id: "oli",
     title: "Object-Love-Interface",
     description:
@@ -172,6 +188,24 @@ export const PROJECTS = [
       { src: "/careerly_card.jpg", alt: "Careerly Project" },
       { src: "/careerly-demo.jpg", alt: "Careerly Demo" },
       { src: "/careerly-professional.jpg", alt: "Careerly Professional View" },
+    ],
+  },
+  {
+    id: "agenticarmy",
+    title: "AgenticArmy",
+    description:
+      "Human-in-the-loop multi-agent coding workflow with a VS Code extension and FastAPI backend for planning, coordination, conflict analysis, and QA.",
+    categories: ["featured", "ai-ml", "full-stack"],
+    isHackathonWinner: false,
+    techStack: ["TypeScript", "JavaScript", "Python", "FastAPI", "VS Code Extension"],
+    links: [
+      { label: "Devpost", href: "https://devpost.com/software/agenticarmy?ref_content=my-projects-tab&ref_feature=my_projects" },
+      { label: "GitHub", href: "https://github.com/HasNate618/genai-genesis-2026" },
+    ],
+    media: [
+      { src: "/agenticarmy-titlecard.png", alt: "AgenticArmy Title Card" },
+      { src: "/agenticarmy-overview.png", alt: "AgenticArmy Workflow Overview" },
+      { src: "/agenticarmy-agents.png", alt: "AgenticArmy Multi-Agent View" },
     ],
   },
   // ── VR / Games / Hardware ──
@@ -396,4 +430,3 @@ export const PROJECTS = [
     ],
   },
 ];
-
