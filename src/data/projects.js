@@ -13,7 +13,7 @@ export const FILTER_TABS = [
 
 export const PROJECTS = [
   // ── Hackathon Winners ──
-  {
+    {
     id: "carebridge",
     title: "CareBridge",
     description:
@@ -188,6 +188,23 @@ export const PROJECTS = [
       { src: "/careerly_card.jpg", alt: "Careerly Project" },
       { src: "/careerly-demo.jpg", alt: "Careerly Demo" },
       { src: "/careerly-professional.jpg", alt: "Careerly Professional View" },
+    ],
+  },
+  {
+    id: "dataquest26",
+    title: "Gaming & Mental Health Analyzer",
+    description:
+      "ML system that predicts mental wellbeing risks across sleep, productivity, social isolation, dysregulation, and emotional problems based on gaming habits.",
+    categories: ["featured", "ai-ml"],
+    isHackathonWinner: false,
+    techStack: ["scikit-learn", "Jupyter Notebook", "Python", "Kaggle", "pandas"],
+    links: [
+      { label: "GitHub", href: "https://github.com/HasNate618/Dataquest26" },
+    ],
+    media: [
+      { src: "/webapp-results.png", alt: "Gaming & Mental Health Results Dashboard" },
+      { src: "/model-training.png", alt: "Model Training & Performance Metrics" },
+      { src: "/model-comparison.png", alt: "ML Model Comparison" },
     ],
   },
   {
