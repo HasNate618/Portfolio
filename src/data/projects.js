@@ -13,7 +13,38 @@ export const FILTER_TABS = [
 
 export const PROJECTS = [
   // ── Hackathon Winners ──
-    {
+  {
+    id: "local-ai-platform",
+    title: "Local AI Platform",
+    description:
+      "Fully dockerized local-first AI platform with secure remote access, model routing, MCP tools, and course-specific knowledge bases for grounded study and development workflows.",
+    categories: ["featured", "ai-ml"],
+    isHackathonWinner: false,
+    techStack: [
+      "Docker",
+      "Linux",
+      "Tailscale",
+      "Open WebUI",
+      "Bifrost",
+      "SearXNG",
+      "Crawl4AI",
+      "ComfyUI",
+      "MCP Servers",
+      "llama.cpp",
+    ],
+    links: [
+      {
+        label: "LinkedIn",
+        href: "https://www.linkedin.com/feed/update/urn:li:activity:7446904789528907776/?originTrackingId=aay5ezDGpg8h3gQTTeC4lQ%3D%3D",
+      },
+    ],
+    media: [
+      { src: "/localai-pipeline.png", alt: "Local AI Platform System Pipeline" },
+      { src: "/localai-parsing-pipeline.png", alt: "Local AI Parsing Pipeline" },
+      { src: "/localai-chat-sequence.png", alt: "Local AI Chat Sequence Diagram" },
+    ],
+  },
+  {
     id: "carebridge",
     title: "CareBridge",
     description:

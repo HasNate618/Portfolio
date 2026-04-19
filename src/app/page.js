@@ -11,15 +11,19 @@ const DynamicUnity = dynamic(() => import('../components/UnityEmbed').then(m => 
 
 // Typewriter animation for developer titles
 const TITLES = [
-  "an Android Developer",
-  "a Game Developer",
-  "an Embedded Systems Developer",
+  "an AI Systems Builder",
+  "an Automation Engineer",
+  "a Linux + Servers Builder",
+  "a Hardware + CAD Builder",
+  "a Unity XR / 3D Game Developer",
 ];
 
 const MOBILE_TITLES = [
-  "an Android Developer",
-  "a Game Developer", 
-  "an Embedded Systems Dev",
+  "AI Systems",
+  "Automation",
+  "Linux + Servers",
+  "Hardware + CAD",
+  "Unity XR",
 ];
 
 function TypewriterTitles() {
@@ -331,7 +335,7 @@ export default function Home() {
               </div>
               
               <p className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-10">
-                Passionate <span className="font-semibold cyber-cyan">Software Engineering</span> student crafting innovative solutions that bridge hardware and software, from VR experiences to AI-driven applications.
+                Building local-first AI systems, automation, and Linux-backed platforms, with hardware/CAD and Unity XR when it needs to touch the real world.
               </p>
               
               {/* Social Links */}
@@ -407,73 +411,191 @@ export default function Home() {
             
             <div className="space-y-4">
               <p className="text-gray-300 leading-relaxed text-lg">
-                I&apos;m a <span className="cyber-green font-semibold">Software Engineering</span> student at <span className="cyber-purple font-semibold">Western University</span> with strong skills in game development, Android app creation, and hardware prototyping. I enjoy building immersive VR games, crafting intuitive Android apps, and designing wearable devices that merge software with physical interaction.
+                I&apos;m a <span className="cyber-green font-semibold">Software Engineering</span> student at <span className="cyber-purple font-semibold">Western University</span> focused on AI systems, automation, Linux-first infrastructure, and hardware prototyping. I build local and hybrid LLM workflows, design full-stack tools, and create embedded systems that connect physical devices with intelligent software.
               </p>
-              <p className="text-gray-300 leading-relaxed">
-                My multidisciplinary approach blends full-stack development, embedded systems, and artificial intelligence to create technology that feels like a natural extension of the body and mind. Passionate about mental health, accessibility, and ethical design, I&apos;m excited to explore how AI and emerging technologies can shape the future of human-computer interaction.
-              </p>
+              
             </div>
           </div>
         </section>
 
   {/* Skills Section */}
-  <section id="skills" className="w-full max-w-4xl mx-auto mb-16 sm:mb-32 relative">
+  <section id="skills" className="w-full max-w-5xl mx-auto mb-16 sm:mb-32 relative">
     <div className="cyber-card">
-      <h2 className="text-3xl font-bold mb-6 cyber-cyan cyber-section-title" data-text="Skills">Skills</h2>
-      
-      {/* Technical Skills */}
-      <div className="mb-6">
-        <h3 className="text-lg font-bold text-blue-400 mb-4 pb-2 border-b border-blue-400/30">Technical</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="skill-group">
-            <h4 className="text-sm font-semibold text-indigo-300 uppercase tracking-wider mb-2">Languages</h4>
-            <p className="text-gray-300 text-base leading-relaxed">
-              Java • C# • Python • JavaScript • TypeScript • C++ • Kotlin • SQL • HTML • CSS • XML
-            </p>
+      <h2 className="text-3xl font-bold mb-4 cyber-cyan cyber-section-title" data-text="Skills">Skills</h2>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+        <div className="skill-group rounded-xl border border-cyan-400/15 bg-black/20 p-5">
+          <h3 className="text-lg font-bold text-cyan-300 mb-3">AI Systems + Agentic Coding</h3>
+          <div className="flex flex-wrap gap-2">
+            {[
+              "Local LLM Workflows",
+              "Hybrid Inference",
+              "MCP",
+              "Multi-Agent Orchestration",
+              "Knowledge Bases",
+              "Model Routing",
+              "Human-in-the-Loop Review",
+              "Cursor",
+              "GitHub Copilot",
+              "OpenCode",
+              "Claude Code",
+            ].map((item) => (
+              <span key={item} className="px-2.5 py-1 rounded-lg border border-cyan-300/25 text-cyan-100 text-xs bg-black/20">
+                {item}
+              </span>
+            ))}
           </div>
-          <div className="skill-group">
-            <h4 className="text-sm font-semibold text-sky-300 uppercase tracking-wider mb-2">Frameworks & APIs</h4>
-            <p className="text-gray-300 text-base leading-relaxed">
-              React • REST APIs • OpenAI / LLM APIs • Google Maps API • HERE Maps SDK • JsonBin API
-            </p>
+        </div>
+
+        <div className="skill-group rounded-xl border border-emerald-400/15 bg-black/20 p-5">
+          <h3 className="text-lg font-bold text-emerald-300 mb-3">Linux, Servers + Automation</h3>
+          <div className="flex flex-wrap gap-2">
+            {[
+              "Linux",
+              "Arch Linux",
+              "Debian",
+              "Docker",
+              "Tailscale",
+              "Bash",
+              "Git",
+              "FastAPI",
+              "Node.js",
+              "Next.js",
+              "Server Automation",
+              "Remote Access",
+            ].map((item) => (
+              <span key={item} className="px-2.5 py-1 rounded-lg border border-emerald-300/25 text-emerald-100 text-xs bg-black/20">
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="skill-group rounded-xl border border-violet-400/15 bg-black/20 p-5">
+          <h3 className="text-lg font-bold text-violet-300 mb-3">Hardware + Embedded</h3>
+          <div className="flex flex-wrap gap-2">
+            {[
+              "Arduino",
+              "ESP32",
+              "Raspberry Pi",
+              "M5Stack",
+              "PlatformIO",
+              "Sensor Integration",
+              "Bluetooth Low Energy",
+              "Electronics",
+              "3D Printing",
+              "CAD",
+              "OnShape",
+              "Blender",
+            ].map((item) => (
+              <span key={item} className="px-2.5 py-1 rounded-lg border border-violet-300/25 text-violet-100 text-xs bg-black/20">
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="skill-group rounded-xl border border-fuchsia-400/15 bg-black/20 p-5">
+          <h3 className="text-lg font-bold text-fuchsia-300 mb-3">Unity XR + 3D Games</h3>
+          <div className="flex flex-wrap gap-2">
+            {[
+              "Unity3D",
+              "C#",
+              "VR",
+              "AR",
+              "3D Gameplay",
+              "Game Systems",
+              "Interactive Prototyping",
+            ].map((item) => (
+              <span key={item} className="px-2.5 py-1 rounded-lg border border-fuchsia-300/25 text-fuchsia-100 text-xs bg-black/20">
+                {item}
+              </span>
+            ))}
           </div>
         </div>
       </div>
-      
-      {/* Development */}
-      <div className="mb-6">
-        <h3 className="text-lg font-bold text-emerald-400 mb-4 pb-2 border-b border-emerald-400/30">Development</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="skill-group">
-            <h4 className="text-sm font-semibold text-teal-300 uppercase tracking-wider mb-2">Specializations</h4>
-            <p className="text-gray-300 text-base leading-relaxed">
-              Full-Stack • Game Dev • VR/AR • Android • AI/ML • Computer Vision • CNNs • Vision–Language Models (VLMs) • UI/UX Design
-            </p>
-          </div>
-          <div className="skill-group">
-            <h4 className="text-sm font-semibold text-green-300 uppercase tracking-wider mb-2">Tools & Platforms</h4>
-            <p className="text-gray-300 text-base leading-relaxed">
-            Git • Linux • Docker • Unity3D • Android Studio • Blender • OnShape • TensorFlow • PyTorch • MySQL
-            </p>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="skill-group rounded-xl border border-indigo-400/20 bg-indigo-400/5 p-4">
+          <h4 className="text-sm font-semibold text-indigo-300 uppercase tracking-wider mb-3">Languages</h4>
+          <div className="flex flex-wrap gap-2">
+            {[
+              "Python",
+              "JavaScript",
+              "TypeScript",
+              "C#",
+              "C++",
+              "Java",
+              "Kotlin",
+              "SQL",
+              "Bash",
+              "HTML",
+              "CSS",
+            ].map((item) => (
+              <span key={item} className="px-2.5 py-1 rounded-lg border border-indigo-300/20 text-indigo-100 text-xs bg-black/20">
+                {item}
+              </span>
+            ))}
           </div>
         </div>
-      </div>
-      
-      {/* Hardware & Soft Skills */}
-      <div>
-        <h3 className="text-lg font-bold text-purple-400 mb-4 pb-2 border-b border-purple-400/30">Hardware & Professional</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="skill-group">
-            <h4 className="text-sm font-semibold text-violet-300 uppercase tracking-wider mb-2">Embedded Systems</h4>
-            <p className="text-gray-300 text-base leading-relaxed">
-              Arduino • ESP32 • Raspberry Pi • M5Stack • 3D Printing & Prototyping • Bluetooth Low Energy • Electronics & Circuits
-            </p>
+
+        <div className="skill-group rounded-xl border border-sky-400/20 bg-sky-400/5 p-4">
+          <h4 className="text-sm font-semibold text-sky-300 uppercase tracking-wider mb-3">Web + App</h4>
+          <div className="flex flex-wrap gap-2">
+            {[
+              "React",
+              "Next.js",
+              "FastAPI",
+              "Node.js",
+              "React Native",
+              "Expo",
+              "Three.js",
+              "Chrome Extensions",
+            ].map((item) => (
+              <span key={item} className="px-2.5 py-1 rounded-lg border border-sky-300/20 text-sky-100 text-xs bg-black/20">
+                {item}
+              </span>
+            ))}
           </div>
-          <div className="skill-group">
-            <h4 className="text-sm font-semibold text-fuchsia-300 uppercase tracking-wider mb-2">Professional</h4>
-            <p className="text-gray-300 text-base leading-relaxed">
-              Team Collaboration • Agile • Problem Solving • Rapid Prototyping • Mentorship
-            </p>
+        </div>
+
+        <div className="skill-group rounded-xl border border-emerald-400/20 bg-emerald-400/5 p-4">
+          <h4 className="text-sm font-semibold text-green-300 uppercase tracking-wider mb-3">Data + ML</h4>
+          <div className="flex flex-wrap gap-2">
+            {[
+              "PyTorch",
+              "TensorFlow",
+              "scikit-learn",
+              "pandas",
+              "Jupyter Notebook",
+              "MediaPipe",
+              "face-api.js",
+            ].map((item) => (
+              <span key={item} className="px-2.5 py-1 rounded-lg border border-emerald-300/20 text-emerald-100 text-xs bg-black/20">
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="skill-group rounded-xl border border-purple-400/20 bg-purple-400/5 p-4">
+          <h4 className="text-sm font-semibold text-purple-300 uppercase tracking-wider mb-3">Databases + Platforms</h4>
+          <div className="flex flex-wrap gap-2">
+            {[
+              "Supabase",
+              "MongoDB",
+              "MySQL",
+              "Git",
+              "Docker",
+              "Linux",
+              "Arch Linux",
+              "Debian",
+              "Tailscale",
+            ].map((item) => (
+              <span key={item} className="px-2.5 py-1 rounded-lg border border-purple-300/20 text-purple-100 text-xs bg-black/20">
+                {item}
+              </span>
+            ))}
           </div>
         </div>
       </div>
