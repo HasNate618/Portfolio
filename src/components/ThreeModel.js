@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useLayoutEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, useAnimations } from '@react-three/drei';
 import * as THREE from 'three';
@@ -431,17 +431,29 @@ function ThreeModel({
     return () => clearInterval(typeInterval);
   }, [currentSpeech]);
   
+  // Coordinate conversion helper for chat mode transitions
+  const convertToViewportY = (docY) => {
+    if (typeof window === 'undefined') return docY;
+    return docY - window.scrollY;
+  };
+  const convertToDocumentY = (vpY) => {
+    if (typeof window === 'undefined') return vpY;
+    return vpY + window.scrollY;
+  };
+
   // Chat mode positioning
   useEffect(() => {
     chatModeRef.current = chatMode;
     if (typeof window === 'undefined') return;
 
     if (chatMode) {
-      const size = Math.min(window.innerWidth * 0.3, 500);
+      // Bigger in chat mode: fills most of the left half
+      const size = Math.min(window.innerWidth * 0.45, 1400);
       setChatSize(size);
+      // Center of left half, moved down because model's visual center is at bottom
       const chatPos = {
-        x: window.innerWidth * 0.15,
-        y: window.innerHeight * 0.45,
+        x: window.innerWidth * 0.25,
+        y: window.innerHeight * 0.58,
       };
       setChatTargetPos(chatPos);
       targetPosRef.current = chatPos;
@@ -461,6 +473,25 @@ function ThreeModel({
       setHasArrived(false);
       setIsMoving(true);
     }
+  }, [chatMode]);
+
+  // Synchronous coordinate conversion when switching chat mode to prevent visual jump
+  useLayoutEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (chatMode) {
+      // Entering chat: convert document Y to viewport Y
+      setCurrentPosition(prev => ({
+        x: prev.x,
+        y: convertToViewportY(prev.y),
+      }));
+    } else {
+      // Exiting chat: convert viewport Y back to document Y
+      setCurrentPosition(prev => ({
+        x: prev.x,
+        y: convertToDocumentY(prev.y),
+      }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatMode]);
 
   // Handle model click to trigger animation
@@ -710,6 +741,10 @@ function ThreeModel({
   const isYClamped = constrainedDisplayY - currentPosition.y > 0.5;
 
   const isInChatMode = chatModeRef.current;
+  const viewportScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
+  const displayTop = isInChatMode
+    ? currentPosition.y
+    : constrainedDisplayY - viewportScrollY;
 
   return (
     <div
@@ -717,16 +752,14 @@ function ThreeModel({
       className={`${className} cursor-pointer three-model-container`}
       style={{
         ...style,
-        position: isInChatMode ? 'fixed' : 'absolute',
+        position: 'fixed',
         left: `${currentPosition.x}px`,
-        top: isInChatMode ? `${chatTargetPos.y}px` : `${constrainedDisplayY}px`,
+        top: `${displayTop}px`,
         width: isInChatMode ? `${chatSize}px` : '300px',
         height: isInChatMode ? `${chatSize}px` : '300px',
         transform: 'translate(-50%, -50%)',
         zIndex: isInChatMode ? 60 : 30,
-        transition: isInChatMode
-          ? 'left 0.8s cubic-bezier(0.22, 1, 0.36, 1), top 0.8s cubic-bezier(0.22, 1, 0.36, 1), width 0.8s cubic-bezier(0.22, 1, 0.36, 1), height 0.8s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease'
-          : 'opacity 0.4s ease',
+        transition: 'width 0.8s cubic-bezier(0.22, 1, 0.36, 1), height 0.8s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease',
         opacity: fadeOut ? 0 : 1,
         pointerEvents: fadeOut || isInChatMode ? 'none' : 'auto',
         cursor: isDragging ? 'grabbing' : 'grab',

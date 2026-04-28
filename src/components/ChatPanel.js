@@ -4,23 +4,45 @@ import { useState, useRef, useEffect } from "react";
 import ChatMessage from "./ChatMessage";
 
 const EXAMPLE_PROMPTS = [
+  "How does this chat work?",
   "What are Nathan's top AI projects?",
   "Tell me about his homelab infrastructure",
   "What hackathons has he won?",
-  "What technologies does he know best?",
 ];
 
-export default function ChatPanel({ onClose, messages, onSendMessage, loading }) {
+export default function ChatPanel({ onClose, messages, onSendMessage, loading, followups }) {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const messagesContainerRef = useRef(null);
+  const prevMessagesLengthRef = useRef(messages.length);
 
+  // Auto-scroll only when a new message is added, not on every content update
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, loading]);
+    if (messages.length > prevMessagesLengthRef.current) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+      prevMessagesLengthRef.current = messages.length;
+    }
+  }, [messages.length]);
+
+  // Scroll to bottom when loading starts (user just sent a message)
+  useEffect(() => {
+    if (loading) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
+  }, [loading]);
 
   useEffect(() => {
     inputRef.current?.focus();
+  }, []);
+
+  // Lock body scroll when chat is open
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
   }, []);
 
   const handleSubmit = (e) => {
@@ -38,17 +60,14 @@ export default function ChatPanel({ onClose, messages, onSendMessage, loading })
     <div className="fixed inset-0 z-[55] flex">
       {/* Left side: Dark overlay (click to close) */}
       <div
-        className="hidden lg:block flex-1 bg-black/60 backdrop-blur-sm cursor-pointer"
+        className="hidden lg:block w-1/2 bg-black/60 backdrop-blur-sm cursor-pointer"
         onClick={onClose}
       />
 
-      {/* Right side: Chat panel - 2/3 width */}
-      <div className="w-full lg:w-2/3 h-full flex flex-col chat-tech-grid relative overflow-hidden">
-        {/* Glassmorphism overlay */}
-        <div className="absolute inset-0 bg-black/20 backdrop-blur-xl pointer-events-none" />
-
+      {/* Right side: Chat panel - 50% width */}
+      <div className="w-full lg:w-1/2 h-full flex flex-col bg-black/80 relative overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/20 backdrop-blur-md relative z-10">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/40 relative z-10 flex-shrink-0">
           <div className="flex items-center gap-3">
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center"
@@ -95,7 +114,10 @@ export default function ChatPanel({ onClose, messages, onSendMessage, loading })
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-4 lg:px-6 py-4 relative z-10">
+        <div
+          ref={messagesContainerRef}
+          className="flex-1 overflow-y-auto px-4 lg:px-6 py-4 relative z-10"
+        >
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
               <div
@@ -161,8 +183,23 @@ export default function ChatPanel({ onClose, messages, onSendMessage, loading })
           <div ref={messagesEndRef} />
         </div>
 
+        {/* Follow-up suggestions */}
+        {!loading && followups.length > 0 && (
+          <div className="px-4 lg:px-6 py-2 flex flex-wrap gap-2 relative z-10">
+            {followups.map((q, i) => (
+              <button
+                key={i}
+                onClick={() => handlePromptClick(q)}
+                className="text-xs px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-500/50 transition-all duration-200"
+              >
+                {q}
+              </button>
+            ))}
+          </div>
+        )}
+
         {/* Input */}
-        <div className="px-4 lg:px-6 py-4 border-t border-white/10 bg-black/20 backdrop-blur-md relative z-10">
+        <div className="px-4 lg:px-6 py-4 border-t border-white/10 bg-black/40 relative z-10 flex-shrink-0">
           <form onSubmit={handleSubmit} className="flex items-center gap-3">
             <input
               ref={inputRef}
@@ -196,7 +233,6 @@ export default function ChatPanel({ onClose, messages, onSendMessage, loading })
           </form>
         </div>
       </div>
-
     </div>
   );
 }
