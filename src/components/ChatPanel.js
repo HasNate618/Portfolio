@@ -65,7 +65,7 @@ export default function ChatPanel({ onClose, messages, onSendMessage, loading, f
       />
 
       {/* Right side: Chat panel - 50% width */}
-      <div className="w-full lg:w-1/2 h-full flex flex-col bg-black/80 relative overflow-hidden">
+      <div className="w-full lg:w-1/2 h-full flex flex-col relative overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/40 relative z-10 flex-shrink-0">
           <div className="flex items-center gap-3">

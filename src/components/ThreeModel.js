@@ -165,7 +165,7 @@ function Model({
         if (Math.abs(targetDirection.x) > Math.abs(targetDirection.y)) {
           // The more speed, the more it rotates left/right (max 45deg)
           const maxY = Math.PI / 4; // 45deg
-          targetRotationY = Math.max(-maxY, Math.min(maxY, -targetDirection.x * MOVEMENT_CONFIG.HORIZONTAL_ROTATE_INTENSITY * speedX));
+          targetRotationY = Math.max(-maxY, Math.min(maxY, targetDirection.x * MOVEMENT_CONFIG.HORIZONTAL_ROTATE_INTENSITY * speedX));
         }
 
         // Vertical movement: tilt up/down, amount depends on speed
@@ -735,10 +735,14 @@ function ThreeModel({
   // Early returns for non-desktop or invisible
   if (!isDesktop || !visible) return null;
 
+  const isInChatMode = chatModeRef.current;
+
   // Calculate direction vector for the model to look towards
+  // Use chatTargetPos in chat mode since the movement loop uses it instead of targetPosition
+  const moveTarget = isInChatMode ? chatTargetPos : targetPosition;
   const targetDirection = {
-    x: targetPosition.x - currentPosition.x,
-    y: targetPosition.y - currentPosition.y
+    x: moveTarget.x - currentPosition.x,
+    y: moveTarget.y - currentPosition.y
   };
 
   // Compute a constrained Y for display only (do not affect movement state)
@@ -753,8 +757,6 @@ function ThreeModel({
   const constrainedDisplayY = Math.max(currentPosition.y, entranceClampY);
   // Determine if our displayed Y is being clamped at the threshold
   const isYClamped = constrainedDisplayY - currentPosition.y > 0.5;
-
-  const isInChatMode = chatModeRef.current;
   const viewportScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
   const displayTop = isInChatMode
     ? currentPosition.y
