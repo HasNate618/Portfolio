@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect, useLayoutEffect, useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useGLTF, useAnimations } from '@react-three/drei';
 import * as THREE from 'three';
 
@@ -400,6 +400,8 @@ function ThreeModel({
   const [isTyping, setIsTyping] = useState(false);
   const [chatTargetPos, setChatTargetPos] = useState({ x: 0, y: 0 });
   const [chatSize, setChatSize] = useState(300);
+  const chatSizeRef = useRef(300);
+  const [currentSize, setCurrentSize] = useState(300);
   const chatModeRef = useRef(chatMode);
   // Track last scroll position for render-time viewport-based clamping
   const lastScrollYRef = useRef(0);
@@ -450,6 +452,7 @@ function ThreeModel({
       // Bigger in chat mode: fills most of the left half
       const size = Math.min(window.innerWidth * 0.45, 1400);
       setChatSize(size);
+      chatSizeRef.current = size;
       // Center of left half, moved down because model's visual center is at bottom
       const chatPos = {
         x: window.innerWidth * 0.25,
@@ -461,7 +464,9 @@ function ThreeModel({
       setHasArrived(false);
       setIsMoving(true);
     } else {
-      setChatSize(300);
+      const normalSize = 300;
+      setChatSize(normalSize);
+      chatSizeRef.current = normalSize;
       const scrollTop = window.scrollY || 0;
       const targetDocumentY = calculateConstrainedTargetY(scrollTop);
       const panelElems = Array.from(document.querySelectorAll('section[id]'));
@@ -641,6 +646,16 @@ function ThreeModel({
       
       // Cap delta time to prevent huge jumps (e.g., when tab is inactive)
       const cappedDelta = Math.min(deltaTime, 0.1);
+      const frameRateFactor = cappedDelta * 60;
+      
+      setCurrentSize(prevSize => {
+        const isChat = chatModeRef.current;
+        const targetSize = isChat ? chatSizeRef.current : 300;
+        const deltaSize = targetSize - prevSize;
+        if (Math.abs(deltaSize) < 0.5) return targetSize;
+        const stepSize = deltaSize * MOVEMENT_CONFIG.MOVEMENT_SPEED * frameRateFactor;
+        return prevSize + stepSize;
+      });
       
       setCurrentPosition(prevPos => {
         const isChat = chatModeRef.current;
@@ -659,7 +674,6 @@ function ThreeModel({
         setHasArrived(false);
         
         // Calculate movement steps with frame-rate independent timing (assuming 60 FPS as baseline)
-        const frameRateFactor = cappedDelta * 60;
         const stepXRaw = deltaX * MOVEMENT_CONFIG.MOVEMENT_SPEED * frameRateFactor;
         const stepYRaw = deltaY * MOVEMENT_CONFIG.MOVEMENT_SPEED * frameRateFactor;
 
@@ -755,8 +769,8 @@ function ThreeModel({
         position: 'fixed',
         left: `${currentPosition.x}px`,
         top: `${displayTop}px`,
-        width: isInChatMode ? `${chatSize}px` : '300px',
-        height: isInChatMode ? `${chatSize}px` : '300px',
+        width: `${currentSize}px`,
+        height: `${currentSize}px`,
         transform: 'translate(-50%, -50%)',
         zIndex: isInChatMode ? 60 : 30,
         transition: 'width 0.8s cubic-bezier(0.22, 1, 0.36, 1), height 0.8s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease',
@@ -987,12 +1001,13 @@ function ThreeModel({
         }
       `}</style>
       
-      <Canvas 
+      <Canvas
         camera={{ position: cameraPosition, fov: 45 }}
         style={{ background: 'transparent' }}
         shadows
         gl={{ alpha: transparent, antialias: true }}
       >
+        <CanvasSizeSync size={currentSize} />
         <ambientLight intensity={0.6} color="#ffffff" />
         <directionalLight 
           position={[5, 5, 5]} 
@@ -1033,6 +1048,18 @@ function ThreeModel({
 }
 
 export default ThreeModel;
+
+// Forces the Three.js renderer to match the animated currentSize.
+// Bypasses ResizeObserver which may not fire during CSS transitions.
+function CanvasSizeSync({ size }) {
+  const { gl, camera } = useThree();
+
+  useLayoutEffect(() => {
+    gl.setSize(size, size);
+  }, [gl, size, camera]);
+
+  return null;
+}
 
 // Separate component to attach window-level listeners while dragging
 function DragListeners({ onMove, onUp }) {

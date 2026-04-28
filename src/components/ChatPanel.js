@@ -116,7 +116,7 @@ export default function ChatPanel({ onClose, messages, onSendMessage, loading, f
         {/* Messages */}
         <div
           ref={messagesContainerRef}
-          className="flex-1 overflow-y-auto px-4 lg:px-6 py-4 relative z-10"
+          className="flex-1 overflow-y-auto px-4 lg:px-6 py-4 relative z-10 chat-scrollbar"
         >
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
