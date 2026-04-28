@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, useMemo } from "react";
 import { Analytics } from '@vercel/analytics/next';
 import ThreeModel from "../components/ThreeModel";
 import ProjectCard from "../components/ProjectCard";
+import ChatBot from "../components/ChatBot";
 import { PROJECTS, FILTER_TABS } from "../data/projects";
 import dynamic from 'next/dynamic';
 const DynamicUnity = dynamic(() => import('../components/UnityEmbed').then(m => m.default), { ssr: false });
@@ -115,6 +116,7 @@ export default function Home() {
   const [projectsFullscreen, setProjectsFullscreen] = useState(false);
   // Viewport middle inside projects section (matches ThreeModel side-switch point)
   const [viewportMiddleInProjects, setViewportMiddleInProjects] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const filteredProjects = useMemo(() => {
     if (projectFilter === "all") return PROJECTS;
@@ -237,9 +239,9 @@ export default function Home() {
       />
       
       {/* 3D model that can be dragged into Unity */}
-      <ThreeModel 
+      <ThreeModel
         className="w-[300px] h-[300px]"
-        modelUrl="/models/model.glb" 
+        modelUrl="/models/model.glb"
         modelScale={4}
         modelPosition={[0, 0, 0]}
         modelRotation={[0, 0, 0]}
@@ -247,6 +249,7 @@ export default function Home() {
         visible={showThreeModel}
         fadeOut={projectsFullscreen && viewportMiddleInProjects}
         flyingIntoGame={modelFlyingIntoGame}
+        chatMode={chatOpen}
         onDragStart={() => {
           setIsDraggingModel(true);
         }}
@@ -270,7 +273,7 @@ export default function Home() {
         }}
       />
 
-      <div className="relative z-10 flex flex-col items-center px-4">
+      <div className={`relative z-10 flex flex-col items-center px-4 transition-all duration-500 ${chatOpen ? 'blur-[3px] brightness-[0.35]' : ''}`}>
         {/* Enhanced Header with Navigation */}
         <header className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 mb-8 w-full max-w-5xl px-4 hidden sm:block">
           <div className="backdrop-blur-lg border border-cyan-400/20 rounded-lg shadow-lg bg-black/80 p-3">
@@ -941,6 +944,8 @@ export default function Home() {
 
   <footer className="text-gray-500 text-sm mt-16 sm:mt-24">&copy; {new Date().getFullYear()} Nathan Espejo. All rights reserved.</footer>
   </div>
+
+  <ChatBot />
 </main>
 );
 }

@@ -252,9 +252,9 @@ function Model({
   );
 }
 
-function ThreeModel({ 
-  className = "", 
-  modelUrl = '/models/model.glb', 
+function ThreeModel({
+  className = "",
+  modelUrl = '/models/model.glb',
   transparent = true,
   modelScale = 1,
   modelPosition = [0, 0, 0],
@@ -268,7 +268,8 @@ function ThreeModel({
   onCursorUpdate = () => {},
   visible = true,
   fadeOut = false,
-  flyingIntoGame = false
+  flyingIntoGame = false,
+  chatMode = false
 }) {
   // Helper function to get about section position
   const getAboutOffScreenPosition = () => {
@@ -397,6 +398,9 @@ function ThreeModel({
   const [currentSpeech, setCurrentSpeech] = useState(SPEECH_TEXT.default);
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [chatTargetPos, setChatTargetPos] = useState({ x: 0, y: 0 });
+  const [chatSize, setChatSize] = useState(300);
+  const chatModeRef = useRef(chatMode);
   // Track last scroll position for render-time viewport-based clamping
   const lastScrollYRef = useRef(0);
   
@@ -427,6 +431,34 @@ function ThreeModel({
     return () => clearInterval(typeInterval);
   }, [currentSpeech]);
   
+  // Chat mode positioning
+  useEffect(() => {
+    chatModeRef.current = chatMode;
+    if (typeof window === 'undefined') return;
+
+    if (chatMode) {
+      const size = Math.min(window.innerWidth * 0.3, 500);
+      setChatSize(size);
+      setChatTargetPos({
+        x: window.innerWidth * 0.15,
+        y: window.innerHeight * 0.45,
+      });
+      setIsDragging(false);
+      setHasArrived(false);
+      setIsMoving(true);
+    } else {
+      setChatSize(300);
+      const scrollTop = window.scrollY || 0;
+      const offScreenPos = getAboutOffScreenPosition();
+      const targetDocumentY = calculateConstrainedTargetY(scrollTop);
+      const panelElems = Array.from(document.querySelectorAll('section[id]'));
+      const chosenX = calculateTargetX(scrollTop, panelElems);
+      setChatTargetPos({ x: chosenX, y: targetDocumentY });
+      setHasArrived(false);
+      setIsMoving(true);
+    }
+  }, [chatMode]);
+
   // Handle model click to trigger animation
   const handleModelClick = () => {
     setIsPlayingAnimation(true);
@@ -576,7 +608,8 @@ function ThreeModel({
       const cappedDelta = Math.min(deltaTime, 0.1);
       
       setCurrentPosition(prevPos => {
-        const target = targetPosRef.current || targetPosition;
+        const isChat = chatModeRef.current;
+        const target = isChat ? chatTargetPos : (targetPosRef.current || targetPosition);
         const deltaX = target.x - prevPos.x;
         const deltaY = target.y - prevPos.y;
         const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
@@ -672,25 +705,31 @@ function ThreeModel({
   // Determine if our displayed Y is being clamped at the threshold
   const isYClamped = constrainedDisplayY - currentPosition.y > 0.5;
 
+  const isInChatMode = chatModeRef.current;
+
   return (
-    <div 
+    <div
       ref={modelRef}
-      className={`${className} cursor-pointer three-model-container`} 
-      style={{ 
-        ...style, 
-        position: 'absolute',
+      className={`${className} cursor-pointer three-model-container`}
+      style={{
+        ...style,
+        position: 'fixed',
         left: `${currentPosition.x}px`,
-        top: `${constrainedDisplayY}px`,
+        top: isInChatMode ? `${chatTargetPos.y}px` : `${constrainedDisplayY}px`,
+        width: `${chatSize}px`,
+        height: `${chatSize}px`,
         transform: 'translate(-50%, -50%)',
-        zIndex: 30,
-        transition: 'opacity 0.4s ease',
+        zIndex: isInChatMode ? 60 : 30,
+        transition: isInChatMode
+          ? 'left 0.8s cubic-bezier(0.22, 1, 0.36, 1), top 0.8s cubic-bezier(0.22, 1, 0.36, 1), width 0.8s cubic-bezier(0.22, 1, 0.36, 1), height 0.8s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease'
+          : 'opacity 0.4s ease',
         opacity: fadeOut ? 0 : 1,
-        pointerEvents: fadeOut ? 'none' : 'auto',
+        pointerEvents: fadeOut || isInChatMode ? 'none' : 'auto',
         cursor: isDragging ? 'grabbing' : 'grab',
       }}
       onPointerDown={(e) => {
         e.preventDefault();
-        if (!isDesktop) return;
+        if (!isDesktop || chatMode) return;
         setIsDragging(true);
         onDragStart();
         onCursorUpdate(e.clientX, e.clientY);
@@ -797,7 +836,7 @@ function ThreeModel({
       )}
       
       {/* Speech bubble */}
-      {staggerTriggered && (
+      {staggerTriggered && !chatMode && (
         <div
           style={{
             position: 'absolute',

@@ -760,3 +760,22 @@ body::before {
 .animate-fade-in {
   animation: fadeInUp 0.35s ease-out both;
 }
+
+/* Chat gradient background animation */
+@keyframes blueGradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.chat-gradient-bg {
+  background: linear-gradient(135deg, #050510 0%, #0a1525 25%, #0d1f35 50%, #0a1525 75%, #050510 100%);
+  background-size: 400% 400%;
+  animation: blueGradientShift 15s ease infinite;
+}
