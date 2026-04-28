@@ -68,7 +68,7 @@ export default function ChatPanel({ onClose, messages, onSendMessage, loading, f
       />
 
       {/* Right side: Chat panel - 60% width (floating, no background) */}
-      <div className="w-full lg:w-3/5 h-full flex flex-col relative z-10 overflow-hidden">
+      <div className="w-full lg:w-[calc(60%-16px)] h-full flex flex-col relative z-10 overflow-hidden mr-4">
         {/* Header — just close button */}
         <div className="flex items-center justify-end px-6 pt-4 pb-1 relative z-10 flex-shrink-0">
           <button
@@ -87,41 +87,21 @@ export default function ChatPanel({ onClose, messages, onSendMessage, loading, f
           </button>
         </div>
 
-        {/* Messages */}
-        <div
-          ref={messagesContainerRef}
-          className="flex-1 overflow-y-auto px-4 lg:px-6 pt-12 pb-4 relative z-10 chat-scrollbar"
-          style={{
-            maskImage: "linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%)",
-            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%)",
-          }}
-        >
+        {/* Inner wrapper: messages + input + spacer */}
+        <div className="flex-1 flex flex-col min-h-0">
+          {/* Messages */}
+          <div
+            ref={messagesContainerRef}
+            className="flex-1 overflow-y-auto px-4 lg:px-6 pt-12 pb-2 relative z-10 chat-scrollbar"
+            style={{
+              maskImage: "linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%)",
+            }}
+          >
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
-              <div
-                className="w-16 h-16 rounded-full flex items-center justify-center mb-2"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #00ffff 0%, #3b82f6 50%, #8b5cf6 100%)",
-                  boxShadow: "0 0 30px rgba(0, 255, 255, 0.3)",
-                }}
-              >
-                <svg
-                  className="w-8 h-8 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                  />
-                </svg>
-              </div>
               <div>
-                <h3 className="text-cyan-300 font-bold text-lg mb-1">Nexus Online</h3>
+                <h3 className="text-cyan-300 font-bold text-lg">Nexus Online</h3>
                 <p className="text-gray-400 text-sm max-w-md">
                   I&apos;m Nathan&apos;s AI assistant. Ask me about his projects, skills, experience, or
                   anything in his portfolio.
@@ -163,7 +143,7 @@ export default function ChatPanel({ onClose, messages, onSendMessage, loading, f
 
         {/* Follow-up suggestions */}
         {!loading && followups.length > 0 && (
-          <div className="px-4 lg:px-6 py-2 flex flex-wrap gap-2 relative z-10">
+          <div className="px-4 lg:px-6 py-2 flex flex-wrap gap-2 relative z-10 flex-shrink-0">
             {followups.map((q, i) => (
               <button
                 key={i}
@@ -177,7 +157,7 @@ export default function ChatPanel({ onClose, messages, onSendMessage, loading, f
         )}
 
         {/* Input */}
-        <div className="px-4 lg:px-6 pb-4 pt-0 relative z-10 flex-shrink-0">
+        <div className="px-4 lg:px-6 py-3 relative z-10 flex-shrink-0">
           <form onSubmit={handleSubmit} className="flex items-center gap-3">
             <input
               ref={inputRef}
@@ -210,7 +190,11 @@ export default function ChatPanel({ onClose, messages, onSendMessage, loading, f
             </button>
           </form>
         </div>
+
+        {/* Spacer - pushes input up from the bottom */}
+        <div className="flex-[0.04] relative z-10" />
       </div>
+    </div>
     </div>
   );
 }

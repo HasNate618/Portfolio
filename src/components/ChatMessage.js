@@ -11,7 +11,7 @@ export default function ChatMessage({ message }) {
         className={`max-w-[85%] px-5 py-3.5 rounded-2xl text-sm leading-relaxed shadow-lg ${
           isUser
             ? "bg-cyan-500/10 text-cyan-100 border border-cyan-400/20 rounded-br-md backdrop-blur-md"
-            : "bg-zinc-800/70 text-gray-200 border border-white/10 rounded-bl-md backdrop-blur-md hover:bg-zinc-800/90 transition-colors"
+            : "bg-zinc-800/40 text-gray-200 border border-white/10 rounded-bl-md backdrop-blur-md hover:bg-zinc-800/60 transition-colors"
         }`}
         style={{
           boxShadow: isUser
