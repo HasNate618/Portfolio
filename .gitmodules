@@ -1,0 +1,3 @@
+[submodule "src/data/resume"]
+	path = src/data/resume
+	url = https://github.com/HasNate618/Resume.git

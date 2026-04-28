@@ -45,6 +45,33 @@ export const PROJECTS = [
     ],
   },
   {
+    id: "homelab",
+    title: "Homelab",
+    description:
+      "Self-hosted Debian homelab with Docker Compose orchestration, Tailscale mesh VPN, Caddy reverse proxy, and 15+ services including local AI stack, media server, DNS filtering, and automated download pipelines.",
+    categories: ["featured", "ai-ml"],
+    isHackathonWinner: false,
+    techStack: [
+      "Debian",
+      "Docker",
+      "Docker Compose",
+      "Tailscale",
+      "Caddy",
+      "Open WebUI",
+      "Bifrost",
+      "Jellyfin",
+      "Pi-hole",
+      "SearXNG",
+    ],
+    links: [
+      {
+        label: "GitHub",
+        href: "https://github.com/HasNate618/homelab",
+      },
+    ],
+    media: [],
+  },
+  {
     id: "carebridge",
     title: "CareBridge",
     description:

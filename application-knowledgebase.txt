@@ -1,0 +1,435 @@
+NATHAN ESPEJO - APPLICATION KNOWLEDGE BASE
+
+Purpose
+This document is a canonical source of truth for application writing and RAG retrieval. It should help answer questions about who I am, what I have built, what I can claim, and what evidence supports those claims.
+
+Core Identity
+Name: Nathan Espejo
+Location: London, Ontario, Canada
+Role focus: Software engineering student focused on AI systems, automation, Linux/server infrastructure, hardware prototyping, embedded systems, and Unity XR / 3D development.
+Brand positioning: Local-first AI systems, automation, Linux-backed platforms, hardware/CAD, and real-world interactive software.
+
+Short Bio
+I build practical systems that combine software, AI, and hardware. My work spans local and hybrid LLM stacks, agentic coding workflows, Linux and server infrastructure, 3D printing automation, Unity XR, embedded systems, and mobile/full-stack apps. I like projects that connect software with real-world workflows, especially when they can be shipped, demoed, or used by other people.
+
+Education
+Western University
+Bachelor of Engineering Science in Software Engineering
+Aug. 2024 - May 2028
+
+Current Experience
+Software Developer, 3D Western
+Sept. 2025 - Present
+Location: London, ON
+Work summary:
+- Developing a Dockerized 3D printing pipeline for a 24-printer farm.
+- Automating model slicing, orientation, support generation, and printability validation for a free campus printing service.
+- Built data generation workflows for 3D model analysis by scraping assets and creating automated rendering scripts to produce labeled image datasets for AI training.
+
+Software Engineering Intern, TeraGo
+May 2025 - Aug. 2025
+Location: Markham, ON
+Work summary:
+- Built an automated Jira ticket workflow from email notifications.
+- Used a local LLM (Ollama) for structured extraction.
+- Used Python for orchestration.
+- Used Microsoft Graph for secure message retrieval.
+
+IT Intern, Microcomputer Consulting Inc.
+May 2025 - Aug. 2025
+Location: Mississauga, ON
+Work summary:
+- Configured and deployed client workstations across multiple organizations.
+- Performed Windows imaging, account setup, and environment-specific software configuration.
+
+Summary Statement
+I am strongest when building systems that blend AI orchestration, infrastructure, and practical deployment. My best evidence is not just that I can use tools, but that I can connect them into working workflows: local-first LLM platforms, automation around ticketing and retrieval, multi-agent software workflows, hardware interfaces, and interactive 3D experiences.
+
+Technical Strengths
+Languages:
+Python, TypeScript, JavaScript, C#, C++, Java, Kotlin, SQL, Bash
+
+AI Systems and ML:
+Local and hybrid LLM workflows, agentic orchestration, MCP, RAG, computer vision, PyTorch, TensorFlow, scikit-learn, pandas
+
+Full-Stack Development:
+React, Next.js, FastAPI, Node.js, REST APIs, MongoDB, Supabase, MySQL
+
+Infrastructure and Tools:
+Linux (Arch, Debian), Docker, Git, Tailscale, Cursor, GitHub Copilot, Claude Code, VS Code, Unity3D, Blender, OnShape
+
+Embedded and Hardware:
+Arduino, ESP32, Raspberry Pi, PlatformIO, BLE, 3D printing, CAD prototyping
+
+Important Themes for Applications
+- Local-first AI and privacy-conscious tooling
+- Automation that removes manual workflow friction
+- Linux/server infrastructure and self-hosted systems
+- Agentic coding and multi-agent orchestration
+- Hardware prototyping, embedded systems, and CAD
+- 3D printing, robotics-adjacent work, and physical-world interfaces
+- Unity XR / 3D development when interactivity is needed
+- Practical shipping mindset: build, integrate, demo, iterate
+
+Projects
+
+1. Local AI Platform
+Status: Featured portfolio project
+Category: AI systems, infrastructure, automation
+Description: Fully dockerized local-first AI platform with secure remote access, model routing, MCP tools, and course-specific knowledge bases for grounded study and development workflows.
+Key capabilities:
+- Dockerized local stack
+- Secure remote access with Tailscale
+- Hybrid model routing
+- MCP tools / MCP servers
+- Retrieval and knowledge grounding for course-specific content
+- Search and crawl pipeline components including Open WebUI, Bifrost, SearXNG, Crawl4AI, ComfyUI, and llama.cpp
+Why it matters:
+- This is the clearest evidence of my AI systems and infrastructure brand.
+- It shows I can build a complete local-first application, not just use a model API.
+
+2. AgenticArmy
+Status: Featured portfolio project
+Category: Agentic coding, full-stack, AI systems
+Description: Human-in-the-loop multi-agent coding workflow with a VS Code extension and FastAPI backend for planning, coordination, conflict analysis, and QA.
+Key capabilities:
+- Multi-agent coordination
+- Planning and conflict analysis
+- Human approval gates
+- State transitions and event-driven orchestration
+- Simulation mode for safe execution
+Why it matters:
+- Strong evidence for agentic workflow design and developer tooling.
+- Useful for applications about AI tooling, coding assistants, productivity systems, or internal platform work.
+
+3. Auralis
+Status: Hackathon project
+Category: AI, full-stack, 3D, health-tech
+Description: Virtual 3D healthcare assistant with emotion detection and natural voice interaction for telemedicine.
+Key capabilities:
+- Emotion-aware interaction
+- Three.js-based 3D experience
+- Gemini API integration
+- face-api.js facial analysis
+- Node.js backend and React frontend
+Why it matters:
+- Demonstrates multimodal AI, user experience design, and rapid hackathon execution.
+
+4. CareBridge
+Status: Hackathon winner
+Category: AI, full-stack, healthcare
+Description: AI healthcare platform connecting rural patients and providers with intelligent check-ins and risk tracking.
+Key capabilities:
+- React frontend
+- FastAPI backend
+- Supabase
+- Cohere API and ElevenLabs
+- Three.js
+Why it matters:
+- Strong healthcare + AI application if the prompt asks about social impact, accessibility, or AI for good.
+
+5. Whack-A-ML
+Status: Portfolio project
+Category: AI, reinforcement learning, Unity
+Description: Reinforcement learning agent training a robotic arm to strike targets in Unity using PPO and curriculum learning.
+Key capabilities:
+- PyTorch
+- Unity
+- C#
+- PPO
+Why it matters:
+- Good evidence for ML experimentation, simulation environments, and Unity-based AI work.
+
+6. FLEXFIRE-X
+Status: Portfolio project
+Category: Hardware, embedded systems, CAD, 3D printing
+Description: Wrist-mounted projectile launcher controlled by EMG muscle signals for intuitive, body-driven activation.
+Key capabilities:
+- Arduino
+- EMG sensor integration
+- C++
+- CAD
+- 3D printing
+Why it matters:
+- Strong hardware and prototyping evidence.
+- Good for applications that want mechanical design, embedded control, or human-computer interaction.
+
+7. Cyberdeck (WIP)
+Status: Work in progress
+Category: Hardware, Linux, embedded systems
+Description: Custom handheld Linux cyberdeck built around a Raspberry Pi 3B with a terminal-first boot flow, modular hardware, and a custom 3D-printed case.
+Key capabilities:
+- Raspberry Pi
+- Linux
+- Bash automation
+- PlatformIO
+- Blender for case/design work
+Why it matters:
+- Useful evidence for Linux customization, hardware integration, and maker-style systems thinking.
+
+8. Object-Love-Interface
+Status: Hackathon winner
+Category: Hardware, AI, IoT
+Description: Multi-device IoT system that gives objects personality and voice.
+Key capabilities:
+- Python
+- Node.js
+- Raspberry Pi
+- ESP32
+- Gemini API
+- ElevenLabs
+Why it matters:
+- Demonstrates connected-device prototyping, voice generation, and playful AI interaction.
+
+9. Lumen
+Status: Hackathon winner
+Category: AI, games
+Description: A calming companion that listens, understands, and responds with personalized mini-games tailored to emotional state.
+Key capabilities:
+- React
+- Unity3D
+- Gemini API
+- Phaser.js
+- Node.js
+Why it matters:
+- Good evidence for emotionally aware interactive systems and game-adjacent UX.
+
+10. Eyecandy
+Status: Hackathon winner
+Category: AR, AI, shopping, full-stack
+Description: AR shopping experience that turns Shopify products into virtual try-on using augmented reality.
+Key capabilities:
+- Snap Spectacles
+- Lens Studio
+- Shopify API
+Why it matters:
+- Useful for XR, product prototyping, and spatial computing applications.
+
+11. Glyph
+Status: Portfolio project
+Category: Developer tools, desktop software
+Description: Leader-key command overlay for Windows with discoverable actions, per-app bindings, and custom themes.
+Key capabilities:
+- C#
+- .NET
+- WPF
+- YAML
+- WinGet
+Why it matters:
+- Good evidence for productivity tools, desktop UX, and systems thinking.
+
+12. Careerly
+Status: Hackathon winner
+Category: Unity, AI, education/career
+Description: AI-powered virtual job fair built in Unity.
+Key capabilities:
+- Unity
+- C#
+- Cohere API
+Why it matters:
+- Demonstrates Unity XR / 3D development and AI-assisted interaction.
+
+13. Gaming and Mental Health Analyzer
+Status: Portfolio project
+Category: AI, data science
+Description: ML system predicting mental wellbeing risks across sleep, productivity, social isolation, dysregulation, and emotional problems based on gaming habits.
+Key capabilities:
+- Python
+- scikit-learn
+- Jupyter Notebook
+- pandas
+- Kaggle
+Why it matters:
+- Useful evidence for data science, applied ML, and analysis workflows.
+
+14. VitalSign
+Status: Featured project
+Category: AI, full-stack, accessibility
+Description: Real-time web app translating ASL gestures and facial expressions into emotion-aware speech for natural communication.
+Key capabilities:
+- React
+- MediaPipe
+- Gemini API
+- ElevenLabs
+- face-api.js
+Why it matters:
+- Strong accessibility and multimodal AI example.
+
+15. NowAndThen
+Status: Portfolio project
+Category: Full-stack, AI, maps
+Description: Geotagged memory map app for leaving comments, photos, and videos tied to locations with AI personality summaries.
+Key capabilities:
+- React Native
+- Expo Go
+- MongoDB
+- Google Maps API
+Why it matters:
+- Shows mobile app development, map-based UX, and AI-assisted content generation.
+
+16. Street Cleaner
+Status: Hackathon winner
+Category: Games, Android
+Description: Drag litter into the correct bin before time runs out.
+Key capabilities:
+- Unity
+- C#
+- Google Play
+Why it matters:
+- Demonstrates mobile game shipping and playful UX.
+
+17. Zenith Tower
+Status: Portfolio project
+Category: Games, Android
+Description: Endless futuristic dungeon tower crawler.
+Key capabilities:
+- Unity
+- C#
+- Google Play
+Why it matters:
+- Shows game development and mobile publishing.
+
+18. Mōtaru
+Status: Portfolio project
+Category: Games, Android
+Description: Action mobile game about taking down ninjas using quick reflexes.
+Key capabilities:
+- Unity
+- C#
+- Google Play
+Why it matters:
+- Another shipped mobile game example.
+
+19. Tic Tac Toe Ultimate
+Status: Portfolio project
+Category: Games, Android
+Description: Ultimate Tic Tac Toe experience on Android.
+Key capabilities:
+- Unity
+- C#
+- Google Play
+Why it matters:
+- Simple shipped game example.
+
+20. UWO Mealplan Calc
+Status: Portfolio project
+Category: Tools, browser extension
+Description: Chrome extension for students to track meal plan spending and project remaining balances with budget recommendations.
+Key capabilities:
+- JavaScript
+- Chrome Extension API
+- HTML
+- CSS
+Why it matters:
+- Useful evidence for browser extensions, user utility tools, and student-focused software.
+
+21. Stupid Spotify
+Status: Hackathon winner
+Category: AI, full-stack, web
+Description: Cursed Spotify clone featuring real OAuth playback, AI roasts, face CAPTCHA, 3D skull, and Comic Sans.
+Key capabilities:
+- Next.js
+- React
+- Spotify API
+- Cohere API
+- Three.js
+- face-api.js
+- Python
+Why it matters:
+- Good proof of fast prototyping and creative web development.
+
+22. SafeRoute
+Status: Portfolio project
+Category: Android, full-stack
+Description: Real-time hazard reporting app with crowdsourced data, drone integration, and safe routing for Android.
+Key capabilities:
+- Kotlin
+- Google Maps API
+- Android Studio
+Why it matters:
+- Good mobile and map-based systems example.
+
+23. Animarker
+Status: Portfolio project
+Category: Android, AI, data collection
+Description: Crowdsourced wildlife tracker using computer vision to identify and map animal sightings worldwide.
+Key capabilities:
+- Kotlin
+- TensorFlow
+- Google Maps API
+- MySQL
+- Android Studio
+Why it matters:
+- Shows applied computer vision and data-driven mobile development.
+
+24. Rubber Band Turret
+Status: Hardware project
+Category: Hardware, Android, embedded systems
+Description: Bluetooth-controlled rubber band turret with smooth servo movement and wireless Android app control.
+Key capabilities:
+- Arduino
+- C++
+- Servo motors
+- Unity
+Why it matters:
+- Demonstrates hardware control, actuator work, and wireless integration.
+
+Supporting Evidence and Repeated Strengths
+- I have multiple projects at the intersection of AI and full-stack development.
+- I have several hardware and embedded projects, not just software-only work.
+- I have shipped games and mobile apps, including Google Play releases.
+- I have practical Linux and infrastructure experience, especially where it supports automation.
+- I can work across the stack: frontend, backend, AI integration, and deployment.
+- I have repeated evidence of hackathon shipping, which is useful when applications ask for rapid execution or collaboration.
+
+Best Claims to Use in Applications
+- I build local-first AI systems and automation workflows.
+- I design tools that connect AI models to real productivity and infrastructure.
+- I have hands-on experience with Linux, Docker, and self-hosted tooling.
+- I build hardware and embedded systems when software needs a physical interface.
+- I have experience shipping hackathon projects, games, and mobile apps.
+- I can move between AI, web, desktop, mobile, and hardware contexts.
+
+Best Claims to Avoid or Qualify
+- Avoid claiming deep production-scale enterprise experience if the evidence is mostly project and internship based.
+- Avoid overstating expertise in every framework listed in skills; keep claims tied to project evidence.
+- Avoid saying you are specialized only in AI if the application values hardware, infra, or product engineering as well.
+
+Application Writing Guidance
+What works well:
+- Start from the role and rewrite the narrative to match it.
+- Use this knowledge base for factual grounding.
+- Pull 2 to 4 relevant projects per application instead of listing everything.
+- Emphasize outcome, scale, and technical relevance.
+- Reuse strong proof points but tailor the framing.
+
+Short Example Structure for Future RAG
+- identity
+- education
+- experience
+- skills
+- project: local ai platform
+- project: agenticarmy
+- project: auralis
+- project: carebridge
+- project: flexfire-x
+- project: cyberdeck
+- project: object-love-interface
+- project: lumen
+- project: eyecandy
+- project: glyph
+- project: careerly
+- project: vitalsign
+- project: nowandthen
+- project: street cleaner
+- project: zenith tower
+- project: motaru
+- project: tic tac toe ultimate
+- project: saferoute
+- project: animarker
+- project: rubber band turret
+- project: mealplan calc
+- project: stupid spotify
+- project: gaming and mental health analyzer
+
+End of document.
