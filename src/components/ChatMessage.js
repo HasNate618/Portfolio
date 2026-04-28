@@ -8,11 +8,16 @@ export default function ChatMessage({ message }) {
       className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4 animate-fade-in`}
     >
       <div
-        className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+        className={`max-w-[85%] px-5 py-3.5 rounded-2xl text-sm leading-relaxed shadow-lg ${
           isUser
-            ? "bg-cyan-500/20 text-cyan-100 border border-cyan-500/30 rounded-br-md"
-            : "bg-white/5 text-gray-200 border border-white/10 rounded-bl-md"
+            ? "bg-cyan-500/10 text-cyan-100 border border-cyan-400/20 rounded-br-md backdrop-blur-md"
+            : "bg-white/5 text-gray-200 border border-white/10 rounded-bl-md backdrop-blur-md hover:bg-white/8 transition-colors"
         }`}
+        style={{
+          boxShadow: isUser
+            ? "0 4px 24px rgba(0, 255, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.05)"
+            : "0 4px 24px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.03)",
+        }}
       >
         {isUser ? (
           message.content

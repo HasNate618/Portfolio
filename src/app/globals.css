@@ -779,3 +779,55 @@ body::before {
   background-size: 400% 400%;
   animation: blueGradientShift 15s ease infinite;
 }
+
+/* Animated tech grid background for chat panel */
+.chat-tech-grid {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(0, 255, 255, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
+    linear-gradient(180deg, #020205 0%, #050510 40%, #080818 60%, #020205 100%);
+}
+
+.chat-tech-grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: techGridMove 20s linear infinite;
+  pointer-events: none;
+}
+
+.chat-tech-grid::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(0, 255, 255, 0.04) 0%, transparent 40%),
+    radial-gradient(circle at 70% 60%, rgba(139, 92, 246, 0.04) 0%, transparent 40%);
+  animation: techGridPulse 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes techGridMove {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 50px 50px, 50px 50px;
+  }
+}
+
+@keyframes techGridPulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}

@@ -33,13 +33,13 @@ export async function rerankChunks(query, chunks, topN = 5) {
   const response = await cohere.rerank({
     query,
     documents: chunks.map((c) => c.text),
-    model: "rerank-v3.5",
+    model: "rerank-english-v3.0",
     topN,
   });
 
   return response.results.map((r) => ({
-    text: r.document.text,
-    source: chunks[r.index].source,
+    text: chunks[r.index]?.text ?? "",
+    source: chunks[r.index]?.source ?? "",
     score: r.relevanceScore,
   }));
 }

@@ -945,7 +945,7 @@ export default function Home() {
   <footer className="text-gray-500 text-sm mt-16 sm:mt-24">&copy; {new Date().getFullYear()} Nathan Espejo. All rights reserved.</footer>
   </div>
 
-  <ChatBot />
+  <ChatBot isOpen={chatOpen} onOpenChange={setChatOpen} />
 </main>
 );
 }

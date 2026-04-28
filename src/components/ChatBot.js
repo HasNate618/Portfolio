@@ -4,39 +4,18 @@ import { useState, useCallback } from "react";
 import ChatButton from "./ChatButton";
 import ChatPanel from "./ChatPanel";
 
-function getStoredMessages() {
-  if (typeof window === "undefined") return [];
-  try {
-    const stored = localStorage.getItem("nexus-chat-history");
-    return stored ? JSON.parse(stored) : [];
-  } catch {
-    return [];
-  }
-}
-
-function storeMessages(messages) {
-  if (typeof window === "undefined") return;
-  try {
-    localStorage.setItem("nexus-chat-history", JSON.stringify(messages));
-  } catch {
-    // Ignore storage errors
-  }
-}
-
-export default function ChatBot() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState(getStoredMessages);
+export default function ChatBot({ isOpen, onOpenChange }) {
+  const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const handleOpen = () => setIsOpen(true);
-  const handleClose = () => setIsOpen(false);
+  const handleOpen = () => onOpenChange?.(true);
+  const handleClose = () => onOpenChange?.(false);
 
   const handleSendMessage = useCallback(
     async (content) => {
       const userMessage = { role: "user", content };
       const newMessages = [...messages, userMessage];
       setMessages(newMessages);
-      storeMessages(newMessages);
       setLoading(true);
 
       try {
@@ -77,8 +56,6 @@ export default function ChatBot() {
             return updated;
           });
         }
-
-        storeMessages(messagesWithAssistant);
       } catch (err) {
         console.error("Chat error:", err);
         const errorMessage = {
@@ -88,7 +65,6 @@ export default function ChatBot() {
         };
         const finalMessages = [...newMessages, errorMessage];
         setMessages(finalMessages);
-        storeMessages(finalMessages);
       } finally {
         setLoading(false);
       }

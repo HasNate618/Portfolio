@@ -439,21 +439,25 @@ function ThreeModel({
     if (chatMode) {
       const size = Math.min(window.innerWidth * 0.3, 500);
       setChatSize(size);
-      setChatTargetPos({
+      const chatPos = {
         x: window.innerWidth * 0.15,
         y: window.innerHeight * 0.45,
-      });
+      };
+      setChatTargetPos(chatPos);
+      targetPosRef.current = chatPos;
       setIsDragging(false);
       setHasArrived(false);
       setIsMoving(true);
     } else {
       setChatSize(300);
       const scrollTop = window.scrollY || 0;
-      const offScreenPos = getAboutOffScreenPosition();
       const targetDocumentY = calculateConstrainedTargetY(scrollTop);
       const panelElems = Array.from(document.querySelectorAll('section[id]'));
       const chosenX = calculateTargetX(scrollTop, panelElems);
-      setChatTargetPos({ x: chosenX, y: targetDocumentY });
+      const normalPos = { x: chosenX, y: targetDocumentY };
+      setChatTargetPos(normalPos);
+      targetPosRef.current = normalPos;
+      setTargetPosition(normalPos);
       setHasArrived(false);
       setIsMoving(true);
     }
@@ -656,7 +660,7 @@ function ThreeModel({
         cancelAnimationFrame(animationFrameId);
       }
     };
-  }, [isDragging, targetPosition]);
+  }, [isDragging, targetPosition, chatTargetPos]);
   
   // Check if we're on desktop and initialize position
   useEffect(() => {
@@ -713,11 +717,11 @@ function ThreeModel({
       className={`${className} cursor-pointer three-model-container`}
       style={{
         ...style,
-        position: 'fixed',
+        position: isInChatMode ? 'fixed' : 'absolute',
         left: `${currentPosition.x}px`,
         top: isInChatMode ? `${chatTargetPos.y}px` : `${constrainedDisplayY}px`,
-        width: `${chatSize}px`,
-        height: `${chatSize}px`,
+        width: isInChatMode ? `${chatSize}px` : '300px',
+        height: isInChatMode ? `${chatSize}px` : '300px',
         transform: 'translate(-50%, -50%)',
         zIndex: isInChatMode ? 60 : 30,
         transition: isInChatMode

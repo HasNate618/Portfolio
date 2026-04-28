@@ -25,7 +25,7 @@ export async function POST(req) {
     }));
 
     const stream = await cohere.chatStream({
-      model: "command-r-plus",
+      model: "command-r-plus-08-2024",
       message,
       preamble: systemPrompt,
       chatHistory,
