@@ -14,7 +14,7 @@ export async function POST(req) {
     }
 
     const topChunks = await retrieveRelevantChunks(message, 20);
-    const reranked = await rerankChunks(message, topChunks, 5);
+    const reranked = await rerankChunks(message, topChunks, 8);
     const systemPrompt = buildSystemPrompt(reranked);
 
     const cohere = new CohereClient({ token: process.env.COHERE_API_KEY });
@@ -30,14 +30,22 @@ export async function POST(req) {
       preamble: systemPrompt,
       chatHistory,
       temperature: 0.7,
+      maxTokens: 1200,
     });
 
     return new Response(
       new ReadableStream({
         async start(controller) {
+          let totalChars = 0;
+          const MAX_CHARS = 3000;
           try {
             for await (const chunk of stream) {
               if (chunk.eventType === "text-generation") {
+                totalChars += chunk.text.length;
+                if (totalChars > MAX_CHARS) {
+                  controller.close();
+                  return;
+                }
                 controller.enqueue(new TextEncoder().encode(chunk.text));
               }
             }
