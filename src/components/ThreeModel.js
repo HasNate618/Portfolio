@@ -449,13 +449,13 @@ function ThreeModel({
     if (typeof window === 'undefined') return;
 
     if (chatMode) {
-      // Bigger in chat mode: fills most of the left half
-      const size = Math.min(window.innerWidth * 0.45, 1400);
+      // Bigger in chat mode: fills most of the left 40% area
+      const size = Math.min(window.innerWidth * 0.35, 1100);
       setChatSize(size);
       chatSizeRef.current = size;
-      // Center of left half, moved down because model's visual center is at bottom
+      // Center of left 40% area, moved down because model's visual center is at bottom
       const chatPos = {
-        x: window.innerWidth * 0.25,
+        x: window.innerWidth * 0.2,
         y: window.innerHeight * 0.58,
       };
       setChatTargetPos(chatPos);

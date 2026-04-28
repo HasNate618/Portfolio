@@ -58,45 +58,19 @@ export default function ChatPanel({ onClose, messages, onSendMessage, loading, f
 
   return (
     <div className="fixed inset-0 z-[55] flex">
-      {/* Left side: Dark overlay (click to close) */}
+      {/* Full-screen dark blur overlay */}
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+
+      {/* Left side: click to close */}
       <div
-        className="hidden lg:block w-1/2 bg-black/60 backdrop-blur-sm cursor-pointer"
+        className="hidden lg:block w-2/5 cursor-pointer relative z-10"
         onClick={onClose}
       />
 
-      {/* Right side: Chat panel - 50% width */}
-      <div className="w-full lg:w-1/2 h-full flex flex-col relative overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/40 relative z-10 flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center"
-              style={{
-                background:
-                  "linear-gradient(135deg, #00ffff 0%, #3b82f6 50%, #8b5cf6 100%)",
-              }}
-            >
-              <svg
-                className="w-4 h-4 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2.5}
-                  d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                />
-              </svg>
-            </div>
-            <div>
-              <h2 className="text-cyan-300 font-bold text-sm tracking-wider">
-                NEXUS // KNOWLEDGE BASE
-              </h2>
-              <p className="text-gray-500 text-xs">Ask me anything about Nathan</p>
-            </div>
-          </div>
+      {/* Right side: Chat panel - 60% width (floating, no background) */}
+      <div className="w-full lg:w-3/5 h-full flex flex-col relative z-10 overflow-hidden">
+        {/* Header — just close button */}
+        <div className="flex items-center justify-end px-6 pt-4 pb-1 relative z-10 flex-shrink-0">
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/5"
@@ -116,7 +90,11 @@ export default function ChatPanel({ onClose, messages, onSendMessage, loading, f
         {/* Messages */}
         <div
           ref={messagesContainerRef}
-          className="flex-1 overflow-y-auto px-4 lg:px-6 py-4 relative z-10 chat-scrollbar"
+          className="flex-1 overflow-y-auto px-4 lg:px-6 pt-12 pb-4 relative z-10 chat-scrollbar"
+          style={{
+            maskImage: "linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%)",
+          }}
         >
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
@@ -199,7 +177,7 @@ export default function ChatPanel({ onClose, messages, onSendMessage, loading, f
         )}
 
         {/* Input */}
-        <div className="px-4 lg:px-6 py-4 border-t border-white/10 bg-black/40 relative z-10 flex-shrink-0">
+        <div className="px-4 lg:px-6 pb-4 pt-0 relative z-10 flex-shrink-0">
           <form onSubmit={handleSubmit} className="flex items-center gap-3">
             <input
               ref={inputRef}
