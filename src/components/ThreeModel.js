@@ -165,7 +165,7 @@ function Model({
         if (Math.abs(targetDirection.x) > Math.abs(targetDirection.y)) {
           // The more speed, the more it rotates left/right (max 45deg)
           const maxY = Math.PI / 4; // 45deg
-          targetRotationY = Math.max(-maxY, Math.min(maxY, targetDirection.x * MOVEMENT_CONFIG.HORIZONTAL_ROTATE_INTENSITY * speedX));
+          targetRotationY = Math.max(-maxY, Math.min(maxY, -targetDirection.x * MOVEMENT_CONFIG.HORIZONTAL_ROTATE_INTENSITY * speedX));
         }
 
         // Vertical movement: tilt up/down, amount depends on speed
@@ -773,7 +773,7 @@ function ThreeModel({
         height: `${currentSize}px`,
         transform: 'translate(-50%, -50%)',
         zIndex: isInChatMode ? 60 : 30,
-        transition: 'width 0.8s cubic-bezier(0.22, 1, 0.36, 1), height 0.8s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease',
+        transition: 'opacity 0.4s ease',
         opacity: fadeOut ? 0 : 1,
         pointerEvents: fadeOut || isInChatMode ? 'none' : 'auto',
         cursor: isDragging ? 'grabbing' : 'grab',
@@ -1007,7 +1007,7 @@ function ThreeModel({
         shadows
         gl={{ alpha: transparent, antialias: true }}
       >
-        <CanvasSizeSync size={currentSize} />
+        <CanvasSizeSync />
         <ambientLight intensity={0.6} color="#ffffff" />
         <directionalLight 
           position={[5, 5, 5]} 
@@ -1049,14 +1049,23 @@ function ThreeModel({
 
 export default ThreeModel;
 
-// Forces the Three.js renderer to match the animated currentSize.
-// Bypasses ResizeObserver which may not fire during CSS transitions.
-function CanvasSizeSync({ size }) {
+// Syncs Three.js renderer to the container's actual size every frame.
+// Bypasses ResizeObserver which can lag behind JS-animated size changes.
+function CanvasSizeSync() {
   const { gl, camera } = useThree();
 
-  useLayoutEffect(() => {
-    gl.setSize(size, size);
-  }, [gl, size, camera]);
+  useFrame(() => {
+    const parent = gl.domElement.parentElement;
+    if (!parent) return;
+    const rect = parent.getBoundingClientRect();
+    const w = Math.round(rect.width);
+    const h = Math.round(rect.height);
+    if (w !== gl.domElement.width || h !== gl.domElement.height) {
+      gl.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+  });
 
   return null;
 }
