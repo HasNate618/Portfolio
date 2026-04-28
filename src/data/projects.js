@@ -69,7 +69,9 @@ export const PROJECTS = [
         href: "https://github.com/HasNate618/homelab",
       },
     ],
-    media: [],
+    media: [
+      { src: "/homelab-dashboard.png", alt: "Homelab Dashboard and Service Overview" },
+    ],
   },
   {
     id: "carebridge",
