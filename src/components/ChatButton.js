@@ -13,7 +13,7 @@ export default function ChatButton({ onClick, isOpen }) {
         Ask Nexus!
       </span>
       <div
-        className="relative w-14 h-14 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110 hover:shadow-[0_0_30px_rgba(0,255,255,0.6)]"
+        className="relative w-14 h-14 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110 hover:shadow-[0_0_30px_rgba(0,255,255,0.6)] backdrop-blur-md"
         style={{
           background: "rgba(0, 255, 255, 0.08)",
           border: "2px solid rgba(0, 255, 255, 0.7)",
