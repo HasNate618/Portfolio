@@ -6,6 +6,10 @@ import ChatPanel from "./ChatPanel";
 
 const FOLLOWUP_DELIMITER = "|||FOLLOWUPS|||";
 
+function stripMarkdown(text) {
+  return text.replace(/\*\*(.+?)\*\*/g, "$1").replace(/\*(.+?)\*/g, "$1").replace(/`(.+?)`/g, "$1");
+}
+
 function parseFollowups(content) {
   const idx = content.indexOf(FOLLOWUP_DELIMITER);
   if (idx !== -1) {
@@ -95,7 +99,7 @@ export default function ChatBot({ isOpen, onOpenChange }) {
 
         // Parse follow-ups from final content
         const { main, followups: extracted } = parseFollowups(assistantContent);
-        if (extracted.length > 0) {
+        if (extracted.length >= 3) {
           setMessages((prev) => {
             const updated = [...prev];
             updated[updated.length - 1] = {
@@ -104,7 +108,25 @@ export default function ChatBot({ isOpen, onOpenChange }) {
             };
             return updated;
           });
-          setFollowups(extracted.slice(0, 3));
+          setFollowups(extracted.slice(0, 3).map(stripMarkdown));
+        } else {
+          // Fallback: generate follow-ups via API
+          try {
+            const res = await fetch("/api/chat/followups", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                userMessage: content,
+                aiResponse: assistantContent,
+              }),
+            });
+            const data = await res.json();
+            if (data.followups && data.followups.length >= 3) {
+              setFollowups(data.followups.slice(0, 3).map(stripMarkdown));
+            }
+          } catch (e) {
+            console.error("Followup fallback error:", e);
+          }
         }
       } catch (err) {
         console.error("Chat error:", err);

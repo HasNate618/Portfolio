@@ -37,5 +37,6 @@ function formatMarkdown(text) {
     .replace(/\*\*(.+?)\*\*/g, "<strong class='text-cyan-300'>$1</strong>")
     .replace(/\*(.+?)\*/g, "<em>$1</em>")
     .replace(/`(.+?)`/g, "<code class='bg-black/50 px-1 py-0.5 rounded text-cyan-300 text-xs'>$1</code>")
+    .replace(/(https?:\/\/[^\s<]+)/g, "<a href='$1' target='_blank' rel='noopener noreferrer' class='text-cyan-300 underline hover:text-cyan-200'>$1</a>")
     .replace(/\n/g, "<br />");
 }

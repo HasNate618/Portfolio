@@ -50,10 +50,12 @@ export default function ChatPanel({ onClose, messages, onSendMessage, loading, f
     if (!input.trim() || loading) return;
     onSendMessage(input.trim());
     setInput("");
+    inputRef.current?.focus();
   };
 
   const handlePromptClick = (prompt) => {
     onSendMessage(prompt);
+    inputRef.current?.focus();
   };
 
   return (
@@ -148,7 +150,8 @@ export default function ChatPanel({ onClose, messages, onSendMessage, loading, f
               <button
                 key={i}
                 onClick={() => handlePromptClick(q)}
-                className="text-xs px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-500/50 transition-all duration-200"
+                className="text-xs px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-500/50 transition-all duration-200 animate-fade-in"
+                style={{ animationDelay: `${i * 100}ms`, animationDuration: "0.3s" }}
               >
                 {q}
               </button>
