@@ -1,163 +1,102 @@
 # Homelab
 
 ## Overview
-Self-hosted Debian homelab with Docker Compose orchestration, Tailscale mesh VPN, Caddy reverse proxy, and 15+ services including local AI stack, media server, DNS filtering, and automated download pipelines.
+Self-hosted Debian homelab with Docker Compose orchestration, Tailscale mesh VPN, Caddy reverse proxy, and 25+ services including local AI stack, media server, document processing, DNS filtering, and automated download pipelines.
 
 ## Category
-Infrastructure, Linux, Networking, Self-Hosting, AI Systems
+Infrastructure, Linux, Networking, Self-Hosting, AI Systems, Security
 
 ## Status
 Featured Portfolio Project (Active Infrastructure)
 
+## Hardware
+- **CPU:** Intel i5-6600K @ 4.5 GHz (overclocked from 3.5GHz)
+- **RAM:** 16 GB DDR4 (discovered one stick was unseated — ran on 8GB for weeks)
+- **GPU:** NVIDIA GeForce GTX 960 (2GB VRAM, Maxwell, CUDA 11.8 only — cannot run CUDA 12.x)
+- **Storage:** 225GB NVMe SSD
+- **NIC:** Killer E2200 Gigabit Ethernet (required driver reload fix after BIOS changes)
+
 ## Tech Stack
-- Debian 13 (trixie)
-- Docker Engine 29 + Docker Compose v2
-- Tailscale (mesh VPN, secure remote access)
-- Caddy 2 (HTTP reverse proxy)
-- Open WebUI (local AI chat interface)
-- Bifrost (LLM gateway)
-- SearXNG (metasearch engine)
-- Jellyfin (media server)
-- Pi-hole (DNS/ad blocking)
-- Lidarr / Radarr / Prowlarr (*Arr stack for media management)
-- qBittorrent (torrent client with Gluetun/NordVPN)
-- slskd + Soularr (Soulseek P2P integration)
-- Stirling-PDF (PDF tools)
-- Homepage (dashboard)
 
-## Description
+### Platform
+- Debian 13 (trixie), Docker Engine 29 + Compose v2, UFW firewall
 
-A production-grade self-hosted infrastructure running on bare metal Debian, serving as both a personal cloud and local AI platform. This is not a toy setup—it runs real services with proper networking, security, and automation.
+### Networking
+- Tailscale mesh VPN for secure remote access (no ports exposed to internet)
+- Tailscale Serve for TLS with real Let's Encrypt certificates
+- Caddy 2 as internal HTTP reverse proxy (subpath routing)
+- All admin UIs bound to localhost, served only through Caddy subpaths
 
-### Architecture
+### AI Services
+- **Open WebUI** — local AI chat with TTS (Kokoro), web search (SearXNG), terminal integration
+- **Bifrost** — LLM gateway routing to Cohere, Gemini, Anthropic, DeepSeek, OpenRouter, local models
+- **llama.cpp** — local GPU-accelerated LLM (Prism fork, CUDA 11.8, ~58 tok/s)
+- **Kokoro TTS** — fast local text-to-speech, OpenAI-compatible API
+- **GitHub Copilot Server** — OpenAI-compatible Copilot endpoint
+- **Firecrawl** — self-hosted web scraping stack for AI agent tools
 
-**Host:** Debian 13 (trixie) bare metal  
-**Runtime:** Docker Engine 29 + Docker Compose v2  
-**Remote Access:** Tailscale mesh VPN (tailnet: tail3b22c4.ts.net)  
-**TLS:** Tailscale Serve with Let's Encrypt certificates  
-**Routing:** Caddy 2 as internal HTTP reverse proxy  
+### Media Stack
+- **Jellyfin** — media server with hardware transcoding via iGPU QuickSync
+- **Lidarr / Radarr / Sonarr** — music, movie, and TV collection managers
+- **Prowlarr** — central torrent indexer manager
+- **qBittorrent** — torrent client routed through NordVPN via Gluetun
+- **slskd + Soularr** — Soulseek P2P music integration with Lidarr
+- **Bazarr** — automatic subtitle downloader
+
+### Document Processing
+- **docling pipeline** — GPU-accelerated PDF/DOCX/PPTX/image parsing to markdown
+- **Qwen3-VL-2B** — local vision-language model for image descriptions (CPU, 0 VRAM)
+- Integrated as external document loader in Open WebUI
+
+### Infrastructure
+- **Pi-hole** — DNS filtering and ad blocking for entire LAN (170k+ blocklist domains)
+- **SearXNG** — privacy-focused metasearch engine
+- **Stirling-PDF** — PDF tools with login required
+- **Homepage** — service dashboard with status monitoring
+- **Stack Toggle** — FastAPI web UI to start/stop service stacks via Docker socket
+
+## Architecture
+
+**Host:** Debian 13 bare metal with Docker Compose orchestration  
+**Remote Access:** Tailscale mesh VPN with Tailscale Serve for TLS  
+**Routing:** Caddy 2 internal reverse proxy, subpath routing for all web UIs  
+**Firewall:** UFW default-deny INPUT, explicit allow rules for LAN services  
 **Storage:** Persistent bind mounts under /srv/homelab/data/
 
-### Service Stack
+Each service runs in its own Docker Compose stack. All stacks share a common Docker network for inter-service communication. Configuration is version-controlled.
 
-#### AI Services
-- **Open WebUI** — Local AI chat interface with secure access
-- **Bifrost** — LLM gateway for model routing
-- **GitHub Copilot Server** — OpenAI-compatible Copilot API endpoint
+### GPU Constraints
+The GTX 960 (2GB VRAM, Maxwell) is limited to CUDA 11.8. docling uses ~800 MiB VRAM for layout/OCR/table extraction. llama.cpp GPU model stopped to avoid OOM — only 2GB total VRAM. Qwen3-VL runs on CPU. Jellyfin transcoding uses Kabylake iGPU QuickSync instead.
 
-#### Media Stack
-- **Jellyfin** — Media server with hardware transcoding
-- **Lidarr** — Music collection manager (torrent + Soulseek + YouTube)
-- **Radarr** — Movie collection manager
-- **Prowlarr** — Central indexer manager
-- **qBittorrent** — Torrent client routed through NordVPN via Gluetun
-- **slskd** — Soulseek P2P client
-- **Soularr** — Bridge between Lidarr and Soulseek
-- **Tubifarry** — YouTube downloader plugin for Lidarr
+### Security
+- UFW firewall: default-deny INPUT, explicit LAN allow rules
+- All admin web UIs bound to 127.0.0.1, accessible only via Caddy subpaths
+- Open WebUI signups disabled, Stirling-PDF login required
+- SSH hardened: key-only, no root login, no X11 forwarding
+- Secrets and .env files locked to owner-only (chmod 600)
+- Automatic security patches via unattended-upgrades
 
-#### Network Services
-- **Pi-hole** — DNS filtering and ad blocking
-- **SearXNG** — Privacy-focused metasearch engine
+## Key Features
 
-#### Orchestration
-- **Homepage** — Service dashboard with status monitoring
-- **Caddy** — Central reverse proxy with subpath routing
+1. **Local-First AI Stack** — Open WebUI + Bifrost + llama.cpp + Kokoro. No cloud dependency for core functionality. Routes to 7+ model providers.
 
-### Networking Design
+2. **Media Automation Pipeline** — Lidarr searches torrents, Soulseek, and YouTube. Downloads via NordVPN. Jellyfin serves the final library with hardware transcoding. Fully automated: search → download → organize → play.
 
-**External Access:**
-- Tailscale provides secure mesh VPN access from anywhere
-- Tailscale Serve handles TLS termination with real Let's Encrypt certs
-- No ports exposed to the public internet
+3. **Document Processing** — Upload any document format, docling extracts layout/text/tables/LaTeX formulas on GPU, VLM describes images. Integrated into Open WebUI as external document loader.
 
-**Internal Routing:**
-- Caddy runs HTTP-only behind Tailscale Serve
-- Subpath routing: /jellyfin, /pihole, /searxng, /bifrost, etc.
-- Direct port access for services needing it (8081, 8096, 8443)
-- Shared `proxy` Docker network across all stacks
+4. **Privacy & Security** — No public ports. Tailscale mesh VPN with Let's Encrypt TLS. Pi-hole DNS filtering. All admin UIs localhost-bound. UFW default-deny.
 
-**Port Mapping:**
-- Caddy publishes: 80, 8081, 8096, 8443 (direct HTTP)
-- Plus: 2080, 28081, 28096, 28443 (for Tailscale Serve)
-- Tailscale Serve proxies external: 443, 8082, 8445 → Caddy
+5. **Reproducible Infrastructure** — Each service in its own Compose stack. Persistent data in bind mounts. Git-controlled configs.
 
-### Key Features
-
-1. **Local-First AI Stack**
-   - Open WebUI for private AI conversations
-   - Bifrost for model routing and management
-   - No cloud dependency for core AI functionality
-
-2. **Media Automation Pipeline**
-   - Lidarr searches across torrent, Soulseek, and YouTube
-   - Prowlarr manages indexers centrally
-   - qBittorrent downloads via VPN
-   - slskd handles P2P music sharing
-   - Jellyfin serves the final library
-   - Fully automated: search → download → organize → play
-
-3. **Privacy & Security**
-   - Tailscale mesh VPN (no open ports)
-   - Let's Encrypt TLS via Tailscale Serve
-   - Pi-hole DNS filtering for entire network
-   - SearXNG for private web search
-   - No data leaves home network unless explicitly configured
-
-4. **Reproducible Infrastructure**
-   - Each service in its own Docker Compose stack
-   - Persistent data in bind mounts
-   - Configuration version controlled
-   - Single commands to start/stop entire infrastructure
-
-5. **Real-World Maintenance**
-   - Active troubleshooting and debugging
-   - Service integration (Lidarr + Tubifarry + slskd)
-   - Path mapping and permission management
-   - VPN routing and port configuration
-
-### Directory Layout
-
-```
-/srv/homelab/
-  compose/
-    infra/          # Caddy reverse proxy
-    open-webui/     # AI chat interface
-    bifrost/        # LLM gateway
-    searxng/        # Search engine
-    jellyfin/       # Media server
-    pihole/         # DNS filtering
-    lidarr/         # Music manager
-    radarr/         # Movie manager
-    prowlarr/       # Indexer manager
-    qbittorrent/    # Torrent client
-    soularr/        # Soulseek bridge
-    homepage/       # Dashboard
-  data/             # Persistent storage
-  backups/          # Backup location
-  scripts/          # Automation scripts
-```
-
-### Challenges Overcome
-
-- **TLS Termination**: Moved from Caddy internal CA to Tailscale Serve for trusted certs
-- **VPN Routing**: Configured Gluetun for NordVPN integration with qBittorrent
-- **Service Integration**: Connected Lidarr to multiple download sources (torrent, Soulseek, YouTube)
-- **Port Conflicts**: Carefully mapped ports to avoid conflicts between services
-- **Path Mapping**: Configured remote path mappings for container-to-container file flows
-- **Host Header Validation**: Disabled qBittorrent validation for reverse proxy compatibility
-
-## Why It Matters
-- Demonstrates production-grade infrastructure skills
-- Shows deep Linux system administration knowledge
-- Evidence of Docker orchestration at scale
-- Real-world networking and security implementation
-- Self-hosted AI stack showing local-first philosophy
-- Media automation pipeline demonstrating systems thinking
-- Active maintenance proving operational experience
+## Notable Challenges
+- **NIC driver bug**: Killer E2200 stuck at 10 Mbps after BIOS overclocking — fixed by reloading alx driver, automated via systemd oneshot service at boot
+- **GPU VRAM balancing**: Only 2GB VRAM total, carefully split between docling and LLM inference — stopped GPU text model to prevent CUDA OOM
+- **Open WebUI config persistence**: Pinned image SHA and set static secret key to prevent session loss on restart
+- **Security audit**: Full remediation — UFW deployment, localhost binding for all admin UIs, SSH hardening, secrets lockdown
 
 ## Links
 - GitHub: https://github.com/HasNate618/homelab
 
 ---
 
-*This project is the strongest evidence of infrastructure and Linux expertise. It demonstrates the ability to design, deploy, and maintain complex self-hosted systems with real services and users.*
+*Demonstrates production-grade infrastructure skills, Linux administration, Docker orchestration at scale, and real-world security implementation.*
