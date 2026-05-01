@@ -32,6 +32,15 @@ export default function ChatPanel({ onClose, messages, onSendMessage, loading, f
     }
   }, [loading]);
 
+  // Focus input when loading finishes (response received)
+  const prevLoadingRef = useRef(loading);
+  useEffect(() => {
+    if (prevLoadingRef.current && !loading) {
+      inputRef.current?.focus();
+    }
+    prevLoadingRef.current = loading;
+  }, [loading]);
+
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
@@ -55,7 +64,6 @@ export default function ChatPanel({ onClose, messages, onSendMessage, loading, f
 
   const handlePromptClick = (prompt) => {
     onSendMessage(prompt);
-    inputRef.current?.focus();
   };
 
   return (

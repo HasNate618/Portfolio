@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { Analytics } from '@vercel/analytics/next';
-import ThreeModel from "../components/ThreeModel";
+const ThreeModel = dynamic(() => import("../components/ThreeModel"), { ssr: false });
 import ProjectCard from "../components/ProjectCard";
 import ChatBot from "../components/ChatBot";
 import { PROJECTS, FILTER_TABS } from "../data/projects";
