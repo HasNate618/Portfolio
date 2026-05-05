@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test 3D Model</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #111; }
+    #info {
+      position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+      color: #0ff; font-family: monospace; font-size: 14px;
+      background: rgba(0,0,0,0.7); padding: 8px 16px; border-radius: 4px;
+      z-index: 10; text-align: center;
+    }
+    #controls {
+      position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+      color: #fff; font-family: monospace; font-size: 12px;
+      background: rgba(0,0,0,0.7); padding: 8px 16px; border-radius: 4px;
+      z-index: 10; text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="info">Loading...</div>
+  <div id="controls">R: Reset View | Drag to rotate</div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.179.1/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.179.1/examples/jsm/"
+    }
+  }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    const info = document.getElementById('info');
+
+    // --- Setup ---
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x1a1a2e);
+    renderer.shadowMap.enabled = true;
+    document.body.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 2, 6);
+    camera.lookAt(0, 0, 0);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 0.5, 0);
+    controls.update();
+
+    // --- Lights ---
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight1.position.set(5, 5, 5);
+    scene.add(dirLight1);
+
+    const dirLight2 = new THREE.DirectionalLight(0xadd8e6, 0.8);
+    dirLight2.position.set(-3, 3, -2);
+    scene.add(dirLight2);
+
+    const dirLight3 = new THREE.DirectionalLight(0x87ceeb, 1);
+    dirLight3.position.set(0, -2, -5);
+    scene.add(dirLight3);
+
+    const pointLight1 = new THREE.PointLight(0xffffff, 0.5);
+    pointLight1.position.set(2, 3, 2);
+    scene.add(pointLight1);
+
+    const pointLight2 = new THREE.PointLight(0xe6f3ff, 0.3);
+    pointLight2.position.set(-2, 1, 3);
+    scene.add(pointLight2);
+
+    // --- Grid/Helper ---
+    const gridHelper = new THREE.GridHelper(10, 10, 0x444466, 0x333355);
+    scene.add(gridHelper);
+
+    // --- Load Model ---
+    const loader = new GLTFLoader();
+    const modelUrl = '/models/model.glb';
+
+    info.textContent = `Loading: ${modelUrl}`;
+
+    loader.load(
+      modelUrl,
+      (gltf) => {
+        info.textContent = `Loaded: ${gltf.animations.length} animations`;
+
+        // Try 1: Direct load (no clone)
+        const sceneRoot = gltf.scene;
+        
+        // Log scene structure
+        console.log('=== Scene ===');
+        gltf.scene.traverse((child) => {
+          console.log(child.name || '(unnamed)', child.type, child.isSkinnedMesh ? '[SKINNED]' : '');
+        });
+        console.log('=== Animations ===');
+        gltf.animations.forEach((a, i) => {
+          console.log(i + ':', a.name, '-', a.tracks.length, 'tracks');
+          a.tracks.forEach(t => console.log('   ', t.name));
+        });
+
+        // Try direct load
+        scene.add(sceneRoot);
+
+        // Center and scale
+        const box = new THREE.Box3().setFromObject(sceneRoot);
+        const size = box.getSize(new THREE.Vector3()).length();
+        const center = box.getCenter(new THREE.Vector3());
+        sceneRoot.position.sub(center);
+        if (size > 5) {
+          sceneRoot.scale.setScalar(5 / size);
+        }
+
+        sceneRoot.traverse((child) => {
+          if (child.isMesh) {
+            child.frustumCulled = false;
+          }
+        });
+
+        info.textContent = `Loaded: ${gltf.animations.length} animations | Size: ${size.toFixed(2)}`;
+
+        // --- Animate ---
+        if (gltf.animations.length > 0) {
+          const mixer = new THREE.AnimationMixer(sceneRoot);
+          const action = mixer.clipAction(gltf.animations[0]);
+          action.play();
+          info.textContent += ` | Playing: ${gltf.animations[0].name}`;
+
+          // Click to toggle animations
+          renderer.domElement.addEventListener('click', () => {
+            action.stop();
+            const nextIdx = (gltf.animations.indexOf(action.getClip()) + 1) % gltf.animations.length;
+            const newAction = mixer.clipAction(gltf.animations[nextIdx]);
+            newAction.reset().play();
+            info.textContent = `Loaded: ${gltf.animations.length} animations | Playing: ${gltf.animations[nextIdx].name}`;
+          });
+
+          const clock = new THREE.Clock();
+          function animate() {
+            requestAnimationFrame(animate);
+            const delta = clock.getDelta();
+            mixer.update(delta);
+            controls.update();
+            renderer.render(scene, camera);
+          }
+          animate();
+        } else {
+          function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+          }
+          animate();
+        }
+      },
+      (xhr) => {
+        const pct = Math.round((xhr.loaded / xhr.total) * 100);
+        info.textContent = `Loading: ${pct}%`;
+      },
+      (err) => {
+        info.textContent = `Error: ${err.message || err}`;
+        console.error('Load error:', err);
+      }
+    );
+
+    // --- Resize ---
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>

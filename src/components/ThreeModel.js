@@ -26,7 +26,6 @@ const SPEECH_TEXT = {
   skills: "ANALYZING CAPABILITIES // Impressive skill matrix detected",
   experience: "CAREER LOG ACCESSED // Tracking professional journey",
   projects: "PROJECT DATABASE ACCESSED // Creative excellence verified",
-  unity: "ADVENTURE MODE READY // Drag me into the portal!",
   default: "NEXUS ACTIVATED // Your digital guide awaits"
 };
 
@@ -161,7 +160,6 @@ function Model({
   isMoving = false,
   hasArrived = false,
   disableVerticalRotation = false,
-  flyingIntoGame = false,
   onClick
 }) {
   const group = useRef();
@@ -373,20 +371,7 @@ function Model({
     }
     // Original rotation/movement logic follows
     if (group.current) {
-      // Special rotation when flying into game
-      if (flyingIntoGame) {
-        group.current.rotation.y = THREE.MathUtils.lerp(
-          group.current.rotation.y,
-          Math.PI,
-          0.1
-        );
-        group.current.rotation.x = THREE.MathUtils.lerp(
-          group.current.rotation.x,
-          -0.2,
-          0.1
-        );
-      }
-      else if (isMoving && !hasArrived) {
+      if (isMoving && !hasArrived) {
         const speedX = Math.abs(targetDirection.x * MOVEMENT_CONFIG.MOVEMENT_SPEED);
         const speedY = Math.abs(targetDirection.y * MOVEMENT_CONFIG.MOVEMENT_SPEED);
         let targetRotationY = 0;
@@ -445,14 +430,11 @@ function ThreeModel({
   modelRotation = [0, 0, 0],
   cameraPosition = [0, 0, 5],
   style = {},
-  onDropOnUnity = () => {},
-  onDropStarted = () => {},
   onDragStart = () => {},
   onDragEnd = () => {},
   onCursorUpdate = () => {},
   visible = true,
   fadeOut = false,
-  flyingIntoGame = false,
   chatMode = false,
   streamingTrigger = 0
 }) {
@@ -530,7 +512,7 @@ function ThreeModel({
   const updateSpeechForCurrentSection = (scrollTop) => {
     if (typeof window === 'undefined') return;
     
-    const sections = ['about', 'skills', 'experience', 'projects', 'unity'];
+    const sections = ['about', 'skills', 'experience', 'projects'];
     const middleY = scrollTop + window.innerHeight / 2;
     let foundSection = null;
     
@@ -579,7 +561,6 @@ function ThreeModel({
   const [hasArrived, setHasArrived] = useState(false);
   const [staggerTriggered, setStaggerTriggered] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [isOverUnity, setIsOverUnity] = useState(false);
   const [isDesktop, setIsDesktop] = useState(true);
   const [currentSpeech, setCurrentSpeech] = useState(SPEECH_TEXT.default);
   const [displayedText, setDisplayedText] = useState('');
@@ -1008,88 +989,16 @@ function ThreeModel({
             setIsMoving(false);
             onCursorUpdate(clientX, clientY);
             const scrollY = window.scrollY || 0;
-            
-            // Check if cursor is over Unity section
-            const unitySection = document.getElementById('unity');
-            if (unitySection) {
-              const unityRect = unitySection.getBoundingClientRect();
-              const isOver = 
-                clientX >= unityRect.left && 
-                clientX <= unityRect.right &&
-                clientY >= unityRect.top && 
-                clientY <= unityRect.bottom;
-              setIsOverUnity(isOver);
-            }
-            
+
             setCurrentPosition({
               x: clientX - dragOffsetRef.current.x,
               y: clientY - dragOffsetRef.current.y + scrollY
             });
           }}
           onUp={(clientX, clientY) => {
-            // Check if dropped on Unity FIRST before ending drag
-            const unitySection = document.getElementById('unity');
-            if (unitySection && isOverUnity) {
-              const unityRect = unitySection.getBoundingClientRect();
-              if (
-                clientX >= unityRect.left && 
-                clientX <= unityRect.right &&
-                clientY >= unityRect.top && 
-                clientY <= unityRect.bottom
-              ) {
-                setAnimTrigger((n) => n + 1);
-                
-                // Call the drop started callback immediately for rotation
-                onDropStarted();
-                
-                const modelElement = modelRef.current;
-                if (modelElement) {
-                  // Find the actual Unity canvas wrapper for more precise centering
-                  const unityWrapper = unitySection.querySelector('[id*="unity-wrapper"]');
-                  let targetRect = unityRect;
-
-                  if (unityWrapper) {
-                    targetRect = unityWrapper.getBoundingClientRect();
-                  }
-
-                  // Calculate center of Unity game container (in viewport coordinates)
-                  const unityCenterX = targetRect.left + (targetRect.width / 2);
-                  const unityCenterY = targetRect.top + (targetRect.height / 2);
-
-                  // Current model center (in viewport coordinates)
-                  const modelRect = modelElement.getBoundingClientRect();
-                  const modelCenterX = modelRect.left + modelRect.width / 2;
-                  const modelCenterY = modelRect.top + modelRect.height / 2;
-
-                  // Delta to move from current center to Unity center
-                  const dx = unityCenterX - modelCenterX;
-                  const dy = unityCenterY - modelCenterY;
-
-                  // Preserve the base centering translate(-50%,-50%) and add pixel delta
-                  // Phase 1: move towards center without scaling
-                  modelElement.style.transition = "transform 0.4s ease-out";
-                  modelElement.style.transform = `translate(-50%, -50%) translate(${dx}px, ${dy}px) scale(1)`;
-
-                  // Phase 2: after a brief delay, scale down while maintaining position
-                  setTimeout(() => {
-                    modelElement.style.transition = "transform .4s ease-in";
-                    modelElement.style.transform = `translate(-50%, -50%) translate(${dx}px, ${dy}px) scale(0.1)`;
-                  }, 400);
-                }
-                
-                setTimeout(() => {
-                  onDropOnUnity();
-                  // End drag after animation completes
-                  onDragEnd();
-                }, 800);
-                return;
-              }
-            }
-            
             // End drag and let parent handle cursor glow
             onDragEnd();
             setIsDragging(false);
-            setIsOverUnity(false);
             setHasArrived(false);
           }}
         />
@@ -1249,7 +1158,6 @@ function ThreeModel({
           isMoving={isMoving}
           hasArrived={hasArrived}
           disableVerticalRotation={isYClamped}
-          flyingIntoGame={flyingIntoGame}
           onClick={handleModelClick}
         />
       </Canvas>

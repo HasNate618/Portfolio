@@ -415,11 +415,6 @@ body::before {
   animation: glitch-anim2 2s infinite linear alternate-reverse;
 }
 
-@keyframes loading-scan {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
 @keyframes nameGlow {
   0% { text-shadow: 0 0 20px rgba(0, 255, 255, 0.6); }
   100% { text-shadow: 0 0 35px rgba(0, 255, 255, 0.9), 0 0 45px rgba(0, 255, 255, 0.4); }
@@ -627,116 +622,6 @@ body::before {
   background: rgba(236, 72, 153, 0.2);
   box-shadow: 0 0 15px rgba(244, 114, 182, 0.4);
   transform: translateY(-1px);
-}
-
-/* Portal/Tech Effect for Interactive Demo */
-.portal-container {
-  position: relative;
-  background: #000000;
-  overflow: hidden;
-  border: 1px solid rgba(0, 255, 255, 0.2);
-  border-radius: 12px;
-}
-
-.portal-rings {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 3;
-}
-
-.portal-ring {
-  position: absolute;
-  border: 2px solid rgba(0, 255, 255, 0.4);
-  border-radius: 50%;
-  animation: portalPulse 2s ease-in-out infinite;
-}
-
-.portal-ring:nth-child(1) {
-  width: 120px;
-  height: 120px;
-  margin: -60px 0 0 -60px;
-  animation-delay: 0s;
-}
-
-.portal-ring:nth-child(2) {
-  width: 180px;
-  height: 180px;
-  margin: -90px 0 0 -90px;
-  animation-delay: 0.5s;
-  border-color: rgba(138, 43, 226, 0.4);
-}
-
-.portal-ring:nth-child(3) {
-  width: 240px;
-  height: 240px;
-  margin: -120px 0 0 -120px;
-  animation-delay: 1s;
-  border-color: rgba(0, 255, 255, 0.3);
-}
-
-.portal-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #00ffff;
-  font-family: 'Courier New', monospace;
-  font-weight: 600;
-  text-align: center;
-  z-index: 10;
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
-  animation: portalTextGlow 2s ease-in-out infinite alternate;
-}
-
-.tech-grid {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
-  background-size: 30px 30px;
-  opacity: 0.3;
-  animation: techGridMove 10s linear infinite;
-  z-index: 0;
-}
-
-@keyframes portalSpin {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-@keyframes portalPulse {
-  0%, 100% { 
-    opacity: 0.4; 
-    transform: scale(1);
-    border-width: 2px;
-  }
-  50% { 
-    opacity: 0.8; 
-    transform: scale(1.1);
-    border-width: 3px;
-  }
-}
-
-@keyframes portalTextGlow {
-  0% { 
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
-    opacity: 0.9;
-  }
-  100% { 
-    text-shadow: 0 0 20px rgba(0, 255, 255, 1), 0 0 30px rgba(138, 43, 226, 0.5);
-    opacity: 1;
-  }
-}
-
-@keyframes techGridMove {
-  0% { transform: translate(0, 0); }
-  100% { transform: translate(30px, 30px); }
 }
 
 /* Filter transition animation for project cards */
