@@ -888,12 +888,19 @@ function ThreeModel({
     return () => window.removeEventListener('resize', checkDesktop);
   }, [staggerTriggered]);
   
-  // Wave animation 3s after model enters screen
+  // Wave 1s after model enters screen
   useEffect(() => {
     if (!staggerTriggered) return;
     const timer = setTimeout(() => setWaveTrigger((n) => n + 1), 1000);
     return () => clearTimeout(timer);
   }, [staggerTriggered]);
+  
+  // Wave 2s after entering chat mode
+  useEffect(() => {
+    if (!chatMode) return;
+    const timer = setTimeout(() => setWaveTrigger((n) => n + 1), 1500);
+    return () => clearTimeout(timer);
+  }, [chatMode]);
   
   // Early returns for non-desktop or invisible
   if (!isDesktop || !visible) return null;
