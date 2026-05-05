@@ -627,7 +627,6 @@ export default function Home() {
             </div>
             <ul className="list-disc list-inside text-gray-300 space-y-1 text-sm">
               <li>Programmed the swerve module to translate Xbox controller inputs into smooth omnidirectional motion.</li>
-              <li>Working on computer vision pipelines using OpenCV for automated path following.</li>
             </ul>
           </div>
         </div>
@@ -638,14 +637,14 @@ export default function Home() {
           <div className="skill-group">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2">
               <div>
-                <h3 className="text-lg font-semibold text-cyan-300">Software Developer</h3>
+                <h3 className="text-lg font-semibold text-cyan-300">VP of Machine Learning</h3>
                 <h4 className="text-base text-gray-400">3D Western | Western University</h4>
               </div>
               <span className="text-sm text-gray-500 sm:text-right">Sept 2025 — Present</span>
             </div>
             <ul className="list-disc list-inside text-gray-300 space-y-1 text-sm">
-              <li>Developing an AI-augmented 3D model slicing pipeline to automate 3D printing workflows across a 24-printer farm, enabling a free and accessible printing service for students at Western University.</li>
-              <li>Collaborating with subteams to design a Dockerized full-stack system that automates print orientation, support generation, and heuristic validation for printability using AI-driven tools and models.</li>
+              <li>Serving as VP of Data/ML, leading a team of developers in model benchmarking and reinforcement learning to optimize a classifier that flags inappropriate 3D models for print approval.</li>
+              <li>Built data generation workflows for 3D model analysis by scraping assets and creating automated rendering scripts to produce labeled image datasets for AI training.</li>
             </ul>
           </div>
         </div>
@@ -659,7 +658,7 @@ export default function Home() {
                 <h3 className="text-lg font-semibold text-emerald-300">Software Engineering Intern</h3>
                 <h4 className="text-base text-gray-400">TeraGo | Markham, ON</h4>
               </div>
-              <span className="text-sm text-gray-500 sm:text-right">May 2025 — Aug 2025</span>
+              <span className="text-sm text-gray-500 sm:text-right">May 2025 — Apr 2026</span>
             </div>
             <ul className="list-disc list-inside text-gray-300 space-y-1 text-sm">
               <li>Developed a fully automated system to manage Jira tickets based on email notifications by using a Local LLM (Ollama) for structured and secure data extraction, Python for logic, and Microsoft’s Graph API for email retrieval.</li>

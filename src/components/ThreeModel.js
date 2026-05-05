@@ -177,28 +177,50 @@ function Model({
   const [hovered, setHovered] = useState(false);
   
   const mixerRef = useRef(null);
-  const actionsRef = useRef({});
+  const rootActionsRef = useRef({});
+  const bodyActionsRef = useRef({});
   const currentAnimRef = useRef('Idle');
   const returnTimeoutRef = useRef(null);
+  
+  // Split animation clip into root bone tracks and everything else
+  const splitClip = (clip) => {
+    const rootTracks = [];
+    const bodyTracks = [];
+    for (const track of clip.tracks) {
+      const dotIdx = track.name.indexOf('.');
+      const boneName = dotIdx >= 0 ? track.name.slice(0, dotIdx) : '';
+      (boneName === 'Bone' ? rootTracks : bodyTracks).push(track);
+    }
+    return {
+      rootClip: rootTracks.length ? new THREE.AnimationClip(clip.name + '_root', clip.duration, rootTracks) : null,
+      bodyClip: bodyTracks.length ? new THREE.AnimationClip(clip.name + '_body', clip.duration, bodyTracks) : null,
+    };
+  };
   
   // Setup manual animation system
   useEffect(() => {
     if (!animations.length) return;
     
     const mixer = new THREE.AnimationMixer(group.current);
-    const act = {};
+    const rootAct = {};
+    const bodyAct = {};
     animations.forEach((clip) => {
-      act[clip.name] = mixer.clipAction(clip);
+      const { rootClip, bodyClip } = splitClip(clip);
+      if (rootClip) rootAct[clip.name] = mixer.clipAction(rootClip);
+      if (bodyClip) bodyAct[clip.name] = mixer.clipAction(bodyClip);
     });
     mixerRef.current = mixer;
-    actionsRef.current = act;
+    rootActionsRef.current = rootAct;
+    bodyActionsRef.current = bodyAct;
     
-    console.log('Available animations:', Object.keys(act));
+    console.log('Available animations:', Object.keys(bodyAct));
     
-    // Play default animation
-    const defaultAnim = act['Idle'] || act[Object.keys(act)[0]];
-    if (defaultAnim) {
-      defaultAnim.reset().setLoop(THREE.LoopRepeat).play();
+    // Play default Idle (both root and body)
+    const rootDefault = rootAct['Idle'] || rootAct[Object.keys(rootAct)[0]];
+    const bodyDefault = bodyAct['Idle'] || bodyAct[Object.keys(bodyAct)[0]];
+    if (bodyDefault) {
+      bodyDefault.reset().setLoop(THREE.LoopRepeat).play();
+      if (rootDefault) rootDefault.reset().setLoop(THREE.LoopRepeat).play();
       currentAnimRef.current = 'Idle';
     }
     
@@ -219,16 +241,19 @@ function Model({
       if (returnTimeoutRef.current) clearTimeout(returnTimeoutRef.current);
       mixer.stopAllAction();
       mixerRef.current = null;
-      actionsRef.current = {};
+      rootActionsRef.current = {};
+      bodyActionsRef.current = {};
     };
   }, [animations, scene]);
   
   // Handle animation playback when clicked
   const fadeDuration = 0.15;
+  const rootFade = 1.5;
   useEffect(() => {
     if (!animTrigger) return;
-    const act = actionsRef.current;
-    const keys = Object.keys(act);
+    const rootAct = rootActionsRef.current;
+    const bodyAct = bodyActionsRef.current;
+    const keys = Object.keys(bodyAct);
     if (!keys.length) return;
     
     // Clear any pending return-to-Idle timeout
@@ -237,31 +262,34 @@ function Model({
       returnTimeoutRef.current = null;
     }
     
-    const currentActions = Object.values(act).filter((a) => a.isRunning());
-    const targetAnim = act['React'] || act[keys[0]];
-    const returnAnim = act['Idle'] || act[keys[0]];
+    const rName = 'React', idleName = 'Idle';
+    const rRoot = rootAct[rName];
+    const rBody = bodyAct[rName];
+    const iRoot = rootAct[idleName];
+    const iBody = bodyAct[idleName];
     
-    // Fade out current actions quickly
-    currentActions.forEach((a) => {
-      if (a !== targetAnim) a.fadeOut(fadeDuration);
+    // Fade out current body actions quickly
+    Object.values(bodyAct).forEach((a) => {
+      if (a.isRunning() && a !== rBody) a.fadeOut(fadeDuration);
+    });
+    // Fade out current root actions quickly
+    Object.values(rootAct).forEach((a) => {
+      if (a.isRunning() && a !== rRoot) a.fadeOut(fadeDuration);
     });
     
-    targetAnim.reset().setLoop(THREE.LoopOnce);
-    targetAnim.fadeIn(fadeDuration);
-    targetAnim.play();
+    if (rRoot) { rRoot.reset().setLoop(THREE.LoopOnce); rRoot.fadeIn(fadeDuration); rRoot.play(); }
+    if (rBody) { rBody.reset().setLoop(THREE.LoopOnce); rBody.fadeIn(fadeDuration); rBody.play(); }
     currentAnimRef.current = 'React';
     
-    const duration = targetAnim.getClip().duration;
+    const clip = rBody || rRoot;
+    const duration = clip.getClip().duration;
     returnTimeoutRef.current = setTimeout(() => {
-      if (returnAnim) {
-        targetAnim.fadeOut(fadeDuration);
-        returnAnim.reset().setLoop(THREE.LoopRepeat);
-        returnAnim.fadeIn(fadeDuration);
-        returnAnim.play();
-        currentAnimRef.current = 'Idle';
-      } else {
-        currentAnimRef.current = 'Idle';
-      }
+      // Body bones return fast, root bone returns slow
+      if (rBody) rBody.fadeOut(fadeDuration);
+      if (rRoot) rRoot.fadeOut(rootFade);
+      if (iBody) { iBody.reset().setLoop(THREE.LoopRepeat); iBody.fadeIn(fadeDuration); iBody.play(); }
+      if (iRoot) { iRoot.reset().setLoop(THREE.LoopRepeat); iRoot.fadeIn(rootFade); iRoot.play(); }
+      currentAnimRef.current = 'Idle';
       returnTimeoutRef.current = null;
     }, (duration * 1000) - (fadeDuration * 1000));
   }, [animTrigger, animations]);
@@ -269,49 +297,45 @@ function Model({
   // Play Talk animation when streaming starts
   useEffect(() => {
     if (!streamingTrigger) return;
-    const act = actionsRef.current;
-    const keys = Object.keys(act);
+    const rootAct = rootActionsRef.current;
+    const bodyAct = bodyActionsRef.current;
+    const keys = Object.keys(bodyAct);
     if (!keys.length) return;
     
-    // Clear any pending return timeout
     if (returnTimeoutRef.current) {
       clearTimeout(returnTimeoutRef.current);
       returnTimeoutRef.current = null;
     }
     
-    const currentActions = Object.values(act).filter((a) => a.isRunning());
-    const talkAnim = act['Talk'] || act[keys[0]];
-    const returnAnim = act['Idle'] || act[keys[0]];
+    const tName = 'Talk', idleName = 'Idle';
+    const tRoot = rootAct[tName], tBody = bodyAct[tName];
+    const iRoot = rootAct[idleName], iBody = bodyAct[idleName];
     
-    currentActions.forEach((a) => {
-      if (a !== talkAnim) a.fadeOut(fadeDuration);
-    });
+    Object.values(bodyAct).forEach((a) => { if (a.isRunning() && a !== tBody) a.fadeOut(fadeDuration); });
+    Object.values(rootAct).forEach((a) => { if (a.isRunning() && a !== tRoot) a.fadeOut(fadeDuration); });
     
-    talkAnim.reset().setLoop(THREE.LoopOnce);
-    talkAnim.fadeIn(fadeDuration);
-    talkAnim.play();
+    if (tRoot) { tRoot.reset().setLoop(THREE.LoopOnce); tRoot.fadeIn(fadeDuration); tRoot.play(); }
+    if (tBody) { tBody.reset().setLoop(THREE.LoopOnce); tBody.fadeIn(fadeDuration); tBody.play(); }
     currentAnimRef.current = 'Talk';
     
-    const talkDuration = talkAnim.getClip().duration;
+    const clip = tBody || tRoot;
+    const duration = clip.getClip().duration;
     returnTimeoutRef.current = setTimeout(() => {
-      if (returnAnim) {
-        talkAnim.fadeOut(fadeDuration);
-        returnAnim.reset().setLoop(THREE.LoopRepeat);
-        returnAnim.fadeIn(fadeDuration);
-        returnAnim.play();
-        currentAnimRef.current = 'Idle';
-      } else {
-        currentAnimRef.current = 'Idle';
-      }
+      if (tBody) tBody.fadeOut(fadeDuration);
+      if (tRoot) tRoot.fadeOut(fadeDuration);
+      if (iBody) { iBody.reset().setLoop(THREE.LoopRepeat); iBody.fadeIn(fadeDuration); iBody.play(); }
+      if (iRoot) { iRoot.reset().setLoop(THREE.LoopRepeat); iRoot.fadeIn(fadeDuration); iRoot.play(); }
+      currentAnimRef.current = 'Idle';
       returnTimeoutRef.current = null;
-    }, (talkDuration * 1000) - (fadeDuration * 1000));
+    }, (duration * 1000) - (fadeDuration * 1000));
   }, [streamingTrigger, animations]);
   
   // Play Wave animation once on entrance
   useEffect(() => {
     if (!waveTrigger) return;
-    const act = actionsRef.current;
-    const keys = Object.keys(act);
+    const rootAct = rootActionsRef.current;
+    const bodyAct = bodyActionsRef.current;
+    const keys = Object.keys(bodyAct);
     if (!keys.length) return;
     
     if (returnTimeoutRef.current) {
@@ -319,32 +343,27 @@ function Model({
       returnTimeoutRef.current = null;
     }
     
-    const currentActions = Object.values(act).filter((a) => a.isRunning());
-    const waveAnim = act['Wave'] || act[keys[0]];
-    const returnAnim = act['Idle'] || act[keys[0]];
+    const wName = 'Wave', idleName = 'Idle';
+    const wRoot = rootAct[wName], wBody = bodyAct[wName];
+    const iRoot = rootAct[idleName], iBody = bodyAct[idleName];
     
-    currentActions.forEach((a) => {
-      if (a !== waveAnim) a.fadeOut(fadeDuration);
-    });
+    Object.values(bodyAct).forEach((a) => { if (a.isRunning() && a !== wBody) a.fadeOut(fadeDuration); });
+    Object.values(rootAct).forEach((a) => { if (a.isRunning() && a !== wRoot) a.fadeOut(fadeDuration); });
     
-    waveAnim.reset().setLoop(THREE.LoopOnce);
-    waveAnim.fadeIn(fadeDuration);
-    waveAnim.play();
+    if (wRoot) { wRoot.reset().setLoop(THREE.LoopOnce); wRoot.fadeIn(fadeDuration); wRoot.play(); }
+    if (wBody) { wBody.reset().setLoop(THREE.LoopOnce); wBody.fadeIn(fadeDuration); wBody.play(); }
     currentAnimRef.current = 'Wave';
     
-    const waveDuration = waveAnim.getClip().duration;
+    const clip = wBody || wRoot;
+    const duration = clip.getClip().duration;
     returnTimeoutRef.current = setTimeout(() => {
-      if (returnAnim) {
-        waveAnim.fadeOut(fadeDuration);
-        returnAnim.reset().setLoop(THREE.LoopRepeat);
-        returnAnim.fadeIn(fadeDuration);
-        returnAnim.play();
-        currentAnimRef.current = 'Idle';
-      } else {
-        currentAnimRef.current = 'Idle';
-      }
+      if (wBody) wBody.fadeOut(fadeDuration);
+      if (wRoot) wRoot.fadeOut(fadeDuration);
+      if (iBody) { iBody.reset().setLoop(THREE.LoopRepeat); iBody.fadeIn(fadeDuration); iBody.play(); }
+      if (iRoot) { iRoot.reset().setLoop(THREE.LoopRepeat); iRoot.fadeIn(fadeDuration); iRoot.play(); }
+      currentAnimRef.current = 'Idle';
       returnTimeoutRef.current = null;
-    }, (waveDuration * 1000) - (fadeDuration * 1000));
+    }, (duration * 1000) - (fadeDuration * 1000));
   }, [waveTrigger, animations]);
   
   // Update mixer every frame
@@ -902,6 +921,16 @@ function ThreeModel({
     return () => clearTimeout(timer);
   }, [chatMode]);
   
+  // Wave 1.5s after exiting chat mode
+  const prevChatRef = useRef(chatMode);
+  useEffect(() => {
+    if (prevChatRef.current !== chatMode && !chatMode) {
+      const timer = setTimeout(() => setWaveTrigger((n) => n + 1), 1500);
+      return () => clearTimeout(timer);
+    }
+    prevChatRef.current = chatMode;
+  }, [chatMode]);
+  
   // Early returns for non-desktop or invisible
   if (!isDesktop || !visible) return null;
 
@@ -1196,7 +1225,7 @@ function ThreeModel({
           shadow-mapSize={[2048, 2048]}
         />
         <directionalLight position={[-3, 3, -2]} intensity={0.8} color="#add8e6" />
-        <directionalLight position={[0, -2, -5]} intensity={1} color="#87ceeb" />
+        <directionalLight position={[0, -5, -5]} intensity={1} color="#87ceeb" />
         <pointLight position={[2, 3, 2]} intensity={0.5} color="#ffffff" />
         <pointLight position={[-2, 1, 3]} intensity={0.3} color="#e6f3ff" />
         <spotLight 
