@@ -379,7 +379,7 @@ export default function Home() {
         {/* About Section */}
         <section id="about" className="w-full max-w-4xl mx-auto mb-16 sm:mb-38 relative mt-20 sm:mt-32">
           <div className="cyber-card">
-            <h2 className="text-3xl font-bold mb-6 cyber-cyan cyber-section-title" data-text="About Me">About Me</h2>
+            <h2 className="text-3xl font-bold mb-6 cyber-cyan">About Me</h2>
             
             <div className="space-y-4">
               <p className="text-gray-300 leading-relaxed text-lg">
@@ -393,7 +393,7 @@ export default function Home() {
   {/* Skills Section */}
   <section id="skills" className="w-full max-w-5xl mx-auto mb-16 sm:mb-32 relative">
     <div className="cyber-card">
-      <h2 className="text-3xl font-bold mb-4 cyber-cyan cyber-section-title" data-text="Skills">Skills</h2>
+      <h2 className="text-3xl font-bold mb-4 cyber-cyan">Skills</h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
         <div className="skill-group rounded-xl border border-cyan-400/15 bg-black/20 p-5">
@@ -577,7 +577,7 @@ export default function Home() {
   {/* Experience Section */}
   <section id="experience" className="w-full max-w-4xl mx-auto mb-16 sm:mb-32 relative">
     <div className="cyber-card">
-      <h2 className="text-3xl font-bold mb-6 cyber-cyan cyber-section-title" data-text="Experience">Experience</h2>
+      <h2 className="text-3xl font-bold mb-6 cyber-cyan">Experience</h2>
       
       <div className="relative pl-8">
         <div className="absolute left-0 top-0 bottom-0 w-[2px]" style={{ background: 'linear-gradient(to bottom, transparent 0%, rgba(34,211,238,0.3) 4%, rgba(34,211,238,0.3) 96%, transparent 100%)' }}></div>
@@ -686,8 +686,7 @@ export default function Home() {
     >
       <div className="flex flex-col sm:flex-row items-center justify-between mb-6 sm:mb-8 gap-4">
         <h2
-          className="text-3xl font-bold cyber-cyan text-center cyber-section-title"
-          data-text="Projects I'm Proud Of"
+          className="text-3xl font-bold cyber-cyan text-center"
         >
           <span className="sm:hidden">Projects</span>
           <span className="hidden sm:inline">Projects I&apos;m Proud Of</span>
@@ -700,7 +699,7 @@ export default function Home() {
             }
             setProjectsFullscreen((v) => !v);
           }}
-          className="hidden lg:flex items-center gap-1.5 vsc-tab text-sm"
+          className="hidden xl:flex items-center gap-1.5 vsc-tab text-sm"
           aria-label={projectsFullscreen ? "Exit fullscreen" : "Expand fullscreen"}
         >
           {projectsFullscreen ? "Collapse" : "Expand"}
