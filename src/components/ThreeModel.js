@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useRef, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useRef, useEffect, useLayoutEffect, useState, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { useGLTF, useAnimations } from '@react-three/drei';
+import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
+import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
 
 // Configuration constants for easy modification
 const MOVEMENT_CONFIG = {
@@ -29,12 +30,133 @@ const SPEECH_TEXT = {
   default: "NEXUS ACTIVATED // Your digital guide awaits"
 };
 
+// Apply auto-smooth normals with angle threshold (degrees).
+// De-indexes geometry to allow vertex splitting on hard edges.
+function autoSmoothNormals(geometry, angleDeg = 45) {
+  const idx = geometry.index;
+  if (!idx) return;
+
+  const inCount = idx.count;
+  const tCount = inCount / 3;
+  const origPos = geometry.attributes.position;
+
+  // De-index all attributes into Float32Arrays (avoids Uint16 JOINTS_0 issues)
+  const deindexAttr = (attr) => {
+    const src = attr.array;
+    const itemSize = attr.itemSize;
+    const out = new Float32Array(inCount * itemSize);
+    // Handle normalized integer attributes (e.g. WEIGHTS_0 as Uint8 normalized)
+    if (attr.normalized) {
+      const maxVal = src instanceof Uint8Array ? 255 : src instanceof Uint16Array ? 65535 : 1;
+      for (let i = 0; i < inCount; i++) {
+        const si = idx.getX(i);
+        for (let k = 0; k < itemSize; k++) {
+          out[i * itemSize + k] = src[si * itemSize + k] / maxVal;
+        }
+      }
+    } else {
+      for (let i = 0; i < inCount; i++) {
+        const si = idx.getX(i);
+        for (let k = 0; k < itemSize; k++) {
+          out[i * itemSize + k] = src[si * itemSize + k];
+        }
+      }
+    }
+    return new THREE.BufferAttribute(out, itemSize);
+  };
+
+  // De-indexed position
+  const pos = deindexAttr(origPos);
+  const threshold = Math.cos(angleDeg * Math.PI / 180);
+
+  // Compute face normals from de-indexed positions
+  const p = [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()];
+  const e1 = new THREE.Vector3();
+  const e2 = new THREE.Vector3();
+  const fNormals = new Array(tCount);
+  for (let i = 0; i < tCount; i++) {
+    const i3 = i * 3;
+    p[0].set(pos.getX(i3), pos.getY(i3), pos.getZ(i3));
+    p[1].set(pos.getX(i3 + 1), pos.getY(i3 + 1), pos.getZ(i3 + 1));
+    p[2].set(pos.getX(i3 + 2), pos.getY(i3 + 2), pos.getZ(i3 + 2));
+    e1.subVectors(p[1], p[0]);
+    e2.subVectors(p[2], p[0]);
+    fNormals[i] = new THREE.Vector3().crossVectors(e1, e2).normalize();
+  }
+
+  // Group vertices by position (epsilon 0.001)
+  const eps = 0.001;
+  const vGroup = new Int32Array(inCount).fill(-1);
+  const groups = [];
+  for (let v = 0; v < inCount; v++) {
+    if (vGroup[v] !== -1) continue;
+    const g = [v];
+    vGroup[v] = groups.length;
+    for (let w = v + 1; w < inCount; w++) {
+      if (vGroup[w] !== -1) continue;
+      const dx = pos.getX(v) - pos.getX(w);
+      const dy = pos.getY(v) - pos.getY(w);
+      const dz = pos.getZ(v) - pos.getZ(w);
+      if (dx * dx + dy * dy + dz * dz < eps) {
+        g.push(w);
+        vGroup[w] = groups.length;
+      }
+    }
+    groups.push(g);
+  }
+
+  // Compute blended normals
+  const normals = new Float32Array(inCount * 3);
+  const n = new THREE.Vector3();
+  const ref = new THREE.Vector3();
+
+  for (const group of groups) {
+    const faceSet = new Set();
+    for (const v of group) faceSet.add(Math.floor(v / 3));
+    const fis = [...faceSet];
+
+    for (const v of group) {
+      const fi = Math.floor(v / 3);
+      ref.copy(fNormals[fi]);
+      n.set(0, 0, 0);
+      for (const fj of fis) {
+        if (ref.dot(fNormals[fj]) >= threshold) {
+          n.add(fNormals[fj]);
+        }
+      }
+      if (n.length() === 0) n.copy(ref);
+      else n.normalize();
+
+      normals[v * 3] = n.x;
+      normals[v * 3 + 1] = n.y;
+      normals[v * 3 + 2] = n.z;
+    }
+  }
+
+  // Build de-indexed versions of all attributes first (reuse pos for position)
+  const newAttrs = { position: pos };
+  for (const key in geometry.attributes) {
+    if (key !== 'position' && key !== 'normal') {
+      newAttrs[key] = deindexAttr(geometry.attributes[key]);
+    }
+  }
+
+  // Replace geometry with non-indexed version (all attributes as Float32Array)
+  geometry.setIndex(null);
+  for (const key in newAttrs) {
+    geometry.setAttribute(key, newAttrs[key]);
+  }
+  geometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
+}
+
 function Model({ 
   url, 
   scale = 1, 
   position = [0, 0, 0], 
   rotation = [0, 0, 0], 
-  isPlayingAnimation = false,
+  animTrigger = 0,
+  streamingTrigger = 0,
+  waveTrigger = 0,
   targetDirection = { x: 0, y: 0 },
   isMoving = false,
   hasArrived = false,
@@ -43,197 +165,240 @@ function Model({
   onClick
 }) {
   const group = useRef();
-  const { scene, animations } = useGLTF(url);
-  const { actions, mixer } = useAnimations(animations, group);
-  const [hovered, setHovered] = useState(false);
-  const [currentAction, setCurrentAction] = useState(null);
+  const { scene: originalScene, animations } = useGLTF(url);
   
-  // Setup animations
+  // Clone scene with SkeletonUtils to fix skeleton binding on skinned meshes
+  const scene = useMemo(() => {
+    if (!originalScene) return null;
+    originalScene.updateMatrixWorld(true);
+    return SkeletonUtils.clone(originalScene);
+  }, [originalScene]);
+  
+  const [hovered, setHovered] = useState(false);
+  
+  const mixerRef = useRef(null);
+  const actionsRef = useRef({});
+  const currentAnimRef = useRef('Idle');
+  const returnTimeoutRef = useRef(null);
+  
+  // Setup manual animation system
   useEffect(() => {
-    if (animations.length > 0) {
-      console.log('Available animations:', Object.keys(actions));
-      
-      // Play Robot4IFloat by default, if available
-      if (actions['Robot4IFloat']) {
-        actions['Robot4IFloat'].play();
-        setCurrentAction('Robot4IFloat');
-      } else {
-        // Fallback to first animation if Robot4IFloat doesn't exist
-        const firstAnimationName = Object.keys(actions)[0];
-        if (actions[firstAnimationName]) {
-          actions[firstAnimationName].play();
-          setCurrentAction(firstAnimationName);
-        }
-      }
+    if (!animations.length) return;
+    
+    const mixer = new THREE.AnimationMixer(group.current);
+    const act = {};
+    animations.forEach((clip) => {
+      act[clip.name] = mixer.clipAction(clip);
+    });
+    mixerRef.current = mixer;
+    actionsRef.current = act;
+    
+    console.log('Available animations:', Object.keys(act));
+    
+    // Play default animation
+    const defaultAnim = act['Idle'] || act[Object.keys(act)[0]];
+    if (defaultAnim) {
+      defaultAnim.reset().setLoop(THREE.LoopRepeat).play();
+      currentAnimRef.current = 'Idle';
     }
     
-    // Add some environment maps to make the model shine
     scene.traverse((child) => {
       if (child.isMesh) {
         child.castShadow = true;
         child.receiveShadow = true;
+        child.frustumCulled = false;
         if (child.material) {
           child.material.envMapIntensity = 0.8;
         }
+        autoSmoothNormals(child.geometry, 35);
+        console.log('Mesh geometry:', child.geometry.index ? 'indexed' : 'non-indexed', 'verts:', child.geometry.attributes.position.count);
       }
     });
     
-    // Cleanup
     return () => {
-      if (mixer) {
-        mixer.stopAllAction();
-      }
+      if (returnTimeoutRef.current) clearTimeout(returnTimeoutRef.current);
+      mixer.stopAllAction();
+      mixerRef.current = null;
+      actionsRef.current = {};
     };
-  }, [actions, animations, mixer, scene]);
+  }, [animations, scene]);
   
   // Handle animation playback when clicked
+  const fadeDuration = 0.15;
   useEffect(() => {
-    if (isPlayingAnimation && animations.length > 0) {
-      // Stop all current actions
-      Object.values(actions).forEach(action => action.stop());
-      
-      // Play Robot6Attack1 when clicked
-      let animationToPlay// = 'Robot4Attack';
-      
-      // Fallback to first animation if Robot6Attack1 doesn't exist
-      if (!actions[animationToPlay]) {
-        const animationNames = Object.keys(actions);
-        animationToPlay = animationNames[0];
-      }
-      
-      if (actions[animationToPlay]) {
-        actions[animationToPlay]
-          .reset()
-          .setLoop(THREE.LoopOnce) // Play once
-          .play();
-        
-        setCurrentAction(animationToPlay);
-        
-        // Return to Robot4IFloat after attack animation completes
-        const duration = actions[animationToPlay].getClip().duration;
-        setTimeout(() => {
-          if (actions['Robot4IFloat']) {
-            actions['Robot4IFloat']
-              .reset()
-              .setLoop(THREE.LoopRepeat)
-              .play();
-            setCurrentAction('Robot4IFloat');
-          } else if (Object.keys(actions).length > 0) {
-            // Fallback to first animation
-            const firstAnimation = Object.keys(actions)[0];
-            actions[firstAnimation]
-              .reset()
-              .setLoop(THREE.LoopRepeat)
-              .play();
-            setCurrentAction(firstAnimation);
-          }
-        }, duration * 1000);
-      }
+    if (!animTrigger) return;
+    const act = actionsRef.current;
+    const keys = Object.keys(act);
+    if (!keys.length) return;
+    
+    // Clear any pending return-to-Idle timeout
+    if (returnTimeoutRef.current) {
+      clearTimeout(returnTimeoutRef.current);
+      returnTimeoutRef.current = null;
     }
-  }, [isPlayingAnimation, actions, animations, currentAction]);
+    
+    const currentActions = Object.values(act).filter((a) => a.isRunning());
+    const targetAnim = act['React'] || act[keys[0]];
+    const returnAnim = act['Idle'] || act[keys[0]];
+    
+    // Fade out current actions quickly
+    currentActions.forEach((a) => {
+      if (a !== targetAnim) a.fadeOut(fadeDuration);
+    });
+    
+    targetAnim.reset().setLoop(THREE.LoopOnce);
+    targetAnim.fadeIn(fadeDuration);
+    targetAnim.play();
+    currentAnimRef.current = 'React';
+    
+    const duration = targetAnim.getClip().duration;
+    returnTimeoutRef.current = setTimeout(() => {
+      if (returnAnim) {
+        targetAnim.fadeOut(fadeDuration);
+        returnAnim.reset().setLoop(THREE.LoopRepeat);
+        returnAnim.fadeIn(fadeDuration);
+        returnAnim.play();
+        currentAnimRef.current = 'Idle';
+      } else {
+        currentAnimRef.current = 'Idle';
+      }
+      returnTimeoutRef.current = null;
+    }, (duration * 1000) - (fadeDuration * 1000));
+  }, [animTrigger, animations]);
   
-  // Handle rotation and movement based on target direction
+  // Play Talk animation when streaming starts
+  useEffect(() => {
+    if (!streamingTrigger) return;
+    const act = actionsRef.current;
+    const keys = Object.keys(act);
+    if (!keys.length) return;
+    
+    // Clear any pending return timeout
+    if (returnTimeoutRef.current) {
+      clearTimeout(returnTimeoutRef.current);
+      returnTimeoutRef.current = null;
+    }
+    
+    const currentActions = Object.values(act).filter((a) => a.isRunning());
+    const talkAnim = act['Talk'] || act[keys[0]];
+    const returnAnim = act['Idle'] || act[keys[0]];
+    
+    currentActions.forEach((a) => {
+      if (a !== talkAnim) a.fadeOut(fadeDuration);
+    });
+    
+    talkAnim.reset().setLoop(THREE.LoopOnce);
+    talkAnim.fadeIn(fadeDuration);
+    talkAnim.play();
+    currentAnimRef.current = 'Talk';
+    
+    const talkDuration = talkAnim.getClip().duration;
+    returnTimeoutRef.current = setTimeout(() => {
+      if (returnAnim) {
+        talkAnim.fadeOut(fadeDuration);
+        returnAnim.reset().setLoop(THREE.LoopRepeat);
+        returnAnim.fadeIn(fadeDuration);
+        returnAnim.play();
+        currentAnimRef.current = 'Idle';
+      } else {
+        currentAnimRef.current = 'Idle';
+      }
+      returnTimeoutRef.current = null;
+    }, (talkDuration * 1000) - (fadeDuration * 1000));
+  }, [streamingTrigger, animations]);
+  
+  // Play Wave animation once on entrance
+  useEffect(() => {
+    if (!waveTrigger) return;
+    const act = actionsRef.current;
+    const keys = Object.keys(act);
+    if (!keys.length) return;
+    
+    if (returnTimeoutRef.current) {
+      clearTimeout(returnTimeoutRef.current);
+      returnTimeoutRef.current = null;
+    }
+    
+    const currentActions = Object.values(act).filter((a) => a.isRunning());
+    const waveAnim = act['Wave'] || act[keys[0]];
+    const returnAnim = act['Idle'] || act[keys[0]];
+    
+    currentActions.forEach((a) => {
+      if (a !== waveAnim) a.fadeOut(fadeDuration);
+    });
+    
+    waveAnim.reset().setLoop(THREE.LoopOnce);
+    waveAnim.fadeIn(fadeDuration);
+    waveAnim.play();
+    currentAnimRef.current = 'Wave';
+    
+    const waveDuration = waveAnim.getClip().duration;
+    returnTimeoutRef.current = setTimeout(() => {
+      if (returnAnim) {
+        waveAnim.fadeOut(fadeDuration);
+        returnAnim.reset().setLoop(THREE.LoopRepeat);
+        returnAnim.fadeIn(fadeDuration);
+        returnAnim.play();
+        currentAnimRef.current = 'Idle';
+      } else {
+        currentAnimRef.current = 'Idle';
+      }
+      returnTimeoutRef.current = null;
+    }, (waveDuration * 1000) - (fadeDuration * 1000));
+  }, [waveTrigger, animations]);
+  
+  // Update mixer every frame
   useFrame((state, delta) => {
+    if (mixerRef.current) {
+      mixerRef.current.update(delta);
+    }
+    // Original rotation/movement logic follows
     if (group.current) {
       // Special rotation when flying into game
       if (flyingIntoGame) {
-        // Rotate to face into the page (180 degrees Y rotation)
         group.current.rotation.y = THREE.MathUtils.lerp(
           group.current.rotation.y,
-          Math.PI, // 180 degrees
+          Math.PI,
           0.1
         );
-        // Slight tilt forward to show flying motion
         group.current.rotation.x = THREE.MathUtils.lerp(
           group.current.rotation.x,
-          -0.2, // Slight forward tilt
+          -0.2,
           0.1
         );
       }
-      // Determine behavior based on movement state
       else if (isMoving && !hasArrived) {
-        // Look towards target while moving
-        // Calculate speed in each direction
         const speedX = Math.abs(targetDirection.x * MOVEMENT_CONFIG.MOVEMENT_SPEED);
         const speedY = Math.abs(targetDirection.y * MOVEMENT_CONFIG.MOVEMENT_SPEED);
-
-        // Face left/right when moving horizontally, tilt up/down when moving vertically
         let targetRotationY = 0;
         let targetRotationX = 0;
-
-        // Horizontal movement: face left/right, amount depends on speed
         if (Math.abs(targetDirection.x) > Math.abs(targetDirection.y)) {
-          // The more speed, the more it rotates left/right (max 45deg)
-          const maxY = Math.PI / 4; // 45deg
+          const maxY = Math.PI / 4;
           targetRotationY = Math.max(-maxY, Math.min(maxY, targetDirection.x * MOVEMENT_CONFIG.HORIZONTAL_ROTATE_INTENSITY * speedX));
         }
-
-        // Vertical movement: tilt up/down, amount depends on speed
         if (!disableVerticalRotation) {
-          if (targetDirection.y < -10) { // Moving up
-            // Tilt upwards more strongly with speed (max 30deg)
+          if (targetDirection.y < -10) {
             const maxUp = Math.PI / 6;
             targetRotationX = -Math.min(Math.abs(targetDirection.y * MOVEMENT_CONFIG.VERTICAL_ROTATE_INTENSITY * speedY), maxUp);
-          } else if (targetDirection.y > 10) { // Moving down
-            // Tilt downwards with speed (max 20deg)
+          } else if (targetDirection.y > 10) {
             const maxDown = Math.PI / 6;
             targetRotationX = Math.min(targetDirection.y * MOVEMENT_CONFIG.VERTICAL_ROTATE_INTENSITY * speedY, maxDown);
           } else {
-            // Slight tilt based on Y direction otherwise
             targetRotationX = targetDirection.y * 0.001;
           }
         } else {
-          // When disabled, keep vertical rotation neutral
           targetRotationX = 0;
         }
-
-        group.current.rotation.y = THREE.MathUtils.lerp(
-          group.current.rotation.y,
-          targetRotationY,
-          MOVEMENT_CONFIG.LERP_SPEED
-        );
-
-        group.current.rotation.x = THREE.MathUtils.lerp(
-          group.current.rotation.x,
-          targetRotationX,
-          MOVEMENT_CONFIG.LERP_SPEED
-        );
-
-        group.current.rotation.z = THREE.MathUtils.lerp(
-          group.current.rotation.z,
-          0,
-          MOVEMENT_CONFIG.LERP_SPEED
-        );
+        group.current.rotation.y = THREE.MathUtils.lerp(group.current.rotation.y, targetRotationY, MOVEMENT_CONFIG.LERP_SPEED);
+        group.current.rotation.x = THREE.MathUtils.lerp(group.current.rotation.x, targetRotationX, MOVEMENT_CONFIG.LERP_SPEED);
+        group.current.rotation.z = THREE.MathUtils.lerp(group.current.rotation.z, 0, MOVEMENT_CONFIG.LERP_SPEED);
       } else if (hasArrived) {
-        // Return to normal rotation after arriving
-          group.current.rotation.x = THREE.MathUtils.lerp(
-            group.current.rotation.x,
-            0,
-            MOVEMENT_CONFIG.LERP_SPEED
-          );
-          group.current.rotation.y = THREE.MathUtils.lerp(
-            group.current.rotation.y,
-            0,
-            MOVEMENT_CONFIG.LERP_SPEED
-          );
-          group.current.rotation.z = THREE.MathUtils.lerp(
-            group.current.rotation.z,
-            0,
-            MOVEMENT_CONFIG.LERP_SPEED
-          );
+        group.current.rotation.x = THREE.MathUtils.lerp(group.current.rotation.x, 0, MOVEMENT_CONFIG.LERP_SPEED);
+        group.current.rotation.y = THREE.MathUtils.lerp(group.current.rotation.y, 0, MOVEMENT_CONFIG.LERP_SPEED);
+        group.current.rotation.z = THREE.MathUtils.lerp(group.current.rotation.z, 0, MOVEMENT_CONFIG.LERP_SPEED);
       }
+      group.current.position.y = position[1];
       
-      // Hover effect - slight floating
-      if (hovered) {
-        group.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 2) * 0.05;
-      } else {
-        // Return to base position when not hovered
-        group.current.position.y = THREE.MathUtils.lerp(
-          group.current.position.y,
-          position[1],
-          0.1
-        );
-      }
     }
   });
 
@@ -269,7 +434,8 @@ function ThreeModel({
   visible = true,
   fadeOut = false,
   flyingIntoGame = false,
-  chatMode = false
+  chatMode = false,
+  streamingTrigger = 0
 }) {
   // Helper function to get about section position
   const getAboutOffScreenPosition = () => {
@@ -385,7 +551,8 @@ function ThreeModel({
   };
 
   // State for animation and movement
-  const [isPlayingAnimation, setIsPlayingAnimation] = useState(false);
+  const [animTrigger, setAnimTrigger] = useState(0);
+  const [waveTrigger, setWaveTrigger] = useState(0);
   const [currentPosition, setCurrentPosition] = useState(() => getAboutOffScreenPosition());
   const [targetPosition, setTargetPosition] = useState(() => getAboutOffScreenPosition());
   const targetPosRef = useRef(getAboutOffScreenPosition());
@@ -403,12 +570,15 @@ function ThreeModel({
   const chatSizeRef = useRef(300);
   const [currentSize, setCurrentSize] = useState(300);
   const chatModeRef = useRef(chatMode);
-  // Track last scroll position for render-time viewport-based clamping
   const lastScrollYRef = useRef(0);
   
   // Refs
   const modelRef = useRef(null);
   const dragOffsetRef = useRef({ x: 0, y: 0 });
+  
+  const handleModelClick = () => {
+    setAnimTrigger((n) => n + 1);
+  };
   
   // Typewriter effect for speech bubble
   useEffect(() => {
@@ -418,7 +588,7 @@ function ThreeModel({
     setDisplayedText('');
     
     let currentIndex = 0;
-    const typingSpeed = 25; // milliseconds per character - increased speed
+    const typingSpeed = 25;
     
     const typeInterval = setInterval(() => {
       if (currentIndex < currentSpeech.length) {
@@ -449,11 +619,9 @@ function ThreeModel({
     if (typeof window === 'undefined') return;
 
     if (chatMode) {
-      // Bigger in chat mode: fills most of the left 40% area
       const size = Math.min(window.innerWidth * 0.35, 1100);
       setChatSize(size);
       chatSizeRef.current = size;
-      // Center of left 40% area, moved down because model's visual center is at bottom
       const chatPos = {
         x: window.innerWidth * 0.2,
         y: window.innerHeight * 0.58,
@@ -484,13 +652,11 @@ function ThreeModel({
   useLayoutEffect(() => {
     if (typeof window === 'undefined') return;
     if (chatMode) {
-      // Entering chat: convert document Y to viewport Y
       setCurrentPosition(prev => ({
         x: prev.x,
         y: convertToViewportY(prev.y),
       }));
     } else {
-      // Exiting chat: convert viewport Y back to document Y
       setCurrentPosition(prev => ({
         x: prev.x,
         y: convertToDocumentY(prev.y),
@@ -498,16 +664,6 @@ function ThreeModel({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatMode]);
-
-  // Handle model click to trigger animation
-  const handleModelClick = () => {
-    setIsPlayingAnimation(true);
-    
-    // Reset animation trigger after a short delay
-    setTimeout(() => {
-      setIsPlayingAnimation(false);
-    }, 100); // Short delay just to trigger the animation
-  };
   
   // Handle scroll to update model position and movement logic
   useEffect(() => {
@@ -732,10 +888,21 @@ function ThreeModel({
     return () => window.removeEventListener('resize', checkDesktop);
   }, [staggerTriggered]);
   
+  // Wave animation 3s after model enters screen
+  useEffect(() => {
+    if (!staggerTriggered) return;
+    const timer = setTimeout(() => setWaveTrigger((n) => n + 1), 1000);
+    return () => clearTimeout(timer);
+  }, [staggerTriggered]);
+  
   // Early returns for non-desktop or invisible
   if (!isDesktop || !visible) return null;
 
   const isInChatMode = chatModeRef.current;
+
+  // Chat mode: smaller model, normal mode: bigger, moved down
+  const adjustedScale = isInChatMode ? modelScale * 0.324 : modelScale * 0.52;
+  const adjustedPosition = isInChatMode ? modelPosition : [modelPosition[0], modelPosition[1] - 0.8, modelPosition[2]];
 
   // Calculate direction vector for the model to look towards
   // Use chatTargetPos in chat mode since the movement loop uses it instead of targetPosition
@@ -761,25 +928,29 @@ function ThreeModel({
   const displayTop = isInChatMode
     ? currentPosition.y
     : constrainedDisplayY - viewportScrollY;
+  
+  // Crop canvas to reduce empty space, centered
+  const cropOffset = 0;
 
   return (
     <div
       ref={modelRef}
       className={`${className} cursor-pointer three-model-container`}
-      style={{
-        ...style,
-        position: 'fixed',
-        left: `${currentPosition.x}px`,
-        top: `${displayTop}px`,
-        width: `${currentSize}px`,
-        height: `${currentSize}px`,
-        transform: 'translate(-50%, -50%)',
-        zIndex: isInChatMode ? 60 : 30,
-        transition: 'opacity 0.4s ease',
-        opacity: fadeOut ? 0 : 1,
-        pointerEvents: fadeOut || isInChatMode ? 'none' : 'auto',
-        cursor: isDragging ? 'grabbing' : 'grab',
-      }}
+        style={{
+          ...style,
+          position: 'fixed',
+          left: `${currentPosition.x}px`,
+          top: `${displayTop + cropOffset}px`,
+        width: `${currentSize * (isInChatMode ? 1.2 : 1.32)}px`,
+        height: `${currentSize * (isInChatMode ? 1.2 : 0.78)}px`,
+          transform: 'translate(-50%, -50%)',
+          zIndex: isInChatMode ? 60 : 30,
+          transition: 'opacity 0.4s ease',
+          opacity: fadeOut ? 0 : 1,
+          pointerEvents: fadeOut || isInChatMode ? 'none' : 'auto',
+          cursor: isDragging ? 'grabbing' : 'grab',
+          outline: 'none',
+        }}
       onPointerDown={(e) => {
         e.preventDefault();
         if (!isDesktop || chatMode) return;
@@ -830,7 +1001,7 @@ function ThreeModel({
                 clientY >= unityRect.top && 
                 clientY <= unityRect.bottom
               ) {
-                setIsPlayingAnimation(true);
+                setAnimTrigger((n) => n + 1);
                 
                 // Call the drop started callback immediately for rotation
                 onDropStarted();
@@ -1004,10 +1175,9 @@ function ThreeModel({
       `}</style>
       
       <Canvas
-        camera={{ position: cameraPosition, fov: 45 }}
+        camera={{ position: cameraPosition, fov: 30 }}
         style={{ background: 'transparent' }}
-        shadows
-        gl={{ alpha: transparent, antialias: true }}
+        gl={{ alpha: true, antialias: true }}
       >
         <CanvasSizeSync />
         <ambientLight intensity={0.6} color="#ffffff" />
@@ -1033,10 +1203,12 @@ function ThreeModel({
         
         <Model 
           url={modelUrl} 
-          scale={modelScale} 
-          position={modelPosition} 
+          scale={adjustedScale} 
+          position={adjustedPosition} 
           rotation={modelRotation}
-          isPlayingAnimation={isPlayingAnimation}
+          animTrigger={animTrigger}
+          streamingTrigger={streamingTrigger}
+          waveTrigger={waveTrigger}
           targetDirection={targetDirection}
           isMoving={isMoving}
           hasArrived={hasArrived}

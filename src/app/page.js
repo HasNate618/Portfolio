@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { Analytics } from '@vercel/analytics/next';
-const ThreeModel = dynamic(() => import("../components/ThreeModel"), { ssr: false });
+import ThreeModel from "../components/ThreeModel";
 import ProjectCard from "../components/ProjectCard";
 import ChatBot from "../components/ChatBot";
 import { PROJECTS, FILTER_TABS } from "../data/projects";
@@ -117,6 +117,7 @@ export default function Home() {
   // Viewport middle inside projects section (matches ThreeModel side-switch point)
   const [viewportMiddleInProjects, setViewportMiddleInProjects] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
+  const [streamingTrigger, setStreamingTrigger] = useState(0);
 
   const filteredProjects = useMemo(() => {
     if (projectFilter === "all") return PROJECTS;
@@ -241,8 +242,8 @@ export default function Home() {
       {/* 3D model that can be dragged into Unity */}
       <ThreeModel
         className="w-[300px] h-[300px]"
-        modelUrl="/models/model.glb"
-        modelScale={4}
+        modelUrl="/models/Robot.glb"
+        modelScale={7.2}
         modelPosition={[0, 0, 0]}
         modelRotation={[0, 0, 0]}
         transparent={true}
@@ -250,6 +251,8 @@ export default function Home() {
         fadeOut={projectsFullscreen && viewportMiddleInProjects}
         flyingIntoGame={modelFlyingIntoGame}
         chatMode={chatOpen}
+        streamingTrigger={streamingTrigger}
+        onStreamStart={() => setStreamingTrigger((n) => n + 1)}
         onDragStart={() => {
           setIsDraggingModel(true);
         }}
@@ -945,7 +948,7 @@ export default function Home() {
   <footer className="text-gray-500 text-sm mt-16 sm:mt-24">&copy; {new Date().getFullYear()} Nathan Espejo. All rights reserved.</footer>
   </div>
 
-  <ChatBot isOpen={chatOpen} onOpenChange={setChatOpen} />
+  <ChatBot isOpen={chatOpen} onOpenChange={setChatOpen} onStreamStart={() => setStreamingTrigger((n) => n + 1)} />
 </main>
 );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import ChatButton from "./ChatButton";
 import ChatPanel from "./ChatPanel";
 
@@ -42,10 +42,12 @@ function parseFollowups(content) {
   return { main: content, followups: [] };
 }
 
-export default function ChatBot({ isOpen, onOpenChange }) {
+export default function ChatBot({ isOpen, onOpenChange, onStreamStart }) {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [followups, setFollowups] = useState([]);
+  const onStreamStartRef = useRef(onStreamStart);
+  useEffect(() => { onStreamStartRef.current = onStreamStart; }, [onStreamStart]);
 
   const handleOpen = () => onOpenChange?.(true);
   const handleClose = () => onOpenChange?.(false);
@@ -80,6 +82,8 @@ export default function ChatBot({ isOpen, onOpenChange }) {
         const messagesWithAssistant = [...newMessages, assistantMessage];
         setMessages(messagesWithAssistant);
 
+        onStreamStartRef.current?.();
+        
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;

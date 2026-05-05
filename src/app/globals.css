@@ -32,13 +32,7 @@
   cursor: pointer;
 }
 
-/* Cyberpunk glow when hovering over the model */
-.three-model-container:hover canvas {
-  box-shadow: 
-    0 0 25px 8px rgba(0, 255, 255, 0.4),
-    0 0 50px 15px rgba(0, 255, 255, 0.2);
-  transition: box-shadow 0.3s ease;
-}
+
 
 /* Only show on desktop (LG breakpoint and above) */
 @media (max-width: 1023px) {
