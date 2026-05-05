@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import ChatMessage from "./ChatMessage";
 
 const EXAMPLE_PROMPTS = [
-  "How does this chat work?",
+  "How do you work?",
   "What are Nathan's top AI projects?",
   "Tell me about his homelab infrastructure",
   "What hackathons has he won?",

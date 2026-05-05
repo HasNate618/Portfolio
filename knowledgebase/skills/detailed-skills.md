@@ -215,8 +215,8 @@
   - Evidence: Eyecandy
 
 ### 3D Web
-- **Three.js**: Browser 3D rendering
-  - Evidence: Auralis, Stupid Spotify
+- **Three.js/React Three Fiber**: Browser 3D rendering
+  - Evidence: Auralis, Stupid Spotify, Nexus 3D avatar on portfolio site
 
 ---
 
@@ -263,8 +263,8 @@
   - Evidence: FLEXFIRE-X
 
 ### CAD & 3D Printing
-- **Blender**: 3D modeling, rendering
-  - Evidence: FLEXFIRE-X, Cyberdeck, Street Cleaner
+- **Blender**: 3D modeling, animation, rendering
+  - Evidence: FLEXFIRE-X, Cyberdeck, Street Cleaner, Nexus 3D avatar on portfolio site
   
 - **OnShape**: CAD design
   - Evidence: FLEXFIRE-X (parts)

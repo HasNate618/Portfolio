@@ -613,27 +613,11 @@ export default function Home() {
     <div className="cyber-card">
       <h2 className="text-3xl font-bold mb-6 cyber-cyan cyber-section-title" data-text="Experience">Experience</h2>
       
-      <div className="relative pl-8 border-l-2 border-cyan-400/30">
-        {/* Experience: Software Developer*/}
+      <div className="relative pl-8">
+        <div className="absolute left-0 top-0 bottom-0 w-[2px]" style={{ background: 'linear-gradient(to bottom, transparent 0%, rgba(34,211,238,0.3) 4%, rgba(34,211,238,0.3) 96%, transparent 100%)' }}></div>
+        {/* Experience: VP of Machine Learning */}
         <div className="mb-8 relative">
-          <div className="absolute -left-[41px] top-1 w-4 h-4 rounded-full bg-rose-200 border-4 border-black shadow-lg shadow-rose-200/30"></div>
-          <div className="skill-group">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2">
-              <div>
-                <h3 className="text-lg font-semibold text-rose-300">Software Developer</h3>
-                <h4 className="text-base text-gray-400">WEFirst (Robotics) | Western University</h4>
-              </div>
-              <span className="text-sm text-gray-500 sm:text-right">Jan 2026 — Present</span>
-            </div>
-            <ul className="list-disc list-inside text-gray-300 space-y-1 text-sm">
-              <li>Programmed the swerve module to translate Xbox controller inputs into smooth omnidirectional motion.</li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Experience: Software Developer*/}
-        <div className="mb-8 relative">
-          <div className="absolute -left-[41px] top-1 w-4 h-4 rounded-full bg-cyan-400 border-4 border-black shadow-lg shadow-cyan-400/50"></div>
+          <div className="absolute -left-[36px] top-1 w-2.5 h-2.5 rounded-full bg-cyan-950 border border-cyan-400"></div>
           <div className="skill-group">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2">
               <div>
@@ -649,16 +633,35 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Experience: Software Developer (Robotics) */}
+        <div className="mb-8 relative">
+          <div className="absolute -left-[36px] top-1 w-2.5 h-2.5 rounded-full bg-rose-900 border border-rose-200"></div>
+          <div className="skill-group">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2">
+              <div>
+                <h3 className="text-lg font-semibold text-rose-300">Software Developer</h3>
+                <h4 className="text-base text-gray-400">WEFirst (Robotics) | Western University</h4>
+              </div>
+              <span className="text-sm text-gray-500 sm:text-right">Jan 2026 — Apr 2026</span>
+            </div>
+            <ul className="list-disc list-inside text-gray-300 space-y-1 text-sm">
+              <li>Programmed the swerve module to translate Xbox controller inputs into smooth omnidirectional motion for a competitive robotics platform.</li>
+              <li>Hands-on assembly and wiring of the swerve drivetrain, including CAN bus integration, motor controllers, and encoder calibration.</li>
+              <li>Developed and tuned closed-loop control algorithms for precise wheel heading and drive velocity during autonomous and teleop modes.</li>
+            </ul>
+          </div>
+        </div>
+
           {/* Experience: Software Engineering Intern */}
         <div className="mb-8 relative">
-          <div className="absolute -left-[41px] top-1 w-4 h-4 rounded-full bg-emerald-400 border-4 border-black shadow-lg shadow-emerald-400/50"></div>
+          <div className="absolute -left-[36px] top-1 w-2.5 h-2.5 rounded-full bg-emerald-950 border border-emerald-400"></div>
           <div className="skill-group">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2">
               <div>
                 <h3 className="text-lg font-semibold text-emerald-300">Software Engineering Intern</h3>
                 <h4 className="text-base text-gray-400">TeraGo | Markham, ON</h4>
               </div>
-              <span className="text-sm text-gray-500 sm:text-right">May 2025 — Apr 2026</span>
+              <span className="text-sm text-gray-500 sm:text-right">May 2025 — Aug 2025</span>
             </div>
             <ul className="list-disc list-inside text-gray-300 space-y-1 text-sm">
               <li>Developed a fully automated system to manage Jira tickets based on email notifications by using a Local LLM (Ollama) for structured and secure data extraction, Python for logic, and Microsoft’s Graph API for email retrieval.</li>
@@ -668,7 +671,7 @@ export default function Home() {
 
         {/* Experience: IT Intern */}
         <div className="mb-8 relative">
-          <div className="absolute -left-[41px] top-1 w-4 h-4 rounded-full bg-purple-400 border-4 border-black shadow-lg shadow-purple-400/50"></div>
+          <div className="absolute -left-[36px] top-1 w-2.5 h-2.5 rounded-full bg-purple-950 border border-purple-400"></div>
           <div className="skill-group">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2">
               <div>
@@ -685,7 +688,7 @@ export default function Home() {
 
         {/* Experience: WEMars*/}
         <div className="mb-0 relative">
-          <div className="absolute -left-[41px] top-1 w-4 h-4 rounded-full bg-yellow-200 border-4 border-black shadow-lg shadow-yellow-200/30"></div>
+          <div className="absolute -left-[36px] top-1 w-2.5 h-2.5 rounded-full bg-yellow-950 border border-yellow-200"></div>
           <div className="skill-group">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2">
               <div>
