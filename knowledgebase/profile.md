@@ -83,7 +83,7 @@ Aug. 2024 -- May 2028
 ## TECHNICAL SKILLS
 
 ### Programming Languages
-- **Proficient:** Python, TypeScript, JavaScript, C#, C++, Java, Kotlin, SQL, Bash
+- **Proficient:** Python, TypeScript, JavaScript, C#, C++, Rust, Java, Kotlin, SQL, Bash
 - **Familiar:** HTML, CSS, YAML, Markdown
 
 ### AI Systems & Machine Learning
@@ -103,6 +103,7 @@ Aug. 2024 -- May 2028
 - **Desktop:** C# .NET WPF, VS Code extensions
 
 ### Infrastructure & DevOps
+- **NixOS:** Declarative system configuration with flakes, reproducible builds, Nix language
 - **Linux:** Arch Linux, Debian, DietPi
 - **Containerization:** Docker, Docker Compose
 - **Networking:** Tailscale, VPNs, secure remote access

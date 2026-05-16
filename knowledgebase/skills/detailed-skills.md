@@ -11,7 +11,10 @@
   
 - **C#**: Unity game development, desktop applications
   - Evidence: All Unity games, Glyph, VR ODM Gear, Wasteland
-  
+
+- **Rust**: Systems programming, CLI tools, agent daemons, async runtimes
+  - Evidence: AgntOS (agent-native OS built in Rust with Tokio, Serde, clap)
+
 - **C++**: Embedded systems, Arduino programming, hardware control
   - Evidence: FLEXFIRE-X, Cyberdeck firmware, Rubber Band Turret, Wasteland glove
   
@@ -123,8 +126,10 @@
 
 ## Infrastructure & DevOps
 
-### Linux
+### Linux & NixOS
 - **Arch Linux**: Daily driver, system administration
+- **NixOS**: Declarative system configuration with flakes, Nix language, module system, reproducible builds
+  - Evidence: AgntOS (agent-native OS built on NixOS, /etc/agntos/ protocol, propose/apply/rollback pipeline)
 - **Debian/DietPi**: Server deployments, embedded systems
   - Evidence: Homelab, Cyberdeck, Local AI Platform
   

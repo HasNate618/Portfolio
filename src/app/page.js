@@ -424,6 +424,7 @@ export default function Home() {
           <div className="flex flex-wrap gap-2">
             {[
               "Linux",
+              "NixOS",
               "Arch Linux",
               "Debian",
               "Docker",
@@ -496,6 +497,7 @@ export default function Home() {
               "JavaScript",
               "TypeScript",
               "C#",
+              "Rust",
               "C++",
               "Java",
               "Kotlin",

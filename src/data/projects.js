@@ -12,6 +12,23 @@ export const FILTER_TABS = [
 ];
 
 export const PROJECTS = [
+  // ── Flagship ──
+  {
+    id: "agntos",
+    title: "AgntOS",
+    description:
+      "An agent-native operating system built on NixOS — the LLM is not a sidecar, it's the central nervous system of the machine. Mutates itself via propose → apply → nixos-rebuild.",
+    categories: ["featured", "ai-ml"],
+    isHackathonWinner: false,
+    techStack: ["NixOS", "Rust", "SQLite"],
+    links: [
+      { label: "GitHub", href: "https://github.com/HasNate618/AgntOS" },
+    ],
+    media: [
+      { src: "/agntos-vm.png", alt: "AgntOS Dev VM Running KDE Plasma" },
+      { src: "/agntos-banner.png", alt: "AgntOS Banner" },
+    ],
+  },
   // ── Hackathon Winners ──
   {
     id: "local-ai-platform",
