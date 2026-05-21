@@ -275,8 +275,8 @@ function Model({
       if (a.isRunning() && a !== rRoot) a.fadeOut(fadeDuration);
     });
     
-    if (rRoot) { rRoot.reset().setLoop(THREE.LoopOnce); rRoot.fadeIn(fadeDuration); rRoot.play(); }
-    if (rBody) { rBody.reset().setLoop(THREE.LoopOnce); rBody.fadeIn(fadeDuration); rBody.play(); }
+    if (rRoot) { rRoot.clampWhenFinished = true; rRoot.reset().setLoop(THREE.LoopOnce); rRoot.fadeIn(fadeDuration); rRoot.play(); }
+    if (rBody) { rBody.clampWhenFinished = true; rBody.reset().setLoop(THREE.LoopOnce); rBody.fadeIn(fadeDuration); rBody.play(); }
     currentAnimRef.current = 'React';
     
     const clip = rBody || rRoot;
@@ -312,8 +312,8 @@ function Model({
     Object.values(bodyAct).forEach((a) => { if (a.isRunning() && a !== tBody) a.fadeOut(fadeDuration); });
     Object.values(rootAct).forEach((a) => { if (a.isRunning() && a !== tRoot) a.fadeOut(fadeDuration); });
     
-    if (tRoot) { tRoot.reset().setLoop(THREE.LoopOnce); tRoot.fadeIn(fadeDuration); tRoot.play(); }
-    if (tBody) { tBody.reset().setLoop(THREE.LoopOnce); tBody.fadeIn(fadeDuration); tBody.play(); }
+    if (tRoot) { tRoot.clampWhenFinished = true; tRoot.reset().setLoop(THREE.LoopOnce); tRoot.fadeIn(fadeDuration); tRoot.play(); }
+    if (tBody) { tBody.clampWhenFinished = true; tBody.reset().setLoop(THREE.LoopOnce); tBody.fadeIn(fadeDuration); tBody.play(); }
     currentAnimRef.current = 'Talk';
     
     const clip = tBody || tRoot;
@@ -348,8 +348,8 @@ function Model({
     Object.values(bodyAct).forEach((a) => { if (a.isRunning() && a !== wBody) a.fadeOut(fadeDuration); });
     Object.values(rootAct).forEach((a) => { if (a.isRunning() && a !== wRoot) a.fadeOut(fadeDuration); });
     
-    if (wRoot) { wRoot.reset().setLoop(THREE.LoopOnce); wRoot.fadeIn(fadeDuration); wRoot.play(); }
-    if (wBody) { wBody.reset().setLoop(THREE.LoopOnce); wBody.fadeIn(fadeDuration); wBody.play(); }
+    if (wRoot) { wRoot.clampWhenFinished = true; wRoot.reset().setLoop(THREE.LoopOnce); wRoot.fadeIn(fadeDuration); wRoot.play(); }
+    if (wBody) { wBody.clampWhenFinished = true; wBody.reset().setLoop(THREE.LoopOnce); wBody.fadeIn(fadeDuration); wBody.play(); }
     currentAnimRef.current = 'Wave';
     
     const clip = wBody || wRoot;

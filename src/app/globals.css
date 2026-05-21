@@ -103,6 +103,7 @@
   padding: 0.5rem 1rem;
   font-size: 0.95rem;
   font-weight: 500;
+  font-family: 'Courier New', monospace;
   color: rgba(255, 255, 255, 0.7);
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(0, 255, 255, 0.1);
@@ -172,8 +173,6 @@
 :root {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: 'Courier New', 'JetBrains Mono', var(--font-jetbrains-mono), monospace;
 }
 
 /* Cyberpunk accent utility classes */
@@ -218,9 +217,13 @@ body {
   background: linear-gradient(135deg, var(--background) 0%, var(--background-secondary) 50%, var(--background-tertiary) 100%);
   background-attachment: fixed;
   color: var(--foreground);
-  font-family: 'Courier New', 'JetBrains Mono', var(--font-jetbrains-mono), monospace;
+  font-family: 'Courier New', monospace;
   position: relative;
   overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Courier New', monospace;
 }
 
 /* Circuit board background pattern (static) */
