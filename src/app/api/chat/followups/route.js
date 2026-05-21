@@ -16,14 +16,16 @@ Assistant: ${aiResponse.slice(0, 800)}
 
 Generate 3 short follow-up questions the user could ask next about Nathan's projects, skills, or experience. Each question must be a single, focused question (no "and" or "or" joining two questions). No markdown formatting. Keep each under 10 words. Return ONLY a JSON array of 3 plain-text strings, each ending with "?".`;
 
-    const response = await cohere.chat({
-      model: "command-r-plus-08-2024",
-      message: prompt,
+    const response = await cohere.v2.chat({
+      model: "command-a-plus-05-2026",
+      messages: [{ role: "user", content: prompt }],
       temperature: 0.7,
-      maxTokens: 150,
+      maxTokens: 500,
+      thinking: { type: "disabled" },
     });
 
-    const raw = response.text.trim();
+    const textContent = response.message.content?.find((c) => c.type === "text");
+    const raw = textContent?.text ?? "";
     let followups;
     try {
       followups = JSON.parse(raw);

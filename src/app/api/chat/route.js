@@ -14,39 +14,43 @@ export async function POST(req) {
     }
 
     const topChunks = await retrieveRelevantChunks(message, 20);
-    const reranked = await rerankChunks(message, topChunks, 8);
+    const reranked = await rerankChunks(message, topChunks, 6);
     const systemPrompt = buildSystemPrompt(reranked);
 
     const cohere = new CohereClient({ token: process.env.COHERE_API_KEY });
 
-    const chatHistory = history.map((m) => ({
-      role: m.role === "user" ? "USER" : "CHATBOT",
-      message: m.content,
-    }));
+    const safeHistory = history.filter((m) => m.content && m.content.trim().length > 0);
 
-    const stream = await cohere.chatStream({
-      model: "command-r-plus-08-2024",
-      message,
-      preamble: systemPrompt,
-      chatHistory,
+    const stream = await cohere.v2.chatStream({
+      model: "command-a-plus-05-2026",
+      messages: [
+        { role: "system", content: systemPrompt },
+        ...safeHistory.map((m) => ({
+          role: m.role === "user" ? "user" : "assistant",
+          content: m.content,
+        })),
+        { role: "user", content: message },
+      ],
       temperature: 0.7,
-      maxTokens: 1200,
+      maxTokens: 32000,
+      thinking: { type: "disabled" },
     });
 
     return new Response(
       new ReadableStream({
         async start(controller) {
           let totalChars = 0;
-          const MAX_CHARS = 3000;
+          const MAX_CHARS = 32000;
           try {
             for await (const chunk of stream) {
-              if (chunk.eventType === "text-generation") {
-                totalChars += chunk.text.length;
+              if (chunk.type === "content-delta") {
+                const text = chunk.delta?.message?.content?.text ?? "";
+                totalChars += text.length;
                 if (totalChars > MAX_CHARS) {
                   controller.close();
                   return;
                 }
-                controller.enqueue(new TextEncoder().encode(chunk.text));
+                controller.enqueue(new TextEncoder().encode(text));
               }
             }
             controller.close();
