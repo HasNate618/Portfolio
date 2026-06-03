@@ -22,7 +22,7 @@ export async function POST(req) {
     const safeHistory = history.filter((m) => m.content && m.content.trim().length > 0);
 
     const stream = await cohere.v2.chatStream({
-      model: "command-a-plus-05-2026",
+      model: "command-r-plus-08-2024",
       messages: [
         { role: "system", content: systemPrompt },
         ...safeHistory.map((m) => ({
@@ -32,8 +32,7 @@ export async function POST(req) {
         { role: "user", content: message },
       ],
       temperature: 0.7,
-      maxTokens: 32000,
-      thinking: { type: "disabled" },
+      maxTokens: 4000,
     });
 
     return new Response(
